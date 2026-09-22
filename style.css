@@ -1437,9 +1437,21 @@ button, input, select, textarea, optgroup {
     box-shadow: var(--shadow-md);
 }
 
-.video-wrapper video {
+.video-wrapper {
+    position: relative;
     width: 100%;
-    max-height: 480px;
+    aspect-ratio: 16/9;
+    background: #000;
+}
+
+.video-wrapper video,
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
     display: block;
     background: #000;
 }

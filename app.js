@@ -27,6 +27,12 @@ function switchView(viewName) {
         btnPortal.classList.add('active');
         btnLanding.classList.remove('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        reloadCoursesCatalog();
+        const course = currentSelectedCourse || coursesCatalog[0];
+        if (course) {
+            playCourseLesson(course.id, 1, 1);
+        }
     }
 }
 
@@ -41,26 +47,10 @@ function toggleAccordion(id) {
 // Select Lesson & Update Player Video / Title
 function selectLesson(modNum, lessonNum) {
     switchView('portal');
-
-    const videoTitle = document.getElementById('video-lesson-title');
-    const lessonTitleText = `Module ${modNum} - Bài ${modNum}.${lessonNum}: Bài Học Video Đào Tạo`;
-
-    if (videoTitle) {
-        videoTitle.textContent = lessonTitleText;
-    }
-
-    // Highlight active lesson in sidebar
-    document.querySelectorAll('.lesson-item').forEach(el => el.classList.remove('playing'));
-    const targetLesson = document.getElementById(`lesson-${modNum}-${lessonNum}`);
-    if (targetLesson) {
-        targetLesson.classList.add('playing');
-    }
-
-    // Auto play video simulation
-    const video = document.getElementById('lms-video');
-    if (video) {
-        video.currentTime = 0;
-        video.play().catch(() => {});
+    reloadCoursesCatalog();
+    const course = currentSelectedCourse || coursesCatalog[0];
+    if (course) {
+        playCourseLesson(course.id, modNum, lessonNum || 1);
     }
 }
 
@@ -575,22 +565,259 @@ function backToCoursesList() {
 
 // ENTER CLASSROOM VIDEO FOR SPECIFIC COURSE & MODULE
 function enterCourseLesson(courseId, modNum, lessonNum) {
+    switchView('portal');
+    playCourseLesson(courseId, modNum, lessonNum || 1);
+}
+
+// PLAY SPECIFIC LESSON INSIDE CLASSROOM
+function playCourseLesson(courseId, modNum, lessonNum) {
     reloadCoursesCatalog();
-    const course = coursesCatalog.find(c => c.id === courseId);
-    if (course) {
-        const topCourseTitle = document.getElementById('current-course-title');
-        if (topCourseTitle) {
-            topCourseTitle.textContent = `${course.title} - Module ${modNum}`;
-        }
-        const targetMod = course.modules?.find(m => m.id === modNum);
-        if (targetMod) {
-            const videoTitle = document.getElementById('video-lesson-title');
-            if (videoTitle) {
-                videoTitle.textContent = targetMod.title || `Module ${modNum}: Bài Học Video Đào Tạo`;
+    const course = coursesCatalog.find(c => c.id === courseId) || coursesCatalog[0];
+    if (!course) return;
+
+    currentSelectedCourse = course;
+
+    // Ensure modules exist
+    if (!course.modules || course.modules.length === 0) {
+        course.modules = [
+            {
+                id: 1,
+                title: course.title,
+                status: 'in-progress',
+                lessons: [
+                    { id: 1, title: `Bài 1.1: Giới thiệu tổng quan`, duration: '15:00', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', status: 'in-progress' }
+                ]
             }
+        ];
+    }
+
+    const targetMod = course.modules.find(m => m.id === modNum) || course.modules[0];
+    
+    // Ensure lessons exist
+    if (!targetMod.lessons || targetMod.lessons.length === 0) {
+        const count = (targetMod.meta && targetMod.meta.videos) ? parseInt(targetMod.meta.videos) : 2;
+        const defaultLessons = [];
+        for (let i = 1; i <= (count || 2); i++) {
+            defaultLessons.push({
+                id: i,
+                title: `Bài ${targetMod.id}.${i}: ${targetMod.title} - Phần ${i}`,
+                duration: i === 1 ? '12:00' : '18:45',
+                youtubeUrl: targetMod.youtubeUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                status: i === 1 ? 'in-progress' : 'locked'
+            });
+        }
+        targetMod.lessons = defaultLessons;
+    }
+
+    const targetLesson = targetMod.lessons.find(l => l.id === lessonNum) || targetMod.lessons[0];
+
+    // Update Topbar
+    const topCourseTitle = document.getElementById('current-course-title');
+    if (topCourseTitle) {
+        topCourseTitle.textContent = `${course.title} - Module ${targetMod.id}`;
+    }
+
+    // Update Video Title & Tag
+    const videoTitle = document.getElementById('video-lesson-title');
+    if (videoTitle && targetLesson) {
+        videoTitle.textContent = targetLesson.title;
+    }
+
+    const playingTag = document.querySelector('.playing-tag');
+    if (playingTag) {
+        playingTag.textContent = `ĐANG PHÁT BÀI ${targetMod.id}.${targetLesson.id}`;
+    }
+
+    // Embed Video: YouTube iframe or MP4
+    const videoWrapper = document.querySelector('.video-wrapper');
+    if (videoWrapper && targetLesson) {
+        const url = targetLesson.youtubeUrl || '';
+        const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+        if (ytMatch && ytMatch[1]) {
+            videoWrapper.innerHTML = `
+                <iframe id="lms-youtube-iframe" src="https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1" title="${targetLesson.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%; border-radius:12px;"></iframe>
+            `;
+        } else {
+            videoWrapper.innerHTML = `
+                <video id="lms-video" poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80" controls style="width:100%; height:100%; border-radius:12px;">
+                    <source src="${url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'}" type="video/mp4">
+                    Trình duyệt của bạn không hỗ trợ thẻ video.
+                </video>
+            `;
+            const video = document.getElementById('lms-video');
+            if (video) video.play().catch(() => {});
         }
     }
-    selectLesson(modNum, lessonNum || 1);
+
+    // Render dynamic sidebar
+    renderClassroomSidebar(course, targetMod.id, targetLesson.id);
+
+    // Render Quiz Tab for this course
+    renderClassroomQuizTab(course.id);
+}
+
+// RENDER DYNAMIC SIDEBAR ACCORDIONS IN CLASSROOM
+function renderClassroomSidebar(course, activeModNum, activeLessonNum) {
+    const listContainer = document.querySelector('.sidebar-modules-list');
+    if (!listContainer || !course) return;
+
+    if (!course.modules || course.modules.length === 0) {
+        listContainer.innerHTML = `
+            <div style="padding:16px; font-size:0.8rem; color:#64748b; text-align:center;">
+                Chưa có Module bài học nào.
+            </div>
+        `;
+        return;
+    }
+
+    listContainer.innerHTML = course.modules.map(mod => {
+        const isModActive = mod.id === activeModNum;
+        const modClass = mod.status === 'completed' ? 'completed-mod' : (isModActive ? 'active-mod' : (mod.status === 'locked' ? 'locked-mod' : ''));
+        const iconHtml = mod.status === 'completed' 
+            ? '<i class="bi bi-check-circle-fill" style="color:var(--secondary-brand);"></i>' 
+            : (isModActive ? '<i class="bi bi-hourglass-split" style="color:var(--warning);"></i>' : '<i class="bi bi-play-circle-fill"></i>');
+
+        let lessons = mod.lessons;
+        if (!lessons || !Array.isArray(lessons) || lessons.length === 0) {
+            const count = (mod.meta && mod.meta.videos) ? parseInt(mod.meta.videos) : 2;
+            lessons = [];
+            for (let i = 1; i <= count; i++) {
+                lessons.push({
+                    id: i,
+                    title: `Bài ${mod.id}.${i}: ${mod.title} - Phần ${i}`,
+                    duration: '15:00',
+                    youtubeUrl: mod.youtubeUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                    status: i === 1 ? 'in-progress' : 'locked'
+                });
+            }
+            mod.lessons = lessons;
+        }
+
+        const lessonsHtml = lessons.map(les => {
+            const isPlaying = (mod.id === activeModNum && les.id === activeLessonNum);
+            const isDone = les.status === 'completed';
+            const isLocked = les.status === 'locked';
+
+            let lesClass = 'lesson-item';
+            if (isPlaying) lesClass += ' playing';
+            else if (isDone) lesClass += ' done';
+            else if (isLocked) lesClass += ' locked-item';
+
+            const statusIcon = isDone 
+                ? '<i class="bi bi-check2"></i>' 
+                : (isPlaying ? '<i class="bi bi-play-fill"></i>' : (isLocked ? '<i class="bi bi-lock"></i>' : '<i class="bi bi-circle"></i>'));
+
+            return `
+                <div class="${lesClass}" id="lesson-${mod.id}-${les.id}" onclick="playCourseLesson('${course.id}', ${mod.id}, ${les.id})">
+                    <span class="status-icon">${statusIcon}</span>
+                    <span class="lesson-name">${les.title}</span>
+                    <span class="duration">${les.duration || '15:00'}</span>
+                </div>
+            `;
+        }).join('');
+
+        return `
+            <div class="accordion-item ${modClass}">
+                <div class="accordion-header" onclick="toggleAccordion('mod-accord-${mod.id}')">
+                    <div class="mod-title">
+                        <span class="mod-icon">${iconHtml}</span>
+                        <span>Module ${mod.id}: ${mod.title}</span>
+                    </div>
+                    <span class="arrow"><i class="bi bi-chevron-${isModActive ? 'down' : 'right'}"></i></span>
+                </div>
+                <div class="accordion-body ${isModActive ? 'open' : ''}" id="mod-accord-${mod.id}">
+                    ${lessonsHtml}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// RENDER DYNAMIC QUIZ TAB IN CLASSROOM
+function renderClassroomQuizTab(courseId) {
+    const quizPane = document.getElementById('tab-quiz');
+    if (!quizPane) return;
+
+    let quizzes = JSON.parse(localStorage.getItem('lms_quizzes') || 'null');
+    if (!quizzes || !Array.isArray(quizzes) || quizzes.length === 0) {
+        quizzes = [
+            { id: 'q1', courseId: 'c1', title: 'Quy trình tư vấn căn hộ chuẩn gồm bao nhiêu bước?', a: '3 bước', b: '5 bước cốt lõi', c: '7 bước', d: 'Không cố định', correct: 'B' },
+            { id: 'q2', courseId: 'c1', title: 'Khi khách hàng do dự về tiến độ bàn giao, tư vấn viên cần làm gì?', a: 'Giục khách cọc ngay', b: 'Cung cấp biên bản nghiệm thu & hình ảnh tiến độ thực tế', c: 'Giảm giá căn hộ', d: 'Chờ khách tự quyết định', correct: 'B' }
+        ];
+    }
+
+    const courseQuizzes = quizzes.filter(q => q.courseId === courseId);
+    const questionsToRender = courseQuizzes.length > 0 ? courseQuizzes : quizzes.slice(0, 3);
+
+    quizPane.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
+            <h4 style="margin:0; font-size:1rem; font-weight:800; color:var(--primary);">Bài Kiểm Tra Trắc Nghiệm Đánh Giá Module</h4>
+            <span style="font-size:0.75rem; background:#e0e7ff; color:#2F2D74; padding:3px 10px; border-radius:20px; font-weight:800;">${questionsToRender.length} Câu Hỏi</span>
+        </div>
+        <form id="quiz-form" onsubmit="submitDynamicQuiz(event, '${courseId}')">
+            ${questionsToRender.map((q, idx) => `
+                <div class="quiz-question" style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px;">
+                    <p class="q-title" style="font-size:0.85rem; font-weight:800; color:#0f172a; margin-bottom:8px;">
+                        <strong>Câu ${idx + 1}:</strong> ${q.title}
+                    </p>
+                    <label class="q-option" style="display:block; margin-bottom:6px; font-size:0.82rem; cursor:pointer;">
+                        <input type="radio" name="quiz_ans_${q.id}" value="A" required> A. ${q.a}
+                    </label>
+                    <label class="q-option" style="display:block; margin-bottom:6px; font-size:0.82rem; cursor:pointer;">
+                        <input type="radio" name="quiz_ans_${q.id}" value="B"> B. ${q.b}
+                    </label>
+                    <label class="q-option" style="display:block; margin-bottom:6px; font-size:0.82rem; cursor:pointer;">
+                        <input type="radio" name="quiz_ans_${q.id}" value="C"> C. ${q.c}
+                    </label>
+                    <label class="q-option" style="display:block; font-size:0.82rem; cursor:pointer;">
+                        <input type="radio" name="quiz_ans_${q.id}" value="D"> D. ${q.d}
+                    </label>
+                </div>
+            `).join('')}
+            <button type="submit" class="btn btn-primary animated-shine-btn" style="padding:10px 20px; font-size:0.85rem; font-weight:800;">
+                <i class="bi bi-send-fill"></i> Nộp Bài Kiểm Tra
+            </button>
+        </form>
+        <div id="quiz-result" class="quiz-result-box" style="display:none; margin-top:14px;"></div>
+    `;
+}
+
+// SUBMIT DYNAMIC QUIZ & SCORE CALCULATION
+function submitDynamicQuiz(event, courseId) {
+    event.preventDefault();
+    const resultBox = document.getElementById('quiz-result');
+    if (!resultBox) return;
+
+    const quizzes = JSON.parse(localStorage.getItem('lms_quizzes') || '[]');
+    const courseQuizzes = quizzes.filter(q => q.courseId === courseId);
+    const questions = courseQuizzes.length > 0 ? courseQuizzes : quizzes.slice(0, 3);
+
+    let correctCount = 0;
+    questions.forEach(q => {
+        const selected = document.querySelector(`input[name="quiz_ans_${q.id}"]:checked`);
+        if (selected && selected.value === q.correct) {
+            correctCount++;
+        }
+    });
+
+    const score = Math.round((correctCount / questions.length) * 100);
+    const isPass = score >= 80;
+
+    resultBox.style.display = 'block';
+    resultBox.style.background = isPass ? '#ecfdf5' : '#fffbeb';
+    resultBox.style.border = `1px solid ${isPass ? '#a7f3d0' : '#fde68a'}`;
+    resultBox.style.color = isPass ? '#065f46' : '#92400e';
+    resultBox.style.padding = '14px 18px';
+    resultBox.style.borderRadius = '10px';
+    resultBox.innerHTML = `
+        <div style="font-size:0.95rem; font-weight:800; margin-bottom:4px;">
+            ${isPass ? '✓ CHÚC MỪNG: BẠN ĐÃ ĐẠT ĐIỂM CHUẨN!' : '⚠ CHƯA ĐẠT ĐIỂM CHUẨN (TỐI THIỂU 80đ)'}
+        </div>
+        <div style="font-size:0.85rem;">
+            Kết quả: <strong>${score}/100 Điểm</strong> (${correctCount}/${questions.length} câu đúng).<br>
+            ${isPass ? '<span style="color:#0C5A3E; font-weight:700;">Hệ thống đã ghi nhận hoàn thành bài kiểm tra cho tài khoản của bạn.</span>' : 'Vui lòng xem lại video bài giảng và làm lại bài kiểm tra để đạt tối thiểu 80đ.'}
+        </div>
+    `;
 }
 
 // DYNAMIC STUDENT DIVISION FILTERING & FILTER TABS
