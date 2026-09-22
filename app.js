@@ -5,7 +5,7 @@
 // Switch view between Landing Page and LMS Portal
 function switchView(viewName) {
     if (viewName === 'portal' && !currentUser) {
-        alert('🔒 BẢO MẬT NỘI BỘ:\nBạn cần Đăng Nhập bằng Mã Nhân Viên để vào phòng học video bài giảng!');
+        alert('BẢO MẬT NỘI BỘ:\nBạn cần Đăng Nhập bằng Mã Nhân Viên để vào phòng học video bài giảng!');
         openAuthModal('login');
         return;
     }
@@ -92,7 +92,7 @@ function markLessonComplete() {
 
     // If user hasn't watched enough % of the video yet
     if (watchedPercent < minPercentRequired && !isCompleted) {
-        alert(`❌ BẮT BUỘC XEM VIDEO THỰC TẾ:\nHệ thống đo lường bạn mới xem ${watchedPercent}% video bài giảng.\nBạn cần xem tối thiểu ${minPercentRequired}% thời lượng video để được tính hoàn thành bài học này!`);
+        alert(`BẮT BUỘC XEM VIDEO THỰC TẾ:\nHệ thống đo lường bạn mới xem ${watchedPercent}% video bài giảng.\nBạn cần xem tối thiểu ${minPercentRequired}% thời lượng video để được tính hoàn thành bài học này!`);
         return;
     }
 
@@ -103,14 +103,14 @@ function markLessonComplete() {
 
     if (!isCompleted) {
         isCompleted = true;
-        btn.textContent = '✓ Đã Hoàn Thành!';
+        btn.textContent = 'Đã Hoàn Thành';
         btn.style.background = '#059669';
         
         progressFill.style.width = '48%';
         progressText.textContent = '48% (4/8 Bài)';
-        if (headerProgress) headerProgress.textContent = '🔥 Chuỗi 5 Ngày Học • 48% Completed';
+        if (headerProgress) headerProgress.textContent = 'Chuỗi 5 Ngày Học • 48% Hoàn thành';
         
-        alert('🎉 CHÚC MỪNG! Bạn đã xem đủ thời lượng video và hoàn thành Bài 2.2. Module 2.3 đã sẵn sàng!');
+        alert('Chúc mừng bạn đã xem đủ thời lượng video và hoàn thành Bài 2.2. Module 2.3 đã sẵn sàng!');
     } else {
         alert('Bạn đã hoàn thành bài học này trước đó.');
     }
@@ -139,7 +139,7 @@ function submitQuiz(event) {
         resultBox.style.padding = '12px';
         resultBox.style.borderRadius = '8px';
         resultBox.style.marginTop = '12px';
-        resultBox.innerHTML = '🎉 <strong>KẾT QUẢ BÀI TEST:</strong> 100/100 Điểm (2/2 Câu Đúng).<br><span style="color:#047857; font-weight:700;">🟢 ĐẠT CHUẨN: Bạn đã hoàn thành bài kiểm tra đánh giá Module này!</span>';
+        resultBox.innerHTML = '<strong>KẾT QUẢ BÀI TEST:</strong> 100/100 Điểm (2/2 Câu Đúng).<br><span style="color:#047857; font-weight:700;">ĐẠT CHUẨN: Bạn đã hoàn thành bài kiểm tra đánh giá Module này!</span>';
     }
 }
 
@@ -151,7 +151,7 @@ const defaultCoursesCatalog = [
     {
         id: 'c1',
         title: 'Khóa 1: Quy Trình Tư Vấn Căn Hộ Đô Thị 2026',
-        category: '🏢 Căn Hộ Đô Thị',
+        category: 'Căn Hộ Đô Thị',
         access: 'DIV1',
         desc: 'Lộ trình đào tạo chuẩn kỹ năng tư vấn, tiếp cận khách hàng cao cấp, phân tích bảng giá và kịch bản chốt hợp đồng căn hộ thương mại.',
         stats: { modules: 4, videos: 18, duration: '4 Giờ Học', materials: 4 },
@@ -163,9 +163,9 @@ const defaultCoursesCatalog = [
                 title: 'Tổng Quan & Định Hướng Kiến Thức Nền Tảng',
                 desc: 'Giới thiệu tổng quan hệ thống dự án căn hộ cao cấp, mục tiêu đào tạo và các khái niệm cốt lõi ban đầu.',
                 status: 'completed',
-                statusText: '✓ Đã Hoàn Thành',
+                statusText: 'Đã Hoàn Thành',
                 meta: { videos: 4, duration: '45 Phút', docs: '2 Tài Liệu' },
-                buttonText: '▶ Xem Lại Module 1',
+                buttonText: 'Xem Lại Module 1',
                 buttonClass: 'btn-module',
                 lessonId: 1
             },
@@ -174,9 +174,9 @@ const defaultCoursesCatalog = [
                 title: 'Quy Trình & Kỹ Thuật Thực Hành Chuyên Sâu',
                 desc: 'Hướng dẫn từng bước thao tác thực tế qua bài giảng video chi tiết kèm ví dụ minh họa và xử lý phản đối từ khách hàng.',
                 status: 'in-progress',
-                statusText: '⏳ Đang Học (Bài 2/3)',
+                statusText: 'Đang Học (Bài 2/3)',
                 meta: { videos: 6, duration: '90 Phút', docs: '1 Bài Quiz' },
-                buttonText: '🚀 Tiếp Tục Học Ngay',
+                buttonText: 'Tiếp Tục Học Ngay',
                 buttonClass: 'btn-module primary',
                 lessonId: 2
             },
@@ -185,9 +185,9 @@ const defaultCoursesCatalog = [
                 title: 'Tối Ưu Hóa & Đánh Giá Năng Lực Sales',
                 desc: 'Phân tích chuyên sâu các case study thực tế, kịch bản chốt cọc và phương pháp nâng cao hiệu suất làm việc.',
                 status: 'locked',
-                statusText: '🔒 Khóa (Cần xong Mod 2)',
+                statusText: 'Chưa Mở Khóa',
                 meta: { videos: 5, duration: '60 Phút', docs: '1 Bài Test' },
-                buttonText: '🔒 Chưa Mở Khóa',
+                buttonText: 'Chưa Mở Khóa',
                 buttonClass: 'btn-module disabled',
                 lessonId: 3
             },
@@ -196,9 +196,9 @@ const defaultCoursesCatalog = [
                 title: 'Đồ Án Tốt Nghiệp & Cấp Chứng Nhận',
                 desc: 'Thực hiện bài kiểm tra tổng hợp cuối khóa để cấp chứng nhận đào tạo chính thức của Queen Land Academy.',
                 status: 'locked',
-                statusText: '🔒 Khóa (Cần xong Mod 3)',
-                meta: { videos: 3, duration: '120 Phút', docs: '🏆 Cấp Chứng Nhận' },
-                buttonText: '🔒 Chưa Mở Khóa',
+                statusText: 'Chưa Mở Khóa',
+                meta: { videos: 3, duration: '120 Phút', docs: 'Cấp Chứng Nhận' },
+                buttonText: 'Chưa Mở Khóa',
                 buttonClass: 'btn-module disabled',
                 lessonId: 4
             }
@@ -207,7 +207,7 @@ const defaultCoursesCatalog = [
     {
         id: 'c2',
         title: 'Khóa 2: Phân Tích Dòng Tiền & Pháp Lý Biệt Thự Biển Hạ Long',
-        category: '🌊 Nghỉ Dưỡng Cao Cấp',
+        category: 'Nghỉ Dưỡng Cao Cấp',
         access: 'DIV2',
         desc: 'Phân tích chuyên sâu bảng tính ROI dòng tiền, bài toán đòn bẩy tài chính ngân hàng và kỹ năng tư vấn khách hàng VIP biệt thự nghỉ dưỡng.',
         stats: { modules: 3, videos: 12, duration: '3.5 Giờ Học', materials: 3 },
@@ -219,9 +219,9 @@ const defaultCoursesCatalog = [
                 title: 'Tổng Quan Thị Trường Nghỉ Dưỡng & Quy Hoạch Hạ Long 2026',
                 desc: 'Nắm vững quy hoạch tổng thể, tiềm năng tăng giá bất động sản ven biển và hồ sơ pháp lý sở hữu.',
                 status: 'in-progress',
-                statusText: '⏳ Bắt Đầu Học',
+                statusText: 'Bắt Đầu Học',
                 meta: { videos: 4, duration: '50 Phút', docs: '2 Bản Đồ QH' },
-                buttonText: '🚀 Vào Học Module 1',
+                buttonText: 'Vào Học Module 1',
                 buttonClass: 'btn-module primary',
                 lessonId: 1
             },
@@ -230,9 +230,9 @@ const defaultCoursesCatalog = [
                 title: 'Phân Tích Bảng Tính Dòng Tiền ROI & Đòn Bẩy Ngân Hàng',
                 desc: 'Thực hành tính toán lợi suất cho thuê, dòng tiền thực nhận và phương án tài chính tối ưu cho nhà đầu tư.',
                 status: 'locked',
-                statusText: '🔒 Khóa (Cần xong Mod 1)',
+                statusText: 'Chưa Mở Khóa',
                 meta: { videos: 5, duration: '75 Phút', docs: '1 Bài Quiz' },
-                buttonText: '🔒 Chưa Mở Khóa',
+                buttonText: 'Chưa Mở Khóa',
                 buttonClass: 'btn-module disabled',
                 lessonId: 2
             },
@@ -241,9 +241,9 @@ const defaultCoursesCatalog = [
                 title: 'Kỹ Thuật Xử Lý Từ Chối & Kịch Bản Chốt Cọc Biệt Thự Triệu Đô',
                 desc: 'Các tình huống thực chiến với khách hàng thượng lưu và kỹ năng giải tỏa băn khoăn về tiến độ dự án.',
                 status: 'locked',
-                statusText: '🔒 Khóa (Cần xong Mod 2)',
+                statusText: 'Chưa Mở Khóa',
                 meta: { videos: 3, duration: '60 Phút', docs: '1 Bài Test' },
-                buttonText: '🔒 Chưa Mở Khóa',
+                buttonText: 'Chưa Mở Khóa',
                 buttonClass: 'btn-module disabled',
                 lessonId: 3
             }
@@ -252,7 +252,7 @@ const defaultCoursesCatalog = [
     {
         id: 'c3',
         title: 'Khóa 3: Kỹ Năng Đàm Phán & Chốt Cọc Bất Động Sản Đỉnh Cao',
-        category: '🔥 Kỹ Năng Thực Chiến',
+        category: 'Kỹ Năng Thực Chiến',
         access: 'PUBLIC',
         desc: 'Nghệ thuật xử lý phản đối, đọc vị tâm lý khách hàng đầu tư bất động sản và kỹ thuật đàm phán chốt hợp đồng trong 24h.',
         stats: { modules: 3, videos: 10, duration: '3 Giờ Học', materials: 2 },
@@ -264,9 +264,9 @@ const defaultCoursesCatalog = [
                 title: 'Tâm Lý Học Khách Hàng Đầu Tư Bất Động Sản',
                 desc: 'Phân loại các nhóm tính cách nhà đầu tư và cách xây dựng niềm tin cá nhân ngay trong 5 phút đầu.',
                 status: 'completed',
-                statusText: '✓ Đã Hoàn Thành',
+                statusText: 'Đã Hoàn Thành',
                 meta: { videos: 3, duration: '40 Phút', docs: '1 Tài Liệu' },
-                buttonText: '▶ Xem Lại Module 1',
+                buttonText: 'Xem Lại Module 1',
                 buttonClass: 'btn-module',
                 lessonId: 1
             },
@@ -275,9 +275,9 @@ const defaultCoursesCatalog = [
                 title: 'Kỹ Thuật Đặt Câu Hỏi Điều Hướng & Đàm Phán Giá',
                 desc: 'Nghệ thuật dẫn dắt cuộc trò chuyện từ băn khoăn về giá sang giá trị độc bản của bất động sản.',
                 status: 'in-progress',
-                statusText: '⏳ Đang Học (Bài 1/3)',
+                statusText: 'Đang Học (Bài 1/3)',
                 meta: { videos: 4, duration: '60 Phút', docs: '1 Bài Quiz' },
-                buttonText: '🚀 Tiếp Tục Học Ngay',
+                buttonText: 'Tiếp Tục Học Ngay',
                 buttonClass: 'btn-module primary',
                 lessonId: 2
             },
@@ -286,9 +286,9 @@ const defaultCoursesCatalog = [
                 title: 'Kịch Bản Chốt Cọc Thực Chiến & Xử Lý Do Dự',
                 desc: 'Kỹ thuật tạo sự khan hiếm tự nhiên và kịch bản chốt cọc thành công ngay tại bàn tư vấn.',
                 status: 'locked',
-                statusText: '🔒 Khóa (Cần xong Mod 2)',
+                statusText: 'Chưa Mở Khóa',
                 meta: { videos: 3, duration: '50 Phút', docs: '1 Bài Test' },
-                buttonText: '🔒 Chưa Mở Khóa',
+                buttonText: 'Chưa Mở Khóa',
                 buttonClass: 'btn-module disabled',
                 lessonId: 3
             }
@@ -297,7 +297,7 @@ const defaultCoursesCatalog = [
     {
         id: 'c4',
         title: 'Khóa 4: Pháp Lý Bất Động Sản & Thẩm Định Quy Hoạch Dự Án',
-        category: '⚖️ Pháp Lý Dự Án',
+        category: 'Pháp Lý Dự Án',
         access: 'DIV3',
         desc: 'Nắm vững luật kinh doanh BĐS mới nhất, quy trình kiểm tra quy hoạch 1/500, hồ sơ pháp lý dự án và các điều khoản hợp đồng mua bán.',
         stats: { modules: 2, videos: 8, duration: '2.5 Giờ Học', materials: 4 },
@@ -309,9 +309,9 @@ const defaultCoursesCatalog = [
                 title: 'Bộ Luật Đất Đai & Pháp Lý Dự Án Bất Động Sản 2026',
                 desc: 'Cập nhật những điểm mới của luật đất đai và quy định về điều kiện mở bán nhà ở hình thành trong tương lai.',
                 status: 'in-progress',
-                statusText: '⏳ Bắt Đầu Học',
+                statusText: 'Bắt Đầu Học',
                 meta: { videos: 4, duration: '60 Phút', docs: '4 Văn Bản Luật' },
-                buttonText: '🚀 Vào Học Module 1',
+                buttonText: 'Vào Học Module 1',
                 buttonClass: 'btn-module primary',
                 lessonId: 1
             },
@@ -320,9 +320,9 @@ const defaultCoursesCatalog = [
                 title: 'Kỹ Năng Đọc Bản Đồ Quy Hoạch & Hướng Dẫn Ký HĐMB',
                 desc: 'Thực hành tra cứu quy hoạch trên cổng thông tin địa chính và giải thích các điều khoản HĐMB cho khách hàng.',
                 status: 'locked',
-                statusText: '🔒 Khóa (Cần xong Mod 1)',
+                statusText: 'Chưa Mở Khóa',
                 meta: { videos: 4, duration: '65 Phút', docs: '1 Bài Quiz' },
-                buttonText: '🔒 Chưa Mở Khóa',
+                buttonText: 'Chưa Mở Khóa',
                 buttonClass: 'btn-module disabled',
                 lessonId: 2
             }
@@ -338,19 +338,32 @@ function renderStudentCoursesCatalog(filterDiv) {
     const container = document.getElementById('student-courses-catalog-grid');
     if (!container) return;
 
-    const targetDiv = filterDiv || (currentUser ? currentUser.div : 'DIV1');
+    const targetDiv = filterDiv || (document.getElementById('student-div-select')?.value) || 'ALL';
 
-    // Filter courses: match student's division or PUBLIC courses
+    // Filter courses: match student's division or PUBLIC courses or ALL
     const filteredCourses = coursesCatalog.filter(c => {
+        if (!targetDiv || targetDiv === 'ALL') return true;
         if (!c.access || c.access === 'PUBLIC') return true;
         return c.access === targetDiv;
     });
 
-    const displayCourses = filteredCourses.length > 0 ? filteredCourses : coursesCatalog;
+    // Sync tabs
+    renderCourseFilterTabs(targetDiv);
 
-    container.innerHTML = displayCourses.map(course => {
+    if (filteredCourses.length === 0) {
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                <h4 style="font-size: 1rem; color: #1e293b; margin-bottom: 8px;">Chưa có khóa học nào dành riêng cho khối này</h4>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">Bạn có thể bấm nút bên dưới để xem toàn bộ danh mục khóa học của công ty.</p>
+                <button class="btn btn-primary" onclick="filterStudentCoursesByDiv('ALL')">Xem Tất Cả Khóa Học</button>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filteredCourses.map(course => {
         const isPublic = course.access === 'PUBLIC';
-        const accessLabel = isPublic ? '🌐 Dành Cho Toàn Bộ Sales' : `🔒 Khóa Riêng Của ${course.access}`;
+        const accessLabel = isPublic ? 'Dành Cho Toàn Bộ Sales' : `Khóa Riêng ${course.access}`;
         const accessClass = isPublic ? 'public-badge' : 'div-badge';
 
         return `
@@ -363,10 +376,10 @@ function renderStudentCoursesCatalog(filterDiv) {
             <p class="course-desc">${course.desc}</p>
             
             <div class="course-stats-pills">
-                <span class="course-stat-pill">📚 ${course.stats.modules} Module</span>
-                <span class="course-stat-pill">🎥 ${course.stats.videos} Video Bài Giảng</span>
-                <span class="course-stat-pill">⏱ ${course.stats.duration}</span>
-                <span class="course-stat-pill">📄 ${course.stats.materials} Tài Liệu</span>
+                <span class="course-stat-pill">${course.stats.modules} Module</span>
+                <span class="course-stat-pill">${course.stats.videos} Video Bài Giảng</span>
+                <span class="course-stat-pill">${course.stats.duration}</span>
+                <span class="course-stat-pill">${course.stats.materials} Tài Liệu</span>
             </div>
 
             <div class="course-progress-mini">
@@ -380,8 +393,7 @@ function renderStudentCoursesCatalog(filterDiv) {
             </div>
 
             <button class="btn-view-course-modules" onclick="openCourseModules('${course.id}')">
-                <span>📚 Xem Các Module Bài Học</span>
-                <span>➔</span>
+                <span>Xem Các Module Bài Học</span>
             </button>
         </div>
         `;
@@ -414,15 +426,15 @@ function openCourseModules(courseId) {
                 <h2 style="margin-top:6px;">${course.title}</h2>
                 <p>${course.desc}</p>
                 <div class="banner-meta-row">
-                    <span>👤 Giảng viên / Đơn vị: <strong>${course.instructor}</strong></span>
-                    <span>📚 <strong>${course.stats.modules} Module</strong></span>
-                    <span>🎥 <strong>${course.stats.videos} Video</strong></span>
-                    <span>⏱ <strong>${course.stats.duration}</strong></span>
-                    <span>📊 Tiến độ: <strong>${course.progress}%</strong></span>
+                    <span>Giảng viên: <strong>${course.instructor}</strong></span>
+                    <span><strong>${course.stats.modules} Module</strong></span>
+                    <span><strong>${course.stats.videos} Video</strong></span>
+                    <span><strong>${course.stats.duration}</strong></span>
+                    <span>Tiến độ: <strong>${course.progress}%</strong></span>
                 </div>
             </div>
             <div style="flex-shrink:0; text-align:right;">
-                <button class="btn" style="background:#ffffff; color:#312e81; font-weight:800; padding:10px 18px;" onclick="enterCourseLesson('${course.id}', 1, 1)">🚀 Vào Học Ngay</button>
+                <button class="btn" style="background:#ffffff; color:#312e81; font-weight:800; padding:10px 18px;" onclick="enterCourseLesson('${course.id}', 1, 1)">Vào Học Ngay</button>
             </div>
         `;
     }
@@ -443,9 +455,9 @@ function openCourseModules(courseId) {
                 </div>
                 <p class="module-desc">${mod.desc}</p>
                 <div class="module-meta">
-                    <span>🎥 ${mod.meta.videos} Video</span>
-                    <span>⏱ ${mod.meta.duration}</span>
-                    <span>📄 ${mod.meta.docs}</span>
+                    <span>${mod.meta.videos} Video</span>
+                    <span>${mod.meta.duration}</span>
+                    <span>${mod.meta.docs}</span>
                 </div>
                 <button class="${mod.buttonClass}" ${mod.status === 'locked' ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${mod.lessonId})">
                     ${mod.buttonText}
@@ -488,10 +500,10 @@ function enterCourseLesson(courseId, modNum, lessonNum) {
     selectLesson(modNum, lessonNum || 1);
 }
 
-// DYNAMIC STUDENT DIVISION FILTERING
+// DYNAMIC STUDENT DIVISION FILTERING & FILTER TABS
 window.addEventListener('DOMContentLoaded', () => {
     initStudentDivisions();
-    renderStudentCoursesCatalog();
+    renderStudentCoursesCatalog('ALL');
 });
 
 function initStudentDivisions() {
@@ -504,14 +516,52 @@ function initStudentDivisions() {
         { id: 'DIV3', name: 'Khối Kinh Doanh 3 - Miền Nam' }
     ];
 
-    divSelect.innerHTML = divisions.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+    let optionsHtml = `<option value="ALL">Tất Cả Khóa Học</option>`;
+    divisions.forEach(d => {
+        optionsHtml += `<option value="${d.id}">${d.name}</option>`;
+    });
+    divSelect.innerHTML = optionsHtml;
+    divSelect.value = 'ALL';
+
+    renderCourseFilterTabs('ALL');
+}
+
+function renderCourseFilterTabs(activeDiv) {
+    const tabsContainer = document.getElementById('course-filter-tabs');
+    if (!tabsContainer) return;
+
+    const divisions = JSON.parse(localStorage.getItem('lms_divisions_list') || 'null') || [
+        { id: 'DIV1', name: 'Khối Kinh Doanh 1' },
+        { id: 'DIV2', name: 'Khối Kinh Doanh 2' },
+        { id: 'DIV3', name: 'Khối Kinh Doanh 3 - Miền Nam' }
+    ];
+
+    const currentActive = activeDiv || 'ALL';
+
+    let tabsHtml = `
+        <button class="filter-tab-btn ${currentActive === 'ALL' ? 'active' : ''}" onclick="filterStudentCoursesByDiv('ALL')">
+            Tất Cả Khóa Học
+        </button>
+    `;
+
+    divisions.forEach(d => {
+        tabsHtml += `
+            <button class="filter-tab-btn ${currentActive === d.id ? 'active' : ''}" onclick="filterStudentCoursesByDiv('${d.id}')">
+                ${d.name}
+            </button>
+        `;
+    });
+
+    tabsContainer.innerHTML = tabsHtml;
 }
 
 function filterStudentCoursesByDiv(divId) {
-    const selectedText = document.querySelector(`#student-div-select option[value="${divId}"]`)?.textContent;
+    const divSelect = document.getElementById('student-div-select');
+    if (divSelect) {
+        divSelect.value = divId;
+    }
     backToCoursesList(); // Return to Level 1 if currently in Level 2
     renderStudentCoursesCatalog(divId);
-    alert(`ℹ️ CHƯƠNG TRÌNH ĐÀO TẠO RIÊNG:\nBạn đang chọn xem các khóa học dành riêng cho ${selectedText}.\nHệ thống đã lọc đúng lộ trình của Khối này!`);
 }
 
 /* ==========================================================================
@@ -552,7 +602,7 @@ function checkAuthGuard() {
         if (userNameEl) userNameEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">Chưa Đăng Nhập</span>`;
         if (userDivSelect) userDivSelect.disabled = true;
         if (authBtn) {
-            authBtn.textContent = '🔑 Đăng Nhập';
+            authBtn.textContent = 'Đăng Nhập';
             authBtn.style.background = '#ffffff';
             authBtn.style.color = '#4f46e5';
             authBtn.style.borderColor = '#4f46e5';
@@ -566,11 +616,12 @@ function checkAuthGuard() {
         if (userNameEl) userNameEl.innerHTML = `${currentUser.name} <span class="emp-code">(${currentUser.empId})</span>`;
         if (userDivSelect) {
             userDivSelect.disabled = false;
-            userDivSelect.value = currentUser.div;
+            // Ensure select has 'ALL' or user's div
+            if (!userDivSelect.value) userDivSelect.value = 'ALL';
         }
-        renderStudentCoursesCatalog(currentUser.div);
+        renderStudentCoursesCatalog(userDivSelect ? userDivSelect.value : 'ALL');
         if (authBtn) {
-            authBtn.textContent = '🚪 Đăng Xuất';
+            authBtn.textContent = 'Đăng Xuất';
             authBtn.style.background = '#fef2f2';
             authBtn.style.color = '#ef4444';
             authBtn.style.borderColor = '#fca5a5';
@@ -640,9 +691,9 @@ function handleLogin(event) {
         localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
         checkAuthGuard();
         closeAuthModal();
-        alert(`🎉 ĐĂNG NHẬP THÀNH CÔNG!\n\nXin chào Sales ${matched.name} (${matched.empId})\n• Đơn vị: ${matched.team} - Thuộc ${matched.div}\n\nHệ thống đã mở khóa đúng lộ trình đào tạo của Khối bạn!`);
+        alert(`ĐĂNG NHẬP THÀNH CÔNG!\n\nXin chào Sales ${matched.name} (${matched.empId})\n• Đơn vị: ${matched.team} - Thuộc ${matched.div}\n\nHệ thống đã mở khóa lộ trình đào tạo của bạn!`);
     } else {
-        alert(`❌ Đăng nhập thất bại: Sai Mã Nhân Viên hoặc Mật Khẩu!`);
+        alert(`Đăng nhập thất bại: Sai Mã Nhân Viên hoặc Mật Khẩu!`);
     }
 }
 
@@ -655,7 +706,7 @@ function handleRegister(event) {
     const pass = document.getElementById('reg-password').value;
 
     if (usersDatabase.some(u => u.empId === empId)) {
-        alert(`⚠️ Mã nhân viên "${empId}" đã tồn tại trên hệ thống!`);
+        alert(`Mã nhân viên "${empId}" đã tồn tại trên hệ thống!`);
         return;
     }
 
@@ -668,7 +719,7 @@ function handleRegister(event) {
 
     checkAuthGuard();
     closeAuthModal();
-    alert(`🎉 ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG!\n\nChào mừng học viên mới ${fullname} (${empId})!\n• Thuộc đơn vị: ${team} (${div})\n\nTài khoản của bạn đã được kích hoạt trên hệ thống LMS!`);
+    alert(`ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG!\n\nChào mừng học viên mới ${fullname} (${empId})!\n• Thuộc đơn vị: ${team} (${div})\n\nTài khoản của bạn đã được kích hoạt trên hệ thống LMS!`);
 }
 
 function handleLogout() {
@@ -677,6 +728,6 @@ function handleLogout() {
         localStorage.removeItem('lms_current_user');
         switchView('landing');
         checkAuthGuard();
-        alert('Đã đăng xuất! Toàn bộ nội dung bài học đã được khóa bảo mật.');
+        alert('Đã đăng xuất! Toàn bộ nội dung bài học đã được khóa.');
     }
 }

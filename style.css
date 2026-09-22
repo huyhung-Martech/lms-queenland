@@ -73,20 +73,27 @@
     --font-family: 'Google Sans Flex', 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-* {
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: var(--font-family);
 }
 
 body {
     font-family: var(--font-family);
     background-color: var(--bg-light);
     color: var(--text-primary);
-    line-height: 1.4;
+    line-height: 1.45;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+}
+
+button, input, select, textarea, optgroup {
+    font-family: var(--font-family) !important;
+    font-size: inherit;
+    line-height: inherit;
 }
 
 /* ==================== COMMON NAVBAR & HEADER ==================== */
@@ -291,23 +298,37 @@ body {
 
 .user-div-tag select {
     font-family: var(--font-family);
-    font-size: 0.75rem;
+    font-size: 0.76rem;
     font-weight: 600;
-    background-color: #f5f3ff;
-    color: #4f46e5;
-    border: 1px solid #c7d2fe;
+    background-color: #f8fafc;
+    color: #334155;
+    border: 1px solid #cbd5e1;
     border-radius: 6px;
-    padding: 2px 8px;
+    padding: 4px 22px 4px 8px;
     cursor: pointer;
     outline: none;
     transition: all 0.15s ease;
-    letter-spacing: -0.01em;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 6px center;
 }
 
 .user-div-tag select:hover,
 .user-div-tag select:focus {
-    border-color: #818cf8;
-    background-color: #ede9fe;
+    border-color: var(--primary);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+}
+
+.user-div-tag select option {
+    background-color: #ffffff;
+    color: #0f172a;
+    font-family: var(--font-family);
+    font-size: 0.8rem;
+    padding: 6px 10px;
 }
 
 .auth-btn {
@@ -506,6 +527,59 @@ body {
 .section-header p {
     font-size: 0.85rem;
     color: var(--text-secondary);
+}
+
+/* BỘ LỌC CHƯƠNG TRÌNH HỌC (FILTER TABS) */
+.course-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    background: #ffffff;
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.filter-bar-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.filter-tabs-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter-tab-btn {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.filter-tab-btn:hover {
+    background: #e2e8f0;
+    color: var(--primary);
+    border-color: #94a3b8;
+}
+
+.filter-tab-btn.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.25);
 }
 
 /* CẤP ĐỘ 1: CHƯƠNG TRÌNH HỌC (COURSES CATALOG) */

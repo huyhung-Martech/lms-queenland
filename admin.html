@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ Thống Quản Trị Đào Tạo LMS Enterprise</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -29,39 +26,39 @@
             <nav class="admin-sidebar-menu">
                 <div class="menu-label">QUẢN TRỊ NỘI DUNG</div>
                 <a href="#" class="sidebar-item active" id="nav-courses" onclick="switchNav('courses')">
-                    <span>📚</span> Quản Lý Khóa Học
+                    Quản Lý Khóa Học
                 </a>
                 <a href="#" class="sidebar-item" id="nav-lessons" onclick="switchNav('lessons')">
-                    <span>🎥</span> Module & Bài Giảng Video
+                    Module & Bài Giảng Video
                 </a>
                 <a href="#" class="sidebar-item" id="nav-quiz" onclick="switchNav('quiz')">
-                    <span>📝</span> Trắc Nghiệm Quiz Builder
+                    Trắc Nghiệm Quiz Builder
                 </a>
 
                 <div class="menu-label">CƠ CẤU SALES & KHỐI KD</div>
                 <a href="#" class="sidebar-item" id="nav-divisions" onclick="switchNav('divisions')">
-                    <span>🏢</span> Quản Lý Khối & Phòng KD
+                    Quản Lý Khối & Phòng KD
                 </a>
                 <a href="#" class="sidebar-item" id="nav-students" onclick="switchNav('students')">
-                    <span>👥</span> Quản Lý Học Viên Sales
+                    Quản Lý Học Viên Sales
                 </a>
 
                 <div class="menu-label">BÁO CÁO TIẾN ĐỘ MODULE</div>
                 <a href="#" class="sidebar-item" id="nav-reports" onclick="switchNav('reports')">
-                    <span>📊</span> Báo Cáo Tiến Độ Từng Nhân Viên
+                    Báo Cáo Tiến Độ Từng Nhân Viên
                 </a>
                 <a href="#" class="sidebar-item" id="nav-leaderboard" onclick="switchNav('leaderboard')">
-                    <span>🏆</span> Thi Đua Giữa Các Khối
+                    Thi Đua Giữa Các Khối
                 </a>
 
                 <div class="menu-label">HỆ THỐNG</div>
                 <a href="index.html" class="sidebar-item">
-                    <span>🎓</span> Xem Giao Diện Học Viên
+                    Xem Giao Diện Học Viên
                 </a>
             </nav>
 
             <div class="sidebar-footer">
-                <span>Trạng thái: 🟢 Online (Supabase Sync)</span>
+                <span>Trạng thái: Online (Supabase Sync)</span>
             </div>
         </aside>
 
@@ -79,15 +76,15 @@
                 </div>
 
                 <div class="topbar-actions">
-                    <button class="btn btn-secondary" style="background:#10b981; color:#fff; border:none;" onclick="exportExcelReport()">📥 Xuất File Báo Cáo Excel</button>
-                    <a href="index.html" class="btn btn-primary">🎓 Sang Trang Học Viên</a>
+                    <button class="btn btn-secondary" style="background:#10b981; color:#fff; border:none;" onclick="exportExcelReport()">Xuất File Báo Cáo Excel</button>
+                    <a href="index.html" class="btn btn-primary">Sang Trang Học Viên</a>
                 </div>
             </header>
 
             <!-- CẤU HÌNH THÔNG SỐ GLOBAL CONFIG BAR -->
             <div class="config-card">
                 <div class="config-info">
-                    <h3>🛠️ Cài Đặt Quy Định Đào Tạo (Global Settings)</h3>
+                    <h3>Cài Đặt Quy Định Đào Tạo (Global Settings)</h3>
                     <p>Bật/tắt chế độ gán bài học theo Khối & Cài đặt thời lượng xem video tối thiểu</p>
                 </div>
 
@@ -95,24 +92,24 @@
                     <!-- Toggle Switch Division Assignment -->
                     <div class="toggle-chip">
                         <span>Chế độ Gán Theo Khối:</span>
-                        <button id="toggle-div-btn" class="toggle-switch-btn on" onclick="toggleDivMode()">🟢 BẬT (Gán Theo Khối)</button>
+                        <button id="toggle-div-btn" class="toggle-switch-btn on" onclick="toggleDivMode()">BẬT (Gán Theo Khối)</button>
                     </div>
 
                     <!-- Min Watch % Input -->
                     <div class="toggle-chip">
-                        <span>🎥 Watch % Tối Thiểu:</span>
+                        <span>Watch % Tối Thiểu:</span>
                         <input type="number" id="min-video-percent" value="80" style="width:45px; padding:2px; font-weight:800; border-radius:4px; border:1px solid #cbd5e1; text-align:center;">
                         <span>%</span>
                     </div>
 
                     <!-- Min Quiz Score -->
                     <div class="toggle-chip">
-                        <span>📝 Điểm Quiz Đạt:</span>
+                        <span>Điểm Quiz Đạt:</span>
                         <input type="number" id="passing-score-input" value="80" style="width:45px; padding:2px; font-weight:800; border-radius:4px; border:1px solid #cbd5e1; text-align:center;">
                         <span>/100đ</span>
                     </div>
 
-                    <button class="btn btn-primary" style="padding:6px 12px; font-size:0.75rem;" onclick="saveSystemSettings()">💾 Lưu Cài Đặt</button>
+                    <button class="btn btn-primary" style="padding:6px 12px; font-size:0.75rem;" onclick="saveSystemSettings()">Lưu Cài Đặt</button>
                 </div>
             </div>
 
@@ -121,16 +118,16 @@
                 <div class="kpi-card">
                     <div class="kpi-head">
                         <span class="kpi-title">Tổng Nhân Viên Sales</span>
-                        <div class="kpi-icon" style="background:#e0e7ff; color:#4f46e5;">👥</div>
+                        <div class="kpi-icon" style="background:#e0e7ff; color:#4f46e5; font-size:0.75rem; font-weight:800;">NV</div>
                     </div>
                     <div class="kpi-value">84</div>
-                    <div class="kpi-sub up">↑ 100% Đã Kích Hoạt Tài Khoản</div>
+                    <div class="kpi-sub up">100% Đã Kích Hoạt Tài Khoản</div>
                 </div>
 
                 <div class="kpi-card">
                     <div class="kpi-head">
                         <span class="kpi-title">Khối Kinh Doanh</span>
-                        <div class="kpi-icon" style="background:#fef3c7; color:#b45309;">🏢</div>
+                        <div class="kpi-icon" style="background:#fef3c7; color:#b45309; font-size:0.75rem; font-weight:800;">KD</div>
                     </div>
                     <div class="kpi-value">03 Khối</div>
                     <div class="kpi-sub muted">08 Phòng Sales Trực Thuộc</div>
@@ -139,19 +136,19 @@
                 <div class="kpi-card">
                     <div class="kpi-head">
                         <span class="kpi-title">Sales Hoàn Thành 100%</span>
-                        <div class="kpi-icon" style="background:#ecfdf5; color:#10b981;">✓</div>
+                        <div class="kpi-icon" style="background:#ecfdf5; color:#10b981; font-size:0.75rem; font-weight:800;">OK</div>
                     </div>
                     <div class="kpi-value" style="color:#10b981;">58 Sales</div>
-                    <div class="kpi-sub up">✓ Đã Hoàn Thành Tất Cả Các Module</div>
+                    <div class="kpi-sub up">Đã Hoàn Thành Tất Cả Các Module</div>
                 </div>
 
                 <div class="kpi-card">
                     <div class="kpi-head">
                         <span class="kpi-title">Sales Đang Học Dở</span>
-                        <div class="kpi-icon" style="background:#fffbeb; color:#f59e0b;">⏳</div>
+                        <div class="kpi-icon" style="background:#fffbeb; color:#f59e0b; font-size:0.75rem; font-weight:800;">TIẾP</div>
                     </div>
                     <div class="kpi-value" style="color:#f59e0b;">26 Sales</div>
-                    <div class="kpi-sub muted">⏳ Cần Tiếp Tục Học Các Module Sau</div>
+                    <div class="kpi-sub muted">Cần Tiếp Tục Học Các Module Sau</div>
                 </div>
             </div>
 
@@ -164,34 +161,34 @@
                         
                         <!-- CREATE COURSE FORM -->
                         <div class="table-card" style="padding:20px;">
-                            <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">➕ Khởi Tạo Khóa Học Mới</h3>
+                            <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">Khởi Tạo Khóa Học Mới</h3>
                             <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:14px;">Tự tạo khóa học mới từ A-Z. Tự động đồng bộ sang Tab Module bên cạnh.</p>
 
                             <form id="create-course-form" onsubmit="handleCreateCourse(event)">
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Khóa Học Mới:</label>
-                                    <input type="text" id="new-course-title" placeholder="Ví dụ: Quy Trình Tư Vấn Căn Hộ Đô Thị 2026" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Khóa Học Mới:</label>
+                                     <input type="text" id="new-course-title" placeholder="Ví dụ: Quy Trình Tư Vấn Căn Hộ Đô Thị 2026" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
 
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Danh Mục Đào Tạo:</label>
-                                    <select id="new-course-category" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
-                                        <option value="sales">💼 Kỹ Năng Bán Hàng & Sales BĐS</option>
-                                        <option value="marketing">📣 Marketing & Branding</option>
-                                        <option value="project">📁 Quy Trình Dự Án & Vận Hành</option>
-                                    </select>
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Danh Mục Đào Tạo:</label>
+                                     <select id="new-course-category" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                         <option value="sales">Kỹ Năng Bán Hàng & Sales BĐS</option>
+                                         <option value="marketing">Marketing & Branding</option>
+                                         <option value="project">Quy Trình Dự Án & Vận Hành</option>
+                                     </select>
                                 </div>
 
                                 <div style="margin-bottom:14px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Quyền Hiển Thị / Gán Khóa Học:</label>
-                                    <select id="new-course-access" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
-                                        <option value="DIV1" selected>🔒 Gán Cho Khối Kinh Doanh 1</option>
-                                        <option value="DIV2">🔒 Gán Cho Khối Kinh Doanh 2</option>
-                                        <option value="PUBLIC">🌐 Mở Công Khai Cho Tất Cả Sales</option>
-                                    </select>
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Quyền Hiển Thị / Gán Khóa Học:</label>
+                                     <select id="new-course-access" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
+                                         <option value="DIV1" selected>Gán Cho Khối Kinh Doanh 1</option>
+                                         <option value="DIV2">Gán Cho Khối Kinh Doanh 2</option>
+                                         <option value="PUBLIC">Mở Công Khai Cho Tất Cả Sales</option>
+                                     </select>
                                 </div>
 
-                                <button type="submit" class="btn btn-primary" style="width:100%;">🚀 Xuất Bản Khóa Học Ngay</button>
+                                <button type="submit" class="btn btn-primary" style="width:100%;">Xuất Bản Khóa Học</button>
                             </form>
                             <div id="create-course-msg" style="margin-top:10px; font-size:0.78rem; font-weight:700; color:var(--success); display:none;"></div>
                         </div>
@@ -199,7 +196,7 @@
                         <!-- MANAGE COURSES LIST -->
                         <div class="table-card" style="padding:20px;">
                             <div class="table-title" style="margin-bottom:14px;">
-                                <h3>📚 Danh Sách Tất Cả Các Khóa Học Hiện Có</h3>
+                                <h3>Danh Sách Tất Cả Các Khóa Học Hiện Có</h3>
                                 <p>Tự động cập nhật tức thì khi bạn khởi tạo khóa học mới</p>
                             </div>
 
@@ -217,63 +214,63 @@
                         
                         <!-- ADD LESSON FORM -->
                         <div class="table-card" style="padding:20px;">
-                            <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">🎥 1. Thêm Module & Link Video YouTube Bài Giảng</h3>
+                            <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">1. Thêm Module & Link Video YouTube Bài Giảng</h3>
                             <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:14px;">Chọn khóa học đã tạo ➔ Nhập Module ➔ Dán link YouTube.</p>
 
                             <form id="add-lesson-form" onsubmit="handleAddLesson(event)">
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Chọn Khóa Học (Tự động đồng bộ):</label>
-                                    <select id="lesson-course-select" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--primary); font-size:0.8rem; font-weight:700; background:#f5f3ff;">
-                                        <!-- DYNAMIC DROPDOWN -->
-                                    </select>
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Chọn Khóa Học (Tự động đồng bộ):</label>
+                                     <select id="lesson-course-select" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--primary); font-size:0.8rem; font-weight:700; background:#f5f3ff;">
+                                         <!-- DYNAMIC DROPDOWN -->
+                                     </select>
                                 </div>
 
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Module / Chương Bài Học:</label>
-                                    <input type="text" id="lesson-module-title" placeholder="VD: Module 2 - Quy Trình Đàm Phán" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Module / Chương Bài Học:</label>
+                                     <input type="text" id="lesson-module-title" placeholder="VD: Module 2 - Quy Trình Đàm Phán" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
 
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Bài Giảng Video:</label>
-                                    <input type="text" id="lesson-name-input" placeholder="VD: Bài 2.2 Hướng dẫn video thực hành từng bước" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Bài Giảng Video:</label>
+                                     <input type="text" id="lesson-name-input" placeholder="VD: Bài 2.2 Hướng dẫn video thực hành từng bước" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
 
                                 <div style="margin-bottom:12px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Đường Link YouTube Video Bài Giảng:</label>
-                                    <input type="url" id="lesson-youtube-url" placeholder="https://www.youtube.com/watch?v=xyz" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Đường Link YouTube Video Bài Giảng:</label>
+                                     <input type="url" id="lesson-youtube-url" placeholder="https://www.youtube.com/watch?v=xyz" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
 
-                                <button type="submit" class="btn btn-primary" style="width:100%;">🚀 Lưu Bài Giảng Về Hệ Thống</button>
+                                <button type="submit" class="btn btn-primary" style="width:100%;">Lưu Bài Giảng Về Hệ Thống</button>
                             </form>
                             <div id="add-lesson-msg" style="margin-top:10px; font-size:0.78rem; font-weight:700; color:var(--success); display:none;"></div>
                         </div>
 
                         <!-- VISUAL QUIZ BUILDER -->
                         <div class="table-card" style="padding:20px;">
-                            <h3 style="font-size:1rem; font-weight:800; color:var(--success); margin-bottom:4px;">📝 2. Trình Dựng Bài Test Quiz Trắc Nghiệm</h3>
+                            <h3 style="font-size:1rem; font-weight:800; color:var(--success); margin-bottom:4px;">2. Trình Dựng Bài Test Quiz Trắc Nghiệm</h3>
                             <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:14px;">Tạo bộ câu hỏi kiểm tra đính kèm bài học để chấm điểm tự động.</p>
 
                             <form id="create-quiz-form" onsubmit="handleCreateQuiz(event)">
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700;">Nội Dung Câu Hỏi Trắc Nghiệm:</label>
-                                    <input type="text" id="quiz-q-title" placeholder="VD: Quy mô dự án có bao nhiêu căn biệt thự?" required style="width:100%; padding:7px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.78rem;">
+                                     <label style="font-size:0.78rem; font-weight:700;">Nội Dung Câu Hỏi Trắc Nghiệm:</label>
+                                     <input type="text" id="quiz-q-title" placeholder="VD: Quy mô dự án có bao nhiêu căn biệt thự?" required style="width:100%; padding:7px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.78rem;">
                                 </div>
 
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
-                                    <div><input type="text" id="quiz-opt-a" placeholder="Phương án A" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
-                                    <div><input type="text" id="quiz-opt-b" placeholder="Phương án B" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
-                                    <div><input type="text" id="quiz-opt-c" placeholder="Phương án C" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
-                                    <div><input type="text" id="quiz-opt-d" placeholder="Phương án D" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
+                                     <div><input type="text" id="quiz-opt-a" placeholder="Phương án A" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
+                                     <div><input type="text" id="quiz-opt-b" placeholder="Phương án B" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
+                                     <div><input type="text" id="quiz-opt-c" placeholder="Phương án C" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
+                                     <div><input type="text" id="quiz-opt-d" placeholder="Phương án D" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
                                 </div>
 
                                 <div style="margin-bottom:12px;">
-                                    <label style="font-size:0.78rem; font-weight:700;">Đáp Án Đúng:</label>
-                                    <select id="quiz-correct-opt" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--success); font-size:0.8rem; font-weight:700;">
-                                        <option value="A">Đáp án A đúng</option>
-                                        <option value="B">Đáp án B đúng</option>
-                                        <option value="C">Đáp án C đúng</option>
-                                        <option value="D">Đáp án D đúng</option>
-                                    </select>
+                                     <label style="font-size:0.78rem; font-weight:700;">Đáp Án Đúng:</label>
+                                     <select id="quiz-correct-opt" style="width:100%; padding:6px; border-radius:6px; border:1px solid var(--success); font-size:0.8rem; font-weight:700;">
+                                         <option value="A">Đáp án A đúng</option>
+                                         <option value="B">Đáp án B đúng</option>
+                                         <option value="C">Đáp án C đúng</option>
+                                         <option value="D">Đáp án D đúng</option>
+                                     </select>
                                 </div>
 
                                 <button type="submit" class="btn" style="width:100%; background:var(--success); color:#fff;">+ Thêm Câu Hỏi Vào Bài Test</button>
@@ -282,7 +279,7 @@
                             <div id="quiz-list-box" style="margin-top:14px; border-top:1px dashed #cbd5e1; padding-top:10px;">
                                 <strong style="font-size:0.78rem; color:#475569;">Bộ câu hỏi đã tạo cho bài học này:</strong>
                                 <div style="font-size:0.75rem; color:#047857; margin-top:4px; background:var(--success-light); padding:6px 10px; border-radius:6px; border:1px solid #bbf7d0;">
-                                    ✓ Câu 1: Quy trình chuẩn gồm mấy bước? (Đúng: B)
+                                     Câu 1: Quy trình chuẩn gồm mấy bước? (Đúng: B)
                                 </div>
                             </div>
                         </div>
@@ -293,7 +290,7 @@
                 <!-- PANE 3: QUIZ BUILDER INDEPENDENT -->
                 <div id="pane-quiz" class="pane">
                     <div class="table-card" style="padding:20px;">
-                        <h3>📝 Quản Lý Bộ Đề Trắc Nghiệm Đào Tạo Sales</h3>
+                        <h3>Quản Lý Bộ Đề Trắc Nghiệm Đào Tạo Sales</h3>
                         <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px;">Chỉnh sửa, cập nhật bộ câu hỏi kiểm tra đánh giá năng lực Sales theo từng dự án.</p>
                     </div>
                 </div>
@@ -304,78 +301,78 @@
                     <div class="table-card">
                         <div class="table-head-bar">
                             <div class="table-title">
-                                <h3>👤 Báo Cáo Tiến Độ Đào Tạo Nhân Viên (Chuẩn 5 Cột Thông Tin)</h3>
+                                <h3>Báo Cáo Tiến Độ Đào Tạo Nhân Viên (Chuẩn 5 Cột Thông Tin)</h3>
                                 <p>Hiển thị chi tiết Tình trạng từng Module của từng Khóa Học theo Họ tên và Mã Nhân Viên</p>
                             </div>
-                            <button class="btn btn-primary" style="background:#10b981;" onclick="exportExcelReport()">📥 Bấm Xuất Báo Cáo Excel (.CSV)</button>
+                            <button class="btn btn-primary" style="background:#10b981;" onclick="exportExcelReport()">Xuất Báo Cáo Excel (.CSV)</button>
                         </div>
 
                         <div class="table-responsive">
                             <table class="data-table">
                                 <thead>
-                                    <tr>
-                                        <th>Họ và Tên</th>
-                                        <th>Mã Nhân Viên</th>
-                                        <th>Phòng KD / Khối Kinh Doanh</th>
-                                        <th>Tên Khóa Học</th>
-                                        <th>Tình Trạng Module Từng Khóa Học</th>
-                                        <th>Thao Tác</th>
-                                    </tr>
+                                     <tr>
+                                         <th>Họ và Tên</th>
+                                         <th>Mã Nhân Viên</th>
+                                         <th>Phòng KD / Khối Kinh Doanh</th>
+                                         <th>Tên Khóa Học</th>
+                                         <th>Tình Trạng Module Từng Khóa Học</th>
+                                         <th>Thao Tác</th>
+                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Row 1 -->
-                                    <tr>
-                                        <td style="font-weight:700;">Nguyễn Văn An</td>
-                                        <td><strong style="color:var(--primary);">NV-10892</strong></td>
-                                        <td><span class="status-badge" style="background:#e0e7ff; color:#4f46e5;">Phòng KD 101 - Khối KD 1</span></td>
-                                        <td style="font-weight:700; color:#0f172a;">Quy Trình Tư Vấn Căn Hộ Đô Thị 2026</td>
-                                        <td>
-                                            <div style="font-size:0.75rem; line-height:1.5;">
-                                                <span style="color:#047857; font-weight:700;">• Mod 1: 100% (✓ Hoàn thành)</span><br>
-                                                <span style="color:#047857; font-weight:700;">• Mod 2: 100% (✓ Hoàn thành)</span><br>
-                                                <span style="color:#047857; font-weight:700;">• Mod 3: 100% (✓ Hoàn thành)</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-primary" style="padding:4px 8px; font-size:0.72rem;" onclick="openSalesModal('Nguyễn Văn An', 'NV-10892', 'Phòng KD 101 - Khối KD 1', 'Quy Trình Căn Hộ Đô Thị 2026', 'Mod 1: 100% | Mod 2: 100% | Mod 3: 100%')">👁️ Soi Chi Tiết</button>
-                                        </td>
-                                    </tr>
+                                     <!-- Row 1 -->
+                                     <tr>
+                                         <td style="font-weight:700;">Nguyễn Văn An</td>
+                                         <td><strong style="color:var(--primary);">NV-10892</strong></td>
+                                         <td><span class="status-badge" style="background:#e0e7ff; color:#4f46e5;">Phòng KD 101 - Khối KD 1</span></td>
+                                         <td style="font-weight:700; color:#0f172a;">Quy Trình Tư Vấn Căn Hộ Đô Thị 2026</td>
+                                         <td>
+                                             <div style="font-size:0.75rem; line-height:1.5;">
+                                                 <span style="color:#047857; font-weight:700;">• Mod 1: 100% (Hoàn thành)</span><br>
+                                                 <span style="color:#047857; font-weight:700;">• Mod 2: 100% (Hoàn thành)</span><br>
+                                                 <span style="color:#047857; font-weight:700;">• Mod 3: 100% (Hoàn thành)</span>
+                                             </div>
+                                         </td>
+                                         <td>
+                                             <button class="btn btn-primary" style="padding:4px 8px; font-size:0.72rem;" onclick="openSalesModal('Nguyễn Văn An', 'NV-10892', 'Phòng KD 101 - Khối KD 1', 'Quy Trình Căn Hộ Đô Thị 2026', 'Mod 1: 100% | Mod 2: 100% | Mod 3: 100%')">Xem Chi Tiết</button>
+                                         </td>
+                                     </tr>
 
-                                    <!-- Row 2 -->
-                                    <tr>
-                                        <td style="font-weight:700;">Trần Thị Bình</td>
-                                        <td><strong style="color:var(--primary);">NV-10893</strong></td>
-                                        <td><span class="status-badge" style="background:#e0e7ff; color:#4f46e5;">Phòng KD 102 - Khối KD 1</span></td>
-                                        <td style="font-weight:700; color:#0f172a;">Quy Trình Tư Vấn Căn Hộ Đô Thị 2026</td>
-                                        <td>
-                                            <div style="font-size:0.75rem; line-height:1.5;">
-                                                <span style="color:#047857; font-weight:700;">• Mod 1: 100% (✓ Hoàn thành)</span><br>
-                                                <span style="color:#b45309; font-weight:700;">• Mod 2: 40% (⏳ Đang học)</span><br>
-                                                <span style="color:#6b7280; font-weight:700;">• Mod 3: 0% (🔒 Khóa)</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.72rem;" onclick="alert('Đã gửi tin nhắn đôn đốc cho Trần Thị Bình học tiếp Module 2!')">📩 Nhắc Học Tiếp</button>
-                                        </td>
-                                    </tr>
+                                     <!-- Row 2 -->
+                                     <tr>
+                                         <td style="font-weight:700;">Trần Thị Bình</td>
+                                         <td><strong style="color:var(--primary);">NV-10893</strong></td>
+                                         <td><span class="status-badge" style="background:#e0e7ff; color:#4f46e5;">Phòng KD 102 - Khối KD 1</span></td>
+                                         <td style="font-weight:700; color:#0f172a;">Quy Trình Tư Vấn Căn Hộ Đô Thị 2026</td>
+                                         <td>
+                                             <div style="font-size:0.75rem; line-height:1.5;">
+                                                 <span style="color:#047857; font-weight:700;">• Mod 1: 100% (Hoàn thành)</span><br>
+                                                 <span style="color:#b45309; font-weight:700;">• Mod 2: 40% (Đang học)</span><br>
+                                                 <span style="color:#6b7280; font-weight:700;">• Mod 3: 0% (Chưa mở khóa)</span>
+                                             </div>
+                                         </td>
+                                         <td>
+                                             <button class="btn btn-secondary" style="padding:4px 8px; font-size:0.72rem;" onclick="alert('Đã gửi tin nhắn đôn đốc cho Trần Thị Bình học tiếp Module 2!')">Nhắc Học Tiếp</button>
+                                         </td>
+                                     </tr>
 
-                                    <!-- Row 3 -->
-                                    <tr>
-                                        <td style="font-weight:700;">Lê Hoàng Cường</td>
-                                        <td><strong style="color:var(--primary);">NV-20411</strong></td>
-                                        <td><span class="status-badge" style="background:#d1fae5; color:#047857;">Phòng KD 201 - Khối KD 2</span></td>
-                                        <td style="font-weight:700; color:#0f172a;">Phân Tích Dòng Tiền Biệt Thự Biển</td>
-                                        <td>
-                                            <div style="font-size:0.75rem; line-height:1.5;">
-                                                <span style="color:#047857; font-weight:700;">• Mod 1: 100% (✓ Hoàn thành)</span><br>
-                                                <span style="color:#b45309; font-weight:700;">• Mod 2: 85% (⏳ Đang học)</span><br>
-                                                <span style="color:#6b7280; font-weight:700;">• Mod 3: 0% (🔒 Khóa)</span>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-primary" style="padding:4px 8px; font-size:0.72rem;" onclick="openSalesModal('Lê Hoàng Cường', 'NV-20411', 'Phòng KD 201 - Khối KD 2', 'Phân Tích Dòng Tiền Biệt Thự', 'Mod 1: 100% | Mod 2: 85% | Mod 3: 0%')">👁️ Soi Chi Tiết</button>
-                                        </td>
-                                    </tr>
+                                     <!-- Row 3 -->
+                                     <tr>
+                                         <td style="font-weight:700;">Lê Hoàng Cường</td>
+                                         <td><strong style="color:var(--primary);">NV-20411</strong></td>
+                                         <td><span class="status-badge" style="background:#d1fae5; color:#047857;">Phòng KD 201 - Khối KD 2</span></td>
+                                         <td style="font-weight:700; color:#0f172a;">Phân Tích Dòng Tiền Biệt Thự Biển</td>
+                                         <td>
+                                             <div style="font-size:0.75rem; line-height:1.5;">
+                                                 <span style="color:#047857; font-weight:700;">• Mod 1: 100% (Hoàn thành)</span><br>
+                                                 <span style="color:#b45309; font-weight:700;">• Mod 2: 85% (Đang học)</span><br>
+                                                 <span style="color:#6b7280; font-weight:700;">• Mod 3: 0% (Chưa mở khóa)</span>
+                                             </div>
+                                         </td>
+                                         <td>
+                                             <button class="btn btn-primary" style="padding:4px 8px; font-size:0.72rem;" onclick="openSalesModal('Lê Hoàng Cường', 'NV-20411', 'Phòng KD 201 - Khối KD 2', 'Phân Tích Dòng Tiền Biệt Thự', 'Mod 1: 100% | Mod 2: 85% | Mod 3: 0%')">Xem Chi Tiết</button>
+                                         </td>
+                                     </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -386,25 +383,25 @@
                 <!-- PANE 5: LEADERBOARD -->
                 <div id="pane-leaderboard" class="pane">
                     <div class="table-card" style="padding:20px;">
-                        <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:12px;">🏆 Bảng Xếp Hạng Thi Đua Học Bài Dự Án Giữa Các Phòng Sales</h3>
+                        <h3 style="font-size:1.05rem; font-weight:800; margin-bottom:12px;">Bảng Xếp Hạng Thi Đua Học Bài Dự Án Giữa Các Phòng Sales</h3>
                         <p style="font-size:0.8rem; color:#64748b; margin-bottom:16px;">Phòng kinh doanh có tỉ lệ 100% nhân sự hoàn thành bài giảng dự án sớm nhất sẽ được vinh danh.</p>
 
                         <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
                             <div style="background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border:2px solid #f59e0b; padding:16px; border-radius:12px; text-align:center;">
-                                <span style="font-size:2rem;">🥇</span>
-                                <h4 style="font-size:1.1rem; font-weight:800; color:#b45309;">TOP 1: PHÒNG KD 101</h4>
+                                <span style="font-size:1.1rem; font-weight:800; color:#b45309; display:block; margin-bottom:4px;">TOP 1</span>
+                                <h4 style="font-size:1.1rem; font-weight:800; color:#b45309;">PHÒNG KD 101</h4>
                                 <div style="margin-top:10px; font-size:1.2rem; font-weight:800; color:#047857;">92% Hoàn Thành</div>
                             </div>
 
                             <div style="background:#f8fafc; border:2px solid #cbd5e1; padding:16px; border-radius:12px; text-align:center;">
-                                <span style="font-size:2rem;">🥈</span>
-                                <h4 style="font-size:1.1rem; font-weight:800; color:#475569;">TOP 2: PHÒNG KD 201</h4>
+                                <span style="font-size:1.1rem; font-weight:800; color:#475569; display:block; margin-bottom:4px;">TOP 2</span>
+                                <h4 style="font-size:1.1rem; font-weight:800; color:#475569;">PHÒNG KD 201</h4>
                                 <div style="margin-top:10px; font-size:1.2rem; font-weight:800; color:#047857;">85% Hoàn Thành</div>
                             </div>
 
                             <div style="background:#f8fafc; border:2px solid #cbd5e1; padding:16px; border-radius:12px; text-align:center;">
-                                <span style="font-size:2rem;">🥉</span>
-                                <h4 style="font-size:1.1rem; font-weight:800; color:#78350f;">TOP 3: PHÒNG KD 102</h4>
+                                <span style="font-size:1.1rem; font-weight:800; color:#78350f; display:block; margin-bottom:4px;">TOP 3</span>
+                                <h4 style="font-size:1.1rem; font-weight:800; color:#78350f;">PHÒNG KD 102</h4>
                                 <div style="margin-top:10px; font-size:1.2rem; font-weight:800; color:#b45309;">60% Hoàn Thành</div>
                             </div>
                         </div>
@@ -417,42 +414,42 @@
                         
                         <!-- FORM CREATE DIVISION / ADD TEAM -->
                         <div class="table-card" style="padding:20px;">
-                            <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">➕ Thêm Khối Kinh Doanh Mới</h3>
+                            <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">Thêm Khối Kinh Doanh Mới</h3>
                             <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:14px;">Tự tạo Khối KD mới để gán các khóa học đào tạo riêng cho Khối đó.</p>
 
                             <form id="create-div-form" onsubmit="handleCreateDivision(event)">
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Khối Kinh Doanh Mới:</label>
-                                    <input type="text" id="new-div-name" placeholder="VD: Khối Kinh Doanh 3 - Miền Nam" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Khối Kinh Doanh Mới:</label>
+                                     <input type="text" id="new-div-name" placeholder="VD: Khối Kinh Doanh 3 - Miền Nam" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
 
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Mã Khối (Định danh phân quyền):</label>
-                                    <input type="text" id="new-div-id" placeholder="VD: DIV3" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Mã Khối (Định danh phân quyền):</label>
+                                     <input type="text" id="new-div-id" placeholder="VD: DIV3" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
                                 </div>
 
                                 <div style="margin-bottom:14px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Các Phòng KD Trực Thuộc Ban Đầu (Phẩy cách nhau):</label>
-                                    <input type="text" id="new-div-teams" placeholder="Phòng KD 301, Phòng KD 302, Phòng KD 303" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Các Phòng KD Trực Thuộc Ban Đầu (Phẩy cách nhau):</label>
+                                     <input type="text" id="new-div-teams" placeholder="Phòng KD 301, Phòng KD 302, Phòng KD 303" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
 
-                                <button type="submit" class="btn btn-primary" style="width:100%;">🚀 Khởi Tạo Khối Kinh Doanh</button>
+                                <button type="submit" class="btn btn-primary" style="width:100%;">Khởi Tạo Khối Kinh Doanh</button>
                             </form>
                             <div id="create-div-msg" style="margin-top:10px; font-size:0.78rem; font-weight:700; color:var(--success); display:none;"></div>
 
                             <hr style="margin:20px 0; border:none; border-top:1px dashed #cbd5e1;">
 
-                            <h4 style="font-size:0.9rem; font-weight:800; color:#334155; margin-bottom:8px;">🏢 Thêm Phòng KD Vào Khối Đã Có</h4>
+                            <h4 style="font-size:0.9rem; font-weight:800; color:#334155; margin-bottom:8px;">Thêm Phòng KD Vào Khối Đã Có</h4>
                             <form id="add-team-form" onsubmit="handleAddTeam(event)">
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Chọn Khối Kinh Doanh:</label>
-                                    <select id="team-div-select" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
-                                        <!-- DYNAMIC DROPDOWN -->
-                                    </select>
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Chọn Khối Kinh Doanh:</label>
+                                     <select id="team-div-select" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
+                                         <!-- DYNAMIC DROPDOWN -->
+                                     </select>
                                 </div>
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Phòng KD Mới Thêm:</label>
-                                    <input type="text" id="new-team-name" placeholder="VD: Phòng KD 104" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Tên Phòng KD Mới Thêm:</label>
+                                     <input type="text" id="new-team-name" placeholder="VD: Phòng KD 104" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
                                 <button type="submit" class="btn btn-secondary" style="width:100%;">+ Thêm Phòng KD Vào Khối</button>
                             </form>
@@ -461,7 +458,7 @@
                         <!-- DIVISIONS LIST visual -->
                         <div class="table-card" style="padding:20px;">
                             <div class="table-title" style="margin-bottom:14px;">
-                                <h3>🏢 Cơ Cấu Các Khối & Phòng Kinh Doanh Hiện Có</h3>
+                                <h3>Cơ Cấu Các Khối & Phòng Kinh Doanh Hiện Có</h3>
                                 <p>Tất cả Khối KD khởi tạo tại đây sẽ tự động cập nhật vào Menu Gán Khóa Học & Bộ Lọc Học Viên</p>
                             </div>
 
@@ -479,38 +476,38 @@
                         
                         <!-- FORM CREATE STUDENT ACCOUNT -->
                         <div class="table-card" style="padding:20px;">
-                            <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">➕ Cấp Tài Khoản Sales Mới</h3>
+                            <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">Cấp Tài Khoản Sales Mới</h3>
                             <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:14px;">Admin tạo tài khoản trực tiếp cho nhân sự Sales để cấp quyền truy cập khóa học.</p>
 
                             <form id="admin-create-student-form" onsubmit="handleAdminCreateStudent(event)">
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Họ và Tên Nhân Viên:</label>
-                                    <input type="text" id="admin-student-name" placeholder="VD: Hoàng Tuấn Anh" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Họ và Tên Nhân Viên:</label>
+                                     <input type="text" id="admin-student-name" placeholder="VD: Hoàng Tuấn Anh" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
 
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Mã Nhân Viên (NV-xxxx):</label>
-                                    <input type="text" id="admin-student-empid" placeholder="VD: NV-30912" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Mã Nhân Viên (NV-xxxx):</label>
+                                     <input type="text" id="admin-student-empid" placeholder="VD: NV-30912" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
                                 </div>
 
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Chọn Khối Kinh Doanh:</label>
-                                    <select id="admin-student-div" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
-                                        <!-- DYNAMIC DIVISIONS -->
-                                    </select>
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Chọn Khối Kinh Doanh:</label>
+                                     <select id="admin-student-div" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
+                                         <!-- DYNAMIC DIVISIONS -->
+                                     </select>
                                 </div>
 
                                 <div style="margin-bottom:10px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Phòng Kinh Doanh Trực Thuộc:</label>
-                                    <input type="text" id="admin-student-team" placeholder="VD: Phòng KD 101" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Phòng Kinh Doanh Trực Thuộc:</label>
+                                     <input type="text" id="admin-student-team" placeholder="VD: Phòng KD 101" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
 
                                 <div style="margin-bottom:14px;">
-                                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Mật Khẩu Khởi Tạo:</label>
-                                    <input type="password" id="admin-student-pass" placeholder="Mặc định: 123456" value="123456" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Mật Khẩu Khởi Tạo:</label>
+                                     <input type="password" id="admin-student-pass" placeholder="Mặc định: 123456" value="123456" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
                                 </div>
 
-                                <button type="submit" class="btn btn-primary" style="width:100%;">🚀 Cấp Tài Khoản Cho Sales</button>
+                                <button type="submit" class="btn btn-primary" style="width:100%;">Cấp Tài Khoản Cho Sales</button>
                             </form>
                             <div id="admin-create-student-msg" style="margin-top:10px; font-size:0.78rem; font-weight:700; color:var(--success); display:none;"></div>
 
@@ -519,11 +516,11 @@
                             <!-- TOGGLE ALLOW SELF-REGISTRATION -->
                             <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px;">
                                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <div>
-                                        <strong style="font-size:0.82rem; color:#0f172a; display:block;">Cho Phép Sales Tự Đăng Ký</strong>
-                                        <span style="font-size:0.72rem; color:#64748b;">Sales tự tạo tài khoản ngoài trang chủ</span>
-                                    </div>
-                                    <button id="toggle-self-reg-btn" class="toggle-switch-btn on" onclick="toggleSelfRegMode()">🟢 BẬT</button>
+                                     <div>
+                                         <strong style="font-size:0.82rem; color:#0f172a; display:block;">Cho Phép Sales Tự Đăng Ký</strong>
+                                         <span style="font-size:0.72rem; color:#64748b;">Sales tự tạo tài khoản ngoài trang chủ</span>
+                                     </div>
+                                     <button id="toggle-self-reg-btn" class="toggle-switch-btn on" onclick="toggleSelfRegMode()">BẬT</button>
                                 </div>
                             </div>
                         </div>
@@ -532,26 +529,26 @@
                         <div class="table-card" style="padding:20px;">
                             <div class="table-title" style="margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
                                 <div>
-                                    <h3>👥 Danh Sách Tài Khoản Sales Đã Cấp Quyền</h3>
-                                    <p>Tất cả nhân sự trong danh sách này có thể đăng nhập để học bài thuộc Khối tương ứng</p>
+                                     <h3>Danh Sách Tài Khoản Sales Đã Cấp Quyền</h3>
+                                     <p>Tất cả nhân sự trong danh sách này có thể đăng nhập để học bài thuộc Khối tương ứng</p>
                                 </div>
                                 <span id="total-students-badge" style="background:#e0e7ff; color:#4f46e5; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:20px;">3 Sales</span>
                             </div>
 
                             <div class="table-responsive">
                                 <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Họ và Tên</th>
-                                            <th>Mã Nhân Viên</th>
-                                            <th>Khối & Phòng KD</th>
-                                            <th>Trạng Thái</th>
-                                            <th>Thao Tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="admin-students-table-body">
-                                        <!-- DYNAMICALLY RENDERED -->
-                                    </tbody>
+                                     <thead>
+                                         <tr>
+                                             <th>Họ và Tên</th>
+                                             <th>Mã Nhân Viên</th>
+                                             <th>Khối & Phòng KD</th>
+                                             <th>Trạng Thái</th>
+                                             <th>Thao Tác</th>
+                                         </tr>
+                                     </thead>
+                                     <tbody id="admin-students-table-body">
+                                         <!-- DYNAMICALLY RENDERED -->
+                                     </tbody>
                                 </table>
                             </div>
                         </div>
@@ -570,14 +567,14 @@
         <div style="background:#fff; width:90%; max-width:550px; border-radius:12px; padding:20px; box-shadow:0 20px 40px rgba(0,0,0,0.3);">
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:10px; margin-bottom:14px;">
                 <h3 style="font-size:1.1rem; font-weight:800; color:#0f172a;" id="sales-modal-name">Hồ Sơ Chi Tiết Nhân Viên</h3>
-                <button onclick="closeSalesModal()" style="border:none; background:transparent; font-size:1.2rem; cursor:pointer;">✖</button>
+                <button onclick="closeSalesModal()" style="border:none; background:transparent; font-size:1.2rem; cursor:pointer;">✕</button>
             </div>
             
             <div style="font-size:0.85rem; line-height:1.6;">
-                <p>👤 <strong>Mã Nhân Viên:</strong> <span id="sales-modal-id" style="font-weight:700; color:#4f46e5;"></span></p>
-                <p>🏢 <strong>Phòng KD / Khối Kinh Doanh:</strong> <span id="sales-modal-dept"></span></p>
-                <p>📘 <strong>Tên Khóa Học:</strong> <span id="sales-modal-course" style="font-weight:700;"></span></p>
-                <p>📊 <strong>Tình Trạng Module Từng Khóa Học:</strong> <span id="sales-modal-watch" style="font-weight:700; color:#10b981;"></span></p>
+                <p><strong>Mã Nhân Viên:</strong> <span id="sales-modal-id" style="font-weight:700; color:#4f46e5;"></span></p>
+                <p><strong>Phòng KD / Khối Kinh Doanh:</strong> <span id="sales-modal-dept"></span></p>
+                <p><strong>Tên Khóa Học:</strong> <span id="sales-modal-course" style="font-weight:700;"></span></p>
+                <p><strong>Tình Trạng Module Từng Khóa Học:</strong> <span id="sales-modal-watch" style="font-weight:700; color:#10b981;"></span></p>
             </div>
 
             <button class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="closeSalesModal()">Đóng Hồ Sơ</button>
@@ -589,12 +586,9 @@
         <div style="background:#ffffff; width:100%; max-width:580px; border-radius:14px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); overflow:hidden; border:1px solid #e2e8f0; animation:modalPop 0.2s ease;">
             
             <div style="background:linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); padding:18px 24px; display:flex; justify-content:space-between; align-items:center; color:#ffffff;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <div style="width:36px; height:36px; background:rgba(255,255,255,0.15); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:1.1rem;">✏️</div>
-                    <div>
-                        <h3 style="font-size:1.05rem; font-weight:800; margin:0; color:#ffffff;">Chỉnh Sửa Thông Tin Khóa Học</h3>
-                        <span style="font-size:0.75rem; color:#c7d2fe;">Cập nhật tiêu đề, danh mục, quyền truy cập và mô tả khóa học</span>
-                    </div>
+                <div>
+                    <h3 style="font-size:1.05rem; font-weight:800; margin:0; color:#ffffff;">Chỉnh Sửa Thông Tin Khóa Học</h3>
+                    <span style="font-size:0.75rem; color:#c7d2fe;">Cập nhật tiêu đề, danh mục, quyền truy cập và mô tả khóa học</span>
                 </div>
                 <button type="button" onclick="closeEditCourseModal()" style="background:rgba(255,255,255,0.15); border:none; color:#ffffff; width:30px; height:30px; border-radius:50%; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s;">✕</button>
             </div>
@@ -611,12 +605,12 @@
                     <div>
                         <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Danh Mục / Phân Loại:</label>
                         <select id="edit-course-category" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.82rem; font-weight:600; background:#fff; outline:none;">
-                            <option value="🏢 Căn Hộ Đô Thị">🏢 Căn Hộ Đô Thị</option>
-                            <option value="🌊 Nghỉ Dưỡng Cao Cấp">🌊 Nghỉ Dưỡng Cao Cấp</option>
-                            <option value="🔥 Kỹ Năng Thực Chiến">🔥 Kỹ Năng Thực Chiến</option>
-                            <option value="⚖️ Pháp Lý Dự Án">⚖️ Pháp Lý Dự Án</option>
-                            <option value="💼 Quản Trị & Lãnh Đạo Sales">💼 Quản Trị & Lãnh Đạo Sales</option>
-                            <option value="🎯 Kỹ Năng Chốt Deal">🎯 Kỹ Năng Chốt Deal</option>
+                            <option value="Căn Hộ Đô Thị">Căn Hộ Đô Thị</option>
+                            <option value="Nghỉ Dưỡng Cao Cấp">Nghỉ Dưỡng Cao Cấp</option>
+                            <option value="Kỹ Năng Thực Chiến">Kỹ Năng Thực Chiến</option>
+                            <option value="Pháp Lý Dự Án">Pháp Lý Dự Án</option>
+                            <option value="Quản Trị & Lãnh Đạo Sales">Quản Trị & Lãnh Đạo Sales</option>
+                            <option value="Kỹ Năng Chốt Deal">Kỹ Năng Chốt Deal</option>
                         </select>
                     </div>
 
@@ -629,37 +623,18 @@
                 </div>
 
                 <div style="margin-bottom:14px;">
-                    <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Giảng Viên / Đơn Vị Phụ Trách:</label>
-                    <input type="text" id="edit-course-instructor" placeholder="VD: Ban Đào Tạo Queen Land" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.82rem; outline:none;">
-                </div>
-
-                <div style="margin-bottom:18px;">
-                    <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Mô Tả Khóa Học / Mục Tiêu Đào Tạo:</label>
-                    <textarea id="edit-course-desc" rows="3" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.82rem; line-height:1.45; outline:none; resize:vertical;"></textarea>
-                </div>
-
-                <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid #f1f5f9; padding-top:14px;">
-                    <button type="button" class="btn btn-secondary" onclick="closeEditCourseModal()" style="padding:9px 18px; font-size:0.82rem;">Hủy Bỏ</button>
-                    <button type="submit" class="btn btn-primary" style="padding:9px 22px; font-size:0.82rem; background:#4f46e5; display:flex; align-items:center; gap:6px;">
-                        <span>💾 Lưu Thay Đổi</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- TOAST NOTIFICATION -->
+                    <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin    <!-- TOAST NOTIFICATION -->
     <div id="adminToast" style="display:none; position:fixed; bottom:24px; right:24px; background:#0f172a; color:#ffffff; padding:14px 20px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.2); z-index:999; font-size:0.85rem; font-weight:700; align-items:center; gap:10px; border-left:4px solid #10b981; animation:modalPop 0.25s ease;">
-        <span id="adminToastMsg">🎉 Đã lưu thay đổi thành công!</span>
+        <span id="adminToastMsg">Đã lưu thay đổi thành công!</span>
     </div>
 
     <!-- APP DYNAMIC STATE SCRIPT -->
     <script>
         let coursesState = JSON.parse(localStorage.getItem('lms_courses_list') || 'null') || [
-            { id: 'c1', title: 'Khóa 1: Quy Trình Tư Vấn Căn Hộ Đô Thị 2026', cat: '🏢 Căn Hộ Đô Thị', access: 'DIV1', desc: 'Gồm 4 Module • 18 Video', instructor: 'Ban Đào Tạo Queen Land', rawDesc: 'Lộ trình đào tạo chuẩn kỹ năng tư vấn, tiếp cận khách hàng cao cấp, phân tích bảng giá và kịch bản chốt hợp đồng căn hộ thương mại.' },
-            { id: 'c2', title: 'Khóa 2: Phân Tích Dòng Tiền & Pháp Lý Biệt Thự Biển Hạ Long', cat: '🌊 Nghỉ Dưỡng Cao Cấp', access: 'DIV2', desc: 'Gồm 3 Module • 12 Video', instructor: 'Chuyên Gia Tài Chính Queen Land', rawDesc: 'Phân tích chuyên sâu bảng tính ROI dòng tiền, bài toán đòn bẩy tài chính ngân hàng và kỹ năng tư vấn khách hàng VIP biệt thự nghỉ dưỡng.' },
-            { id: 'c3', title: 'Khóa 3: Kỹ Năng Đàm Phán & Chốt Cọc Bất Động Sản Đỉnh Cao', cat: '🔥 Kỹ Năng Thực Chiến', access: 'PUBLIC', desc: 'Gồm 3 Module • 10 Video', instructor: 'Giám Đốc Đào Tạo Queen Land', rawDesc: 'Nghệ thuật xử lý phản đối, đọc vị tâm lý khách hàng đầu tư bất động sản và kỹ thuật đàm phán chốt hợp đồng trong 24h.' },
-            { id: 'c4', title: 'Khóa 4: Pháp Lý Bất Động Sản & Thẩm Định Quy Hoạch Dự Án', cat: '⚖️ Pháp Lý Dự Án', access: 'DIV3', desc: 'Gồm 2 Module • 8 Video', instructor: 'Phòng Pháp Chế Queen Land', rawDesc: 'Nắm vững luật kinh doanh BĐS mới nhất, quy trình kiểm tra quy hoạch 1/500, hồ sơ pháp lý dự án và các điều khoản hợp đồng mua bán.' }
+            { id: 'c1', title: 'Khóa 1: Quy Trình Tư Vấn Căn Hộ Đô Thị 2026', cat: 'Căn Hộ Đô Thị', access: 'DIV1', desc: 'Gồm 4 Module • 18 Video', instructor: 'Ban Đào Tạo Queen Land', rawDesc: 'Lộ trình đào tạo chuẩn kỹ năng tư vấn, tiếp cận khách hàng cao cấp, phân tích bảng giá và kịch bản chốt hợp đồng căn hộ thương mại.' },
+            { id: 'c2', title: 'Khóa 2: Phân Tích Dòng Tiền & Pháp Lý Biệt Thự Biển Hạ Long', cat: 'Nghỉ Dưỡng Cao Cấp', access: 'DIV2', desc: 'Gồm 3 Module • 12 Video', instructor: 'Chuyên Gia Tài Chính Queen Land', rawDesc: 'Phân tích chuyên sâu bảng tính ROI dòng tiền, bài toán đòn bẩy tài chính ngân hàng và kỹ năng tư vấn khách hàng VIP biệt thự nghỉ dưỡng.' },
+            { id: 'c3', title: 'Khóa 3: Kỹ Năng Đàm Phán & Chốt Cọc Bất Động Sản Đỉnh Cao', cat: 'Kỹ Năng Thực Chiến', access: 'PUBLIC', desc: 'Gồm 3 Module • 10 Video', instructor: 'Giám Đốc Đào Tạo Queen Land', rawDesc: 'Nghệ thuật xử lý phản đối, đọc vị tâm lý khách hàng đầu tư bất động sản và kỹ thuật đàm phán chốt hợp đồng trong 24h.' },
+            { id: 'c4', title: 'Khóa 4: Pháp Lý Bất Động Sản & Thẩm Định Quy Hoạch Dự Án', cat: 'Pháp Lý Dự Án', access: 'DIV3', desc: 'Gồm 2 Module • 8 Video', instructor: 'Phòng Pháp Chế Queen Land', rawDesc: 'Nắm vững luật kinh doanh BĐS mới nhất, quy trình kiểm tra quy hoạch 1/500, hồ sơ pháp lý dự án và các điều khoản hợp đồng mua bán.' }
         ];
 
         let divisionsState = JSON.parse(localStorage.getItem('lms_divisions_list') || 'null') || [
@@ -714,15 +689,15 @@
             const accessSelect = document.getElementById('new-course-access');
 
             if (isDivModeOn) {
-                btn.textContent = '🟢 BẬT (Gán Theo Khối)';
+                btn.textContent = 'BẬT (Gán Theo Khối)';
                 btn.className = 'toggle-switch-btn on';
                 if (accessSelect) accessSelect.value = 'DIV1';
-                showAdminToast('✅ Đã BẬT Chế độ gán theo Khối!');
+                showAdminToast('Đã BẬT Chế độ gán theo Khối!');
             } else {
-                btn.textContent = '🔴 TẮT (Mở Công Khai Tự Do)';
+                btn.textContent = 'TẮT (Mở Công Khai Tự Do)';
                 btn.className = 'toggle-switch-btn off';
                 if (accessSelect) accessSelect.value = 'PUBLIC';
-                showAdminToast('🔓 Đã TẮT Chế độ gán theo Khối!');
+                showAdminToast('Đã TẮT Chế độ gán theo Khối!');
             }
         }
 
@@ -731,10 +706,10 @@
             if (!container) return;
 
             container.innerHTML = coursesState.map(c => {
-                let divName = '🌐 Mở Công Khai Tự Do';
+                let divName = 'Mở Công Khai Tự Do';
                 if (c.access !== 'PUBLIC') {
                     const matchedDiv = divisionsState.find(d => d.id === c.access);
-                    divName = matchedDiv ? `🔒 Gán Riêng Cho ${matchedDiv.name}` : `🔒 Gán Cho ${c.access}`;
+                    divName = matchedDiv ? `Gán Riêng Cho ${matchedDiv.name}` : `Gán Cho ${c.access}`;
                 }
 
                 return `
@@ -749,12 +724,12 @@
                         <h4 style="font-size:0.98rem; font-weight:800; color:#0f172a; margin:4px 0 2px;">${c.title}</h4>
                         <p style="font-size:0.8rem; color:#64748b; line-height:1.4; margin:0;">${c.rawDesc || c.desc || 'Mới khởi tạo'}</p>
                         <div style="margin-top:6px; font-size:0.72rem; color:#475569; font-weight:600;">
-                            <span>👤 Phụ trách: <strong>${c.instructor || 'Ban Đào Tạo Queen Land'}</strong></span>
+                            <span>Phụ trách: <strong>${c.instructor || 'Ban Đào Tạo Queen Land'}</strong></span>
                         </div>
                     </div>
                     <div style="display:flex; gap:8px; flex-shrink:0;">
-                        <button class="btn btn-secondary" style="padding:6px 12px; font-size:0.75rem; font-weight:700; border-color:#cbd5e1;" onclick="openEditCourseModal('${c.id}')">✏️ Sửa</button>
-                        <button class="btn" style="padding:6px 12px; font-size:0.75rem; background:#fee2e2; color:#ef4444; font-weight:700;" onclick="deleteCourse('${c.id}')">🗑️ Xóa</button>
+                        <button class="btn btn-secondary" style="padding:6px 12px; font-size:0.75rem; font-weight:700; border-color:#cbd5e1;" onclick="openEditCourseModal('${c.id}')">Sửa</button>
+                        <button class="btn" style="padding:6px 12px; font-size:0.75rem; background:#fee2e2; color:#ef4444; font-weight:700;" onclick="deleteCourse('${c.id}')">Xóa</button>
                     </div>
                 </div>
             `;
@@ -768,16 +743,16 @@
 
             document.getElementById('edit-course-id').value = course.id;
             document.getElementById('edit-course-title').value = course.title || '';
-            document.getElementById('edit-course-category').value = course.cat || '🏢 Căn Hộ Đô Thị';
+            document.getElementById('edit-course-category').value = course.cat || 'Căn Hộ Đô Thị';
             document.getElementById('edit-course-instructor').value = course.instructor || 'Ban Đào Tạo Queen Land';
             document.getElementById('edit-course-desc').value = course.rawDesc || course.desc || '';
 
             // Populate access dropdown with current divisions
             const accessSelect = document.getElementById('edit-course-access');
             if (accessSelect) {
-                let optionsHtml = `<option value="PUBLIC">🌐 Mở Công Khai Cho Tất Cả Sales</option>`;
+                let optionsHtml = `<option value="PUBLIC">Mở Công Khai Cho Tất Cả Sales</option>`;
                 divisionsState.forEach(d => {
-                    optionsHtml += `<option value="${d.id}">🔒 Gán Riêng Cho ${d.name} (${d.id})</option>`;
+                    optionsHtml += `<option value="${d.id}">Gán Riêng Cho ${d.name} (${d.id})</option>`;
                 });
                 accessSelect.innerHTML = optionsHtml;
                 accessSelect.value = course.access || 'PUBLIC';
@@ -842,7 +817,7 @@
             renderCoursesUI();
             renderCourseDropdowns();
             closeEditCourseModal();
-            showAdminToast(`🎉 Đã cập nhật thành công khóa học: "${title}"!`);
+            showAdminToast(`Đã cập nhật thành công khóa học: "${title}"!`);
         }
 
         function renderDivisionsUI() {
@@ -869,10 +844,10 @@
                                     <div>${teamsBadges || '<em style="font-size:0.72rem; color:#94a3b8;">Chưa có phòng</em>'}</div>
                                 </div>
                                 <div style="margin-top:8px; font-size:0.75rem; color:#047857; font-weight:700;">
-                                    📚 ${assignedCourses.length} Khóa học dành riêng cho Khối này
+                                    ${assignedCourses.length} Khóa học dành riêng cho Khối này
                                 </div>
                             </div>
-                            <button class="btn" style="padding:4px 8px; font-size:0.72rem; background:#fee2e2; color:#ef4444;" onclick="deleteDivision('${div.id}')">🗑️ Xóa Khối</button>
+                            <button class="btn" style="padding:4px 8px; font-size:0.72rem; background:#fee2e2; color:#ef4444;" onclick="deleteDivision('${div.id}')">Xóa Khối</button>
                         </div>
                     </div>
                     `;
@@ -886,9 +861,9 @@
 
             // 3. Render Course Access Select Dropdown (in course creation form)
             if (courseAccessSelect) {
-                let optionsHtml = `<option value="PUBLIC">🌐 Mở Công Khai Cho Tất Cả Sales</option>`;
+                let optionsHtml = `<option value="PUBLIC">Mở Công Khai Cho Tất Cả Sales</option>`;
                 divisionsState.forEach(d => {
-                    optionsHtml += `<option value="${d.id}">🔒 Gán Riêng Cho ${d.name}</option>`;
+                    optionsHtml += `<option value="${d.id}">Gán Riêng Cho ${d.name}</option>`;
                 });
                 courseAccessSelect.innerHTML = optionsHtml;
             }
@@ -901,7 +876,7 @@
             const teamsRaw = document.getElementById('new-div-teams').value;
 
             if (divisionsState.some(d => d.id === id)) {
-                alert(`❌ Mã Khối "${id}" đã tồn tại! Vui lòng nhập Mã Khối khác.`);
+                alert(`Mã Khối "${id}" đã tồn tại! Vui lòng nhập Mã Khối khác.`);
                 return;
             }
 
@@ -921,7 +896,7 @@
 
             const msg = document.getElementById('create-div-msg');
             msg.style.display = 'block';
-            msg.textContent = `🎉 Đã tạo thành công "${name}"! Khối mới đã cập nhật vào Menu Gán Khóa Học.`;
+            msg.textContent = `Đã tạo thành công "${name}"! Khối mới đã cập nhật vào Menu Gán Khóa Học.`;
 
             document.getElementById('create-div-form').reset();
         }
@@ -937,9 +912,9 @@
                     targetDiv.teams.push(teamName);
                     localStorage.setItem('lms_divisions_list', JSON.stringify(divisionsState));
                     renderDivisionsUI();
-                    alert(`✅ Đã thêm "${teamName}" vào ${targetDiv.name}!`);
+                    alert(`Đã thêm "${teamName}" vào ${targetDiv.name}!`);
                 } else {
-                    alert(`⚠️ ${teamName} đã có trong ${targetDiv.name}!`);
+                    alert(`${teamName} đã có trong ${targetDiv.name}!`);
                 }
             }
             document.getElementById('add-team-form').reset();
@@ -983,10 +958,10 @@
                         <div style="font-size:0.7rem; color:#64748b; margin-top:2px;">${divName}</div>
                     </td>
                     <td>
-                        <span class="status-badge success">🟢 Đã Kích Hoạt</span>
+                        <span class="status-badge success">Đã Kích Hoạt</span>
                     </td>
                     <td>
-                        <button class="btn" style="padding:4px 8px; font-size:0.72rem; background:#fee2e2; color:#ef4444;" onclick="deleteAdminStudent('${u.empId}')">🗑️ Thu Hồi</button>
+                        <button class="btn" style="padding:4px 8px; font-size:0.72rem; background:#fee2e2; color:#ef4444;" onclick="deleteAdminStudent('${u.empId}')">Thu Hồi</button>
                     </td>
                 </tr>
                 `;
@@ -1002,19 +977,19 @@
             const pass = document.getElementById('admin-student-pass').value;
 
             if (usersDatabase.some(u => u.empId === empId)) {
-                alert(`❌ Mã nhân viên "${empId}" đã tồn tại trên hệ thống! Vui lòng kiểm tra lại.`);
+                alert(`Mã nhân viên "${empId}" đã tồn tại trên hệ thống! Vui lòng kiểm tra lại.`);
                 return;
             }
 
-            const newStudent = { empId, name, div, team, pass };
-            usersDatabase.push(newStudent);
+            const newUser = { empId, name, div, team, pass };
+            usersDatabase.push(newUser);
             localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
 
             renderAdminStudentsUI();
 
             const msg = document.getElementById('admin-create-student-msg');
             msg.style.display = 'block';
-            msg.textContent = `🎉 Đã cấp tài khoản thành công cho Sales: ${name} (${empId})! Mật khẩu: ${pass}`;
+            msg.textContent = `Đã cấp tài khoản thành công cho Sales: ${name} (${empId})! Mật khẩu: ${pass}`;
 
             document.getElementById('admin-create-student-form').reset();
             document.getElementById('admin-student-pass').value = '123456';
@@ -1033,17 +1008,17 @@
             allowSelfReg = !allowSelfReg;
             localStorage.setItem('lms_allow_self_reg', allowSelfReg ? 'true' : 'false');
             updateSelfRegButtonUI();
-            alert(allowSelfReg ? '🟢 Đã BẬT cho phép Sales tự đăng ký tài khoản!' : '🔴 Đã TẮT tự đăng ký: Chỉ Admin mới được cấp tài khoản!');
+            alert(allowSelfReg ? 'Đã BẬT cho phép Sales tự đăng ký tài khoản!' : 'Đã TẮT tự đăng ký: Chỉ Admin mới được cấp tài khoản!');
         }
 
         function updateSelfRegButtonUI() {
             const btn = document.getElementById('toggle-self-reg-btn');
             if (!btn) return;
             if (allowSelfReg) {
-                btn.textContent = '🟢 BẬT';
+                btn.textContent = 'BẬT';
                 btn.className = 'toggle-switch-btn on';
             } else {
-                btn.textContent = '🔴 TẮT (Chỉ Admin Cấp)';
+                btn.textContent = 'TẮT (Chỉ Admin Cấp)';
                 btn.className = 'toggle-switch-btn off';
             }
         }
@@ -1079,7 +1054,7 @@
 
             const msg = document.getElementById('create-course-msg');
             msg.style.display = 'block';
-            msg.textContent = `🎉 Đã xuất bản Khóa Học "${title}"! Khóa học đã ĐỒNG BỘ NGAY VÀO DROPDOWN ở Tab Module!`;
+            msg.textContent = `Đã xuất bản Khóa Học "${title}"! Khóa học đã ĐỒNG BỘ NGAY VÀO DROPDOWN ở Tab Module!`;
 
             document.getElementById('create-course-form').reset();
         }
@@ -1097,7 +1072,7 @@
             const name = document.getElementById('lesson-name-input').value;
             const msg = document.getElementById('add-lesson-msg');
             msg.style.display = 'block';
-            msg.textContent = `🎉 Đã lưu bài giảng "${name}" thành công vào Module!`;
+            msg.textContent = `Đã lưu bài giảng "${name}" thành công vào Module!`;
             document.getElementById('add-lesson-form').reset();
         }
 
@@ -1109,21 +1084,21 @@
             const box = document.getElementById('quiz-list-box');
             const item = document.createElement('div');
             item.style.cssText = "font-size:0.75rem; color:#047857; margin-top:4px; background:#f0fdf4; padding:6px 10px; border-radius:6px; border:1px solid #bbf7d0;";
-            item.textContent = `✓ ${q} (Đáp án đúng: ${correct})`;
+            item.textContent = `Câu hỏi: ${q} (Đáp án đúng: ${correct})`;
             box.appendChild(item);
 
-            alert('🎉 Đã thêm câu hỏi trắc nghiệm thành công vào bài test!');
+            alert('Đã thêm câu hỏi trắc nghiệm thành công vào bài test!');
             document.getElementById('create-quiz-form').reset();
         }
 
         function saveSystemSettings() {
             const minWatch = document.getElementById('min-video-percent').value;
             const minScore = document.getElementById('passing-score-input').value;
-            alert(`✅ Đã lưu Cấu hình Quy định Hệ thống!\n- Yêu cầu xem video tối thiểu: ${minWatch}%\n- Điểm chuẩn bài Quiz: ${minScore}/100đ`);
+            alert(`Đã lưu Cấu hình Quy định Hệ thống!\n- Yêu cầu xem video tối thiểu: ${minWatch}%\n- Điểm chuẩn bài Quiz: ${minScore}/100đ`);
         }
 
         function openSalesModal(name, empId, dept, course, watch) {
-            document.getElementById('sales-modal-name').textContent = `👤 Hồ Sơ Nhân Viên: ${name}`;
+            document.getElementById('sales-modal-name').textContent = `Hồ Sơ Nhân Viên: ${name}`;
             document.getElementById('sales-modal-id').textContent = empId;
             document.getElementById('sales-modal-dept').textContent = dept;
             document.getElementById('sales-modal-course').textContent = course;
@@ -1140,9 +1115,9 @@
         function exportExcelReport() {
             // UTF-8 BOM for Excel Vietnamese compatibility & quoted fields for column safety
             let csvContent = "\uFEFF\"Họ và Tên\",\"Mã Nhân Viên\",\"Phòng KD / Khối Kinh Doanh\",\"Tên Khóa Học\",\"Tình Trạng Module Từng Khóa Học\"\n";
-            csvContent += '"Nguyễn Văn An","NV-10892","Phòng KD 101 - Khối KD 1","Quy Trình Tư Vấn Căn Hộ Đô Thị 2026","Mod 1: 100% (✓) | Mod 2: 100% (✓) | Mod 3: 100% (✓)"\n';
-            csvContent += '"Trần Thị Bình","NV-10893","Phòng KD 102 - Khối KD 1","Quy Trình Tư Vấn Căn Hộ Đô Thị 2026","Mod 1: 100% (✓) | Mod 2: 40% (⏳) | Mod 3: 0% (🔒)"\n';
-            csvContent += '"Lê Hoàng Cường","NV-20411","Phòng KD 201 - Khối KD 2","Phân Tích Dòng Tiền Biệt Thự Biển","Mod 1: 100% (✓) | Mod 2: 85% (⏳) | Mod 3: 0% (🔒)"\n';
+            csvContent += '"Nguyễn Văn An","NV-10892","Phòng KD 101 - Khối KD 1","Quy Trình Tư Vấn Căn Hộ Đô Thị 2026","Mod 1: 100% (Hoàn thành) | Mod 2: 100% (Hoàn thành) | Mod 3: 100% (Hoàn thành)"\n';
+            csvContent += '"Trần Thị Bình","NV-10893","Phòng KD 102 - Khối KD 1","Quy Trình Tư Vấn Căn Hộ Đô Thị 2026","Mod 1: 100% (Hoàn thành) | Mod 2: 40% (Đang học) | Mod 3: 0% (Chưa mở khóa)"\n';
+            csvContent += '"Lê Hoàng Cường","NV-20411","Phòng KD 201 - Khối KD 2","Phân Tích Dòng Tiền Biệt Thự Biển","Mod 1: 100% (Hoàn thành) | Mod 2: 85% (Đang học) | Mod 3: 0% (Chưa mở khóa)"\n';
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
