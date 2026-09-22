@@ -3,33 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ Thống Đào Tạo LMS - Học Theo Module Video</title>
+    <title>Hệ Thống Đào Tạo Doanh Nghiệp Queen Land - Học Theo Module Video</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Header Navigation -->
+    <!-- Header Navigation (Parkland Style) -->
     <header class="navbar">
         <div class="nav-container">
             <div class="brand">
                 <img src="images/logo-queen-land.png" alt="Queen Land Logo" class="brand-logo-img">
                 <div class="brand-text">
                     <span class="brand-title">Queen Land Academy</span>
-                    <span class="brand-subtitle">Hệ Thống Đào Tạo Bất Động Sản</span>
+                    <span class="brand-subtitle">Hệ Thống Đào Tạo Doanh Nghiệp</span>
                 </div>
             </div>
             
             <nav class="nav-links">
-                <button class="nav-btn active" id="btn-landing-view" onclick="switchView('landing')">Trang Chủ</button>
-                <button class="nav-btn highlight-btn" id="btn-portal-view" onclick="switchView('portal')">Vào Phòng Học</button>
-                <a href="admin.html" class="nav-btn admin-link-btn">Bảng Quản Trị Admin</a>
+                <button class="nav-btn active" id="btn-landing-view" onclick="switchView('landing')">
+                    <i class="bi bi-house-door"></i> Trang Chủ
+                </button>
+                <button class="nav-btn highlight-btn animated-shine-btn" id="btn-portal-view" onclick="switchView('portal')">
+                    <i class="bi bi-play-circle-fill"></i> Vào Phòng Học
+                </button>
+                <a href="admin.html" class="nav-btn admin-link-btn">
+                    <i class="bi bi-speedometer2"></i> Bảng Quản Trị Admin
+                </a>
             </nav>
 
             <div class="user-header-area">
                 <div class="user-chip">
-                    <div class="avatar-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                    <div class="avatar-icon">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
                     <div class="user-details">
                         <span class="user-name" id="student-user-name">Nguyễn Văn An <span class="emp-code">(NV-10892)</span></span>
                         <div class="user-div-tag">
@@ -41,7 +50,9 @@
                         </div>
                     </div>
                 </div>
-                <button class="auth-btn" onclick="openAuthModal('login')">Đăng Nhập</button>
+                <button class="auth-btn animated-shine-btn" onclick="openAuthModal('login')">
+                    <i class="bi bi-box-arrow-in-right"></i> Đăng Nhập
+                </button>
             </div>
         </div>
     </header>
@@ -51,12 +62,14 @@
 
         <!-- ==================== VIEW 1: LANDING PAGE ==================== -->
         <section id="view-landing" class="view-section active">
-            <!-- Hero Section -->
+            <!-- Hero Section (Parkland Luxury Style) -->
             <div class="hero">
                 <div class="hero-content">
-                    <span class="badge-pill">Nền Tảng Đào Tạo Bất Động Sản</span>
-                    <h1 class="hero-title">Hệ Thống Đào Tạo Theo Module & Video Bài Giảng Chuyên Nghiệp</h1>
-                    <p class="hero-desc">Tự học linh hoạt theo lộ trình các Module chuyên sâu. Tích hợp video HD, tóm tắt kiến thức, bài tập trắc nghiệm tự động & cấp chứng chỉ hoàn thành.</p>
+                    <span class="badge-pill">
+                        <i class="bi bi-patch-check-fill text-[#FFD5AE]"></i> Đào Tạo Doanh Nghiệp Queen Land
+                    </span>
+                    <h1 class="hero-title">Hệ Thống Đào Tạo Nội Bộ Bất Động Sản Chuyên Nghiệp</h1>
+                    <p class="hero-desc">Tự học linh hoạt theo lộ trình các Module chuyên sâu. Tích hợp video HD, tóm tắt quy trình dự án, kiểm tra đánh giá tự động và cấp chứng nhận nội bộ Queen Land.</p>
                     
                     <div class="hero-stats-grid">
                         <div class="stat-card">
@@ -78,8 +91,12 @@
                     </div>
 
                     <div class="hero-actions">
-                        <button class="btn btn-primary" onclick="switchView('portal')">Trải Nghiệm Lớp Học Ngay</button>
-                        <a href="#curriculum" class="btn btn-secondary">Xem Chương Trình Học</a>
+                        <button class="btn btn-primary animated-shine-btn" onclick="switchView('portal')">
+                            <i class="bi bi-play-circle-fill"></i> Trải Nghiệm Lớp Học Ngay
+                        </button>
+                        <a href="#curriculum" class="btn btn-secondary" style="background:#ffffff; color:#2F2D74; border:1px solid #cbd5e1; font-weight:800; border-radius:0.75rem; padding:0.625rem 1.25rem;">
+                            <i class="bi bi-journal-text"></i> Xem Chương Trình Học
+                        </a>
                     </div>
                 </div>
                 
@@ -90,7 +107,9 @@
                     </div>
                     <div class="preview-screen" onclick="switchView('portal')">
                         <div class="play-overlay">
-                            <div class="play-icon">▶</div>
+                            <div class="play-icon">
+                                <i class="bi bi-play-fill text-white"></i>
+                            </div>
                             <span>Bấm để vào phòng học demo</span>
                         </div>
                         <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80" alt="LMS Preview" class="preview-img">
@@ -98,16 +117,28 @@
                 </div>
             </div>
 
+            <!-- Infinite Kinetic Marquee (Parkland Style) -->
+            <div class="marquee-container" style="max-width: 1400px; margin: 20px auto 0;">
+                <div class="marquee-track">
+                    <span>QUEEN LAND ACADEMY • HỆ THỐNG ĐÀO TẠO BẤT ĐỘNG SẢN CHUYÊN NGHIỆP • CHUẨN HÓA QUY TRÌNH TƯ VẤN • DỰ ÁN ĐÔ THỊ & BIỂN • CHỨNG CHỈ NỘI BỘ • </span>
+                    <span aria-hidden="true">QUEEN LAND ACADEMY • HỆ THỐNG ĐÀO TẠO BẤT ĐỘNG SẢN CHUYÊN NGHIỆP • CHUẨN HÓA QUY TRÌNH TƯ VẤN • DỰ ÁN ĐÔ THỊ & BIỂN • CHỨNG CHỈ NỘI BỘ • </span>
+                </div>
+            </div>
+
             <!-- AUTH GUARD: GATED CONTENT LOCK SCREEN (SHOWN WHEN LOGGED OUT) -->
             <div id="auth-guard-locked-screen" style="display:none; max-width:850px; margin:30px auto; background:#ffffff; border:1px solid #e2e8f0; border-radius:16px; padding:36px 24px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.04);">
                 <div style="width:52px; height:52px; background:#fef3c7; color:#b45309; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                    <i class="bi bi-shield-lock-fill text-2xl"></i>
                 </div>
-                <h2 style="font-size:1.35rem; font-weight:800; color:#0f172a; margin-bottom:8px;">Nội Dung Đào Tạo Bảo Mật Nội Bộ</h2>
+                <h2 style="font-family:var(--font-sans); font-size:1.35rem; font-weight:800; color:#0f172a; margin-bottom:8px;">Nội Dung Đào Tạo Bảo Mật Nội Bộ</h2>
                 <p style="font-size:0.85rem; color:#64748b; max-width:560px; margin:0 auto 20px; line-height:1.5;">Toàn bộ video bài giảng, tài liệu dự án và bài kiểm tra thuộc giáo trình nội bộ của Khối Kinh Doanh. Vui lòng đăng nhập bằng Mã Nhân Viên để truy cập khóa học.</p>
                 <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
-                    <button class="btn btn-primary" style="padding:10px 24px; font-size:0.85rem;" onclick="openAuthModal('login')">Đăng Nhập Bằng Mã Nhân Viên</button>
-                    <button class="btn btn-secondary" id="btn-guard-reg" style="padding:10px 20px; font-size:0.85rem;" onclick="openAuthModal('register')">Đăng Ký Tài Khoản</button>
+                    <button class="btn btn-primary animated-shine-btn" style="padding:10px 24px; font-size:0.85rem;" onclick="openAuthModal('login')">
+                        <i class="bi bi-key-fill"></i> Đăng Nhập Bằng Mã Nhân Viên
+                    </button>
+                    <button class="btn btn-secondary" id="btn-guard-reg" style="padding:10px 20px; font-size:0.85rem;" onclick="openAuthModal('register')">
+                        <i class="bi bi-person-plus-fill"></i> Đăng Ký Tài Khoản
+                    </button>
                 </div>
             </div>
 
@@ -124,7 +155,7 @@
 
                     <!-- BỘ LỌC KHÓA HỌC: CÓ NÚT TẤT CẢ KHÓA HỌC ĐỂ QUAY LẠI BẤT KỲ LÚC NÀO -->
                     <div class="course-filter-bar">
-                        <span class="filter-bar-title">Lọc Khóa Học:</span>
+                        <span class="filter-bar-title"><i class="bi bi-funnel-fill text-primary"></i> Lọc Khóa Học:</span>
                         <div class="filter-tabs-group" id="course-filter-tabs">
                             <!-- RENDER DYNAMICALLY BY app.js -->
                         </div>
@@ -139,9 +170,10 @@
                 <div id="curriculum-modules-view" style="display: none;">
                     <div class="breadcrumb-bar">
                         <button class="breadcrumb-back-btn" onclick="backToCoursesList()">
-                            ← Quay Lại Danh Sách Chương Trình Học
+                            <i class="bi bi-arrow-left"></i> Quay Lại Danh Sách Chương Trình Học
                         </button>
                     </div>
+
 
                     <!-- Selected Course Header Info Banner -->
                     <div class="selected-course-banner" id="selected-course-banner">
@@ -190,7 +222,7 @@
                     <!-- LEFT SIDEBAR: Modules Accordion -->
                     <aside class="lms-sidebar">
                         <div class="sidebar-header">
-                            <h3>📜 Lộ Trình Bài Học</h3>
+                            <h3><i class="bi bi-journal-bookmark-fill text-primary"></i> Lộ Trình Bài Học</h3>
                             <span class="sidebar-sub">Bấm chọn bài để phát Video</span>
                         </div>
 
@@ -199,19 +231,19 @@
                             <div class="accordion-item completed-mod">
                                 <div class="accordion-header" onclick="toggleAccordion('mod1')">
                                     <div class="mod-title">
-                                        <span class="mod-icon">✓</span>
+                                        <span class="mod-icon"><i class="bi bi-check-circle-fill" style="color:var(--secondary-brand);"></i></span>
                                         <span>Module 1: Kiến Thức Nền</span>
                                     </div>
-                                    <span class="arrow">▼</span>
+                                    <span class="arrow"><i class="bi bi-chevron-down"></i></span>
                                 </div>
                                 <div class="accordion-body" id="mod1">
                                     <div class="lesson-item done" onclick="selectLesson(1, 1)">
-                                        <span class="status-icon">✓</span>
+                                        <span class="status-icon"><i class="bi bi-check2"></i></span>
                                         <span class="lesson-name">1.1 Giới thiệu tổng quan hệ thống</span>
                                         <span class="duration">10:15</span>
                                     </div>
                                     <div class="lesson-item done" onclick="selectLesson(1, 2)">
-                                        <span class="status-icon">✓</span>
+                                        <span class="status-icon"><i class="bi bi-check2"></i></span>
                                         <span class="lesson-name">1.2 Các nguyên lý hoạt động</span>
                                         <span class="duration">15:30</span>
                                     </div>
@@ -222,24 +254,24 @@
                             <div class="accordion-item active-mod">
                                 <div class="accordion-header" onclick="toggleAccordion('mod2')">
                                     <div class="mod-title">
-                                        <span class="mod-icon">⏳</span>
+                                        <span class="mod-icon"><i class="bi bi-hourglass-split" style="color:var(--warning);"></i></span>
                                         <span>Module 2: Quy Trình Thực Hành</span>
                                     </div>
-                                    <span class="arrow">▼</span>
+                                    <span class="arrow"><i class="bi bi-chevron-down"></i></span>
                                 </div>
                                 <div class="accordion-body open" id="mod2">
                                     <div class="lesson-item done" onclick="selectLesson(2, 1)">
-                                        <span class="status-icon">✓</span>
+                                        <span class="status-icon"><i class="bi bi-check2"></i></span>
                                         <span class="lesson-name">2.1 Khởi tạo quy trình chuẩn</span>
                                         <span class="duration">12:00</span>
                                     </div>
                                     <div class="lesson-item playing" id="lesson-2-2" onclick="selectLesson(2, 2)">
-                                        <span class="status-icon">▶</span>
+                                        <span class="status-icon"><i class="bi bi-play-fill"></i></span>
                                         <span class="lesson-name">2.2 Hướng dẫn Video thực hành từng bước</span>
                                         <span class="duration">18:45</span>
                                     </div>
                                     <div class="lesson-item" onclick="selectLesson(2, 3)">
-                                        <span class="status-icon">⚪</span>
+                                        <span class="status-icon"><i class="bi bi-circle"></i></span>
                                         <span class="lesson-name">2.3 Kiểm tra Module & Bài tập</span>
                                         <span class="duration">15:00</span>
                                     </div>
@@ -250,14 +282,14 @@
                             <div class="accordion-item locked-mod">
                                 <div class="accordion-header" onclick="toggleAccordion('mod3')">
                                     <div class="mod-title">
-                                        <span class="mod-icon">🔒</span>
+                                        <span class="mod-icon"><i class="bi bi-lock-fill"></i></span>
                                         <span>Module 3: Tối Ưu Hóa (Khóa)</span>
                                     </div>
-                                    <span class="arrow">▶</span>
+                                    <span class="arrow"><i class="bi bi-chevron-right"></i></span>
                                 </div>
                                 <div class="accordion-body" id="mod3">
                                     <div class="lesson-item locked-item">
-                                        <span class="status-icon">🔒</span>
+                                        <span class="status-icon"><i class="bi bi-lock"></i></span>
                                         <span class="lesson-name">3.1 Phân tích dữ liệu & Tối ưu</span>
                                         <span class="duration">20:00</span>
                                     </div>
@@ -294,8 +326,8 @@
                                     <button class="speed-btn" onclick="setSpeed(2.0)">2.0x</button>
                                 </div>
 
-                                <button class="btn btn-complete" id="btn-mark-complete" onclick="markLessonComplete()">
-                                    ✓ Đánh dấu đã xem xong
+                                <button class="btn btn-complete animated-shine-btn" id="btn-mark-complete" onclick="markLessonComplete()">
+                                    <span><i class="bi bi-check2-circle"></i> Đánh dấu đã xem xong</span>
                                 </button>
                             </div>
                         </div>
@@ -303,10 +335,10 @@
                         <!-- TABBED CONTENT AREA BELOW VIDEO -->
                         <div class="tabs-container">
                             <div class="tabs-header">
-                                <button class="tab-btn active" onclick="switchTab('notes')">📌 Tóm Tắt Bài Học</button>
-                                <button class="tab-btn" onclick="switchTab('quiz')">📝 Bài Kiểm Tra Module</button>
-                                <button class="tab-btn" onclick="switchTab('resources')">📁 Tài Liệu Tải Về</button>
-                                <button class="tab-btn" onclick="switchTab('discussion')">💬 Thảo Luận (3)</button>
+                                <button class="tab-btn active" onclick="switchTab('notes')"><i class="bi bi-card-text"></i> Tóm Tắt Bài Học</button>
+                                <button class="tab-btn" onclick="switchTab('quiz')"><i class="bi bi-patch-question"></i> Bài Kiểm Tra Module</button>
+                                <button class="tab-btn" onclick="switchTab('resources')"><i class="bi bi-folder2-open"></i> Tài Liệu Tải Về</button>
+                                <button class="tab-btn" onclick="switchTab('discussion')"><i class="bi bi-chat-dots"></i> Thảo Luận (3)</button>
                             </div>
 
                             <div class="tab-content-box">
@@ -347,32 +379,34 @@
                                     <h4>Tài Liệu Hướng Dẫn Kèm Theo</h4>
                                     <div class="resources-list">
                                         <div class="resource-item">
-                                            <span class="file-icon">📄</span>
+                                            <span class="file-icon"><i class="bi bi-file-earmark-pdf-fill" style="color:#ef4444;"></i></span>
                                             <div class="file-info">
                                                 <strong>Slide_Huong_Dan_Module_2.pdf</strong>
                                                 <span>Dung lượng: 2.4 MB • PDF Document</span>
                                             </div>
-                                            <button class="btn-download" onclick="alert('Đã tải xuống tài liệu mẫu Slide_Huong_Dan_Module_2.pdf')">📥 Tải về</button>
+                                            <button class="btn-download" onclick="alert('Đã tải xuống tài liệu mẫu Slide_Huong_Dan_Module_2.pdf')"><i class="bi bi-download"></i> Tải về</button>
                                         </div>
 
                                         <div class="resource-item">
-                                            <span class="file-icon">📊</span>
+                                            <span class="file-icon"><i class="bi bi-file-earmark-excel-fill" style="color:#10b981;"></i></span>
                                             <div class="file-info">
                                                 <strong>File_Mau_Thuc_Hanh.xlsx</strong>
                                                 <span>Dung lượng: 1.1 MB • Excel File</span>
                                             </div>
-                                            <button class="btn-download" onclick="alert('Đã tải xuống file Excel thực hành mẫu')">📥 Tải về</button>
+                                            <button class="btn-download" onclick="alert('Đã tải xuống file Excel thực hành mẫu')"><i class="bi bi-download"></i> Tải về</button>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- TAB 4: DISCUSSION & INSTRUCTOR Q&A -->
                                 <div id="tab-discussion" class="tab-pane">
-                                    <div style="background:#e0e7ff; padding:12px; border-radius:8px; margin-bottom:14px; border:1px solid #c7d2fe; display:flex; align-items:center; gap:10px;">
-                                        <span style="font-size:1.5rem;">👨‍🏫</span>
+                                    <div style="background:#f5f3ff; padding:12px 16px; border-radius:10px; margin-bottom:14px; border:1px solid #ddd6fe; display:flex; align-items:center; gap:12px;">
+                                        <div style="width:40px; height:40px; border-radius:50%; background:#2F2D74; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
+                                            <i class="bi bi-person-video3"></i>
+                                        </div>
                                         <div>
-                                            <strong style="color:#3730a3; font-size:0.85rem;">HỎI ĐÁP & TRAO ĐỔI CÙNG GIẢNG VIÊN ĐÀO TẠO</strong>
-                                            <p style="font-size:0.78rem; color:#4338ca;">Gửi thắc mắc về bài học 2.2, ban huấn luyện & giảng viên sẽ phản hồi trực tiếp!</p>
+                                            <strong style="color:#2F2D74; font-size:0.85rem; font-family:var(--font-label);">HỎI ĐÁP & TRAO ĐỔI CÙNG GIẢNG VIÊN ĐÀO TẠO</strong>
+                                            <p style="font-size:0.78rem; color:#475569; margin:2px 0 0;">Gửi thắc mắc về bài học 2.2, ban huấn luyện & giảng viên sẽ phản hồi trực tiếp!</p>
                                         </div>
                                     </div>
 
@@ -386,7 +420,7 @@
                                             </div>
                                         </div>
                                         <div class="comment-card reply">
-                                            <div class="c-avatar teacher" style="background:#4f46e5;">👨‍🏫 GV</div>
+                                            <div class="c-avatar teacher" style="background:#2F2D74;"><i class="bi bi-patch-check-fill" style="color:var(--accent);"></i> GV</div>
                                             <div class="c-body">
                                                 <strong>Giảng Viên Ban Đào Tạo <span class="c-time">• 1 giờ trước</span></strong>
                                                 <p>Chào An, tại phút 05:20 hệ thống chỉ yêu cầu quyền User tiêu chuẩn, bạn không cần dùng quyền Admin nhé!</p>
@@ -394,7 +428,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
 

@@ -364,22 +364,22 @@ function renderStudentCoursesCatalog(filterDiv) {
     container.innerHTML = filteredCourses.map(course => {
         const isPublic = course.access === 'PUBLIC';
         const accessLabel = isPublic ? 'Dành Cho Toàn Bộ Sales' : `Khóa Riêng ${course.access}`;
-        const accessClass = isPublic ? 'public-badge' : 'div-badge';
+        const accessClass = isPublic ? 'badge-forest' : 'div-badge';
 
         return `
-        <div class="course-program-card">
+        <div class="course-program-card card-premium">
             <div class="course-card-top">
-                <span class="course-category-badge">${course.category}</span>
+                <span class="course-category-badge badge-gold">${course.category}</span>
                 <span class="course-access-badge ${accessClass}">${accessLabel}</span>
             </div>
             <h3>${course.title}</h3>
             <p class="course-desc">${course.desc}</p>
             
             <div class="course-stats-pills">
-                <span class="course-stat-pill">${course.stats.modules} Module</span>
-                <span class="course-stat-pill">${course.stats.videos} Video Bài Giảng</span>
-                <span class="course-stat-pill">${course.stats.duration}</span>
-                <span class="course-stat-pill">${course.stats.materials} Tài Liệu</span>
+                <span class="course-stat-pill"><i class="bi bi-collection"></i> ${course.stats.modules} Module</span>
+                <span class="course-stat-pill"><i class="bi bi-play-circle"></i> ${course.stats.videos} Video Bài Giảng</span>
+                <span class="course-stat-pill"><i class="bi bi-clock"></i> ${course.stats.duration}</span>
+                <span class="course-stat-pill"><i class="bi bi-file-earmark-text"></i> ${course.stats.materials} Tài Liệu</span>
             </div>
 
             <div class="course-progress-mini">
@@ -392,8 +392,8 @@ function renderStudentCoursesCatalog(filterDiv) {
                 </div>
             </div>
 
-            <button class="btn-view-course-modules" onclick="openCourseModules('${course.id}')">
-                <span>Xem Các Module Bài Học</span>
+            <button class="btn-view-course-modules animated-shine-btn" onclick="openCourseModules('${course.id}')">
+                <span>Xem Các Module Bài Học <i class="bi bi-arrow-right"></i></span>
             </button>
         </div>
         `;
@@ -422,19 +422,21 @@ function openCourseModules(courseId) {
     if (banner) {
         banner.innerHTML = `
             <div>
-                <span style="font-size:0.75rem; background:rgba(255,255,255,0.15); padding:3px 10px; border-radius:20px; font-weight:700;">${course.category}</span>
-                <h2 style="margin-top:6px;">${course.title}</h2>
-                <p>${course.desc}</p>
-                <div class="banner-meta-row">
-                    <span>Giảng viên: <strong>${course.instructor}</strong></span>
-                    <span><strong>${course.stats.modules} Module</strong></span>
-                    <span><strong>${course.stats.videos} Video</strong></span>
-                    <span><strong>${course.stats.duration}</strong></span>
-                    <span>Tiến độ: <strong>${course.progress}%</strong></span>
+                <span class="badge-gold" style="font-size:0.75rem; padding:4px 12px; border-radius:20px; font-weight:700; display:inline-block; margin-bottom:8px;">${course.category}</span>
+                <h2 style="margin-top:4px; font-family: var(--font-label); font-weight:800; color: #ffffff;">${course.title}</h2>
+                <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; line-height: 1.5; margin: 8px 0 16px;">${course.desc}</p>
+                <div class="banner-meta-row" style="display:flex; flex-wrap:wrap; gap:16px; font-size:0.85rem; color: rgba(255,255,255,0.9);">
+                    <span><i class="bi bi-person-badge"></i> Giảng viên: <strong>${course.instructor}</strong></span>
+                    <span><i class="bi bi-collection"></i> <strong>${course.stats.modules} Module</strong></span>
+                    <span><i class="bi bi-play-circle"></i> <strong>${course.stats.videos} Video</strong></span>
+                    <span><i class="bi bi-clock"></i> <strong>${course.stats.duration}</strong></span>
+                    <span><i class="bi bi-graph-up-arrow"></i> Tiến độ: <strong>${course.progress}%</strong></span>
                 </div>
             </div>
             <div style="flex-shrink:0; text-align:right;">
-                <button class="btn" style="background:#ffffff; color:#312e81; font-weight:800; padding:10px 18px;" onclick="enterCourseLesson('${course.id}', 1, 1)">Vào Học Ngay</button>
+                <button class="btn animated-shine-btn" style="background:#ffffff; color:#2F2D74; font-weight:800; padding:12px 24px; border:none; border-radius:8px; cursor:pointer;" onclick="enterCourseLesson('${course.id}', 1, 1)">
+                    <span>Vào Học Ngay <i class="bi bi-arrow-right"></i></span>
+                </button>
             </div>
         `;
     }
@@ -443,24 +445,31 @@ function openCourseModules(courseId) {
     if (modulesGrid) {
         modulesGrid.innerHTML = course.modules.map(mod => {
             let statusBadgeClass = 'locked';
-            if (mod.status === 'completed') statusBadgeClass = 'success';
-            if (mod.status === 'in-progress') statusBadgeClass = 'warning';
+            let statusIcon = '<i class="bi bi-lock-fill"></i>';
+            if (mod.status === 'completed') {
+                statusBadgeClass = 'success';
+                statusIcon = '<i class="bi bi-check-circle-fill"></i>';
+            }
+            if (mod.status === 'in-progress') {
+                statusBadgeClass = 'warning';
+                statusIcon = '<i class="bi bi-play-circle-fill"></i>';
+            }
 
             return `
-            <div class="module-card ${mod.status}">
-                <div class="module-status-badge ${statusBadgeClass}">${mod.statusText}</div>
+            <div class="module-card card-premium ${mod.status}">
+                <div class="module-status-badge ${statusBadgeClass}">${statusIcon} ${mod.statusText}</div>
                 <div class="module-header">
                     <span class="module-number">MODULE 0${mod.id}</span>
                     <h3>${mod.title}</h3>
                 </div>
                 <p class="module-desc">${mod.desc}</p>
                 <div class="module-meta">
-                    <span>${mod.meta.videos} Video</span>
-                    <span>${mod.meta.duration}</span>
-                    <span>${mod.meta.docs}</span>
+                    <span><i class="bi bi-play-circle"></i> ${mod.meta.videos} Video</span>
+                    <span><i class="bi bi-clock"></i> ${mod.meta.duration}</span>
+                    <span><i class="bi bi-file-earmark-text"></i> ${mod.meta.docs}</span>
                 </div>
-                <button class="${mod.buttonClass}" ${mod.status === 'locked' ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${mod.lessonId})">
-                    ${mod.buttonText}
+                <button class="${mod.buttonClass} animated-shine-btn" ${mod.status === 'locked' ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${mod.lessonId})">
+                    <span>${mod.buttonText}</span>
                 </button>
             </div>
             `;
