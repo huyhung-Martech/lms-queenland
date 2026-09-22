@@ -147,6 +147,9 @@
                 
                 <!-- CẤP ĐỘ 1: DANH SÁCH CHƯƠNG TRÌNH HỌC (COURSES CATALOG) -->
                 <div id="curriculum-courses-view">
+                    <!-- RESUME LEARNING BANNER (POPULATED BY app.js) -->
+                    <div id="resume-learning-container" style="display:none;"></div>
+
                     <div class="section-header">
                         <span class="section-tag">CHƯƠNG TRÌNH HỌC</span>
                         <h2>Lộ Trình Đào Tạo Bất Động Sản Chuyên Sâu</h2>
@@ -207,6 +210,9 @@
                         </button>
                         <button class="btn btn-secondary" onclick="backToCoursesList()" title="Quay lại danh mục tất cả khóa học">
                             <i class="bi bi-grid-3x3-gap-fill"></i> <span>Danh Mục Khóa Học</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="toggleSidebarFocus()" id="btn-toggle-sidebar" title="Thu gọn hoặc mở rộng danh sách bài học bên trái">
+                            <i class="bi bi-layout-sidebar-inset"></i> <span id="text-toggle-sidebar">Thu Gọn Lộ Trình</span>
                         </button>
                     </div>
                     <div class="lms-title-group">
@@ -318,11 +324,20 @@
                                 </video>
                             </div>
                             
-                            <!-- Custom Player Speed Control Bar -->
+                            <!-- Custom Player Speed & Navigation Bar -->
                             <div class="video-controls-bar">
                                 <div class="video-title-info">
                                     <span class="playing-tag">ĐANG PHÁT BÀI 2.2</span>
                                     <h3 id="video-lesson-title">Hướng dẫn Video thực hành từng bước</h3>
+                                </div>
+
+                                <div class="video-nav-group">
+                                    <button class="video-nav-btn" id="btn-prev-lesson" onclick="goToPrevLesson()" title="Bài học trước đó">
+                                        <i class="bi bi-chevron-left"></i> <span>Bài Trước</span>
+                                    </button>
+                                    <button class="video-nav-btn" id="btn-next-lesson" onclick="goToNextLesson()" title="Bài học tiếp theo">
+                                        <span>Bài Sau</span> <i class="bi bi-chevron-right"></i>
+                                    </button>
                                 </div>
 
                                 <div class="speed-controls">
@@ -351,11 +366,11 @@
                             <div class="tab-content-box">
                                 <!-- TAB 1: NOTES -->
                                 <div id="tab-notes" class="tab-pane active">
-                                    <h4>Ghi Chú Trọng Tâm Bài Học 2.2</h4>
+                                    <h4>Ghi Chú Trọng Tâm Bài Học (Bấm vào phút để tua video)</h4>
                                     <ul class="notes-list">
-                                        <li><strong>Bước 1:</strong> Chuẩn bị môi trường và tải về file mẫu đính kèm trong tab "Tài liệu tải về".</li>
-                                        <li><strong>Bước 2:</strong> Thực hiện theo đúng thứ tự các bước hướng dẫn từ phút <code>03:15</code> đến <code>10:40</code> của video.</li>
-                                        <li><strong>Lưu ý quan trọng:</strong> Luôn kiểm tra kết quả đầu ra sau khi chạy câu lệnh thiết lập để tránh lỗi xung đột hệ thống.</li>
+                                        <li><span class="timestamp-tag" onclick="seekToTimestamp(15)"><i class="bi bi-play-circle"></i> 00:15</span> <strong>Tổng quan:</strong> Chuẩn bị tài liệu dự án và các bước thiết lập môi trường mẫu.</li>
+                                        <li><span class="timestamp-tag" onclick="seekToTimestamp(195)"><i class="bi bi-play-circle"></i> 03:15</span> <strong>Trọng tâm:</strong> Quy trình tiếp cận khách hàng cao cấp và phân tích bảng giá.</li>
+                                        <li><span class="timestamp-tag" onclick="seekToTimestamp(640)"><i class="bi bi-play-circle"></i> 10:40</span> <strong>Thực hành:</strong> Kịch bản tư vấn giá và giải đáp thắc mắc pháp lý căn hộ.</li>
                                     </ul>
                                 </div>
 
@@ -511,6 +526,9 @@
 
         </div>
     </div>
+
+    <!-- CERTIFICATE MODAL CONTAINER -->
+    <div id="certificate-modal-container" style="display:none;"></div>
 
     <script src="app.js"></script>
 </body>

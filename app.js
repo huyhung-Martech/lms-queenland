@@ -80,41 +80,413 @@ function setSpeed(rate) {
     });
 }
 
-// VIDEO WATCH PROGRESS % MEASUREMENT & COMPLETION ENFORCEMENT
-let isCompleted = false;
-function markLessonComplete() {
+/* ==========================================================================
+   5-STEP LEARNING WORKFLOW & PROGRESSION STATE ENGINE (COURSERA / UDEMY STANDARD)
+   ========================================================================== */
+
+function getUserKey() {
+    return currentUser ? currentUser.empId : 'DEFAULT_USER';
+}
+
+function getStudentProgress(courseId) {
+    const key = `lms_progress_${getUserKey()}_${courseId}`;
+    let data = JSON.parse(localStorage.getItem(key) || 'null');
+    if (!data) {
+        data = {
+            completedLessons: ['m1_l1'], // Default: Lesson 1.1 started
+            passedQuizzes: [],
+            lastActive: { modNum: 1, lessonNum: 1, time: 0 },
+            certificateEarned: false,
+            earnedDate: null
+        };
+        localStorage.setItem(key, JSON.stringify(data));
+    }
+    return data;
+}
+
+function saveStudentProgress(courseId, data) {
+    const key = `lms_progress_${getUserKey()}_${courseId}`;
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+function calculateCourseProgressPercent(courseId) {
+    reloadCoursesCatalog();
+    const course = coursesCatalog.find(c => c.id === courseId) || coursesCatalog[0];
+    if (!course) return 0;
+    const prog = getStudentProgress(courseId);
+    
+    let totalLessonsCount = 0;
+    (course.modules || []).forEach(m => {
+        const count = (m.lessons && m.lessons.length) ? m.lessons.length : ((m.meta && m.meta.videos) ? parseInt(m.meta.videos) : 2);
+        totalLessonsCount += count;
+    });
+
+    if (totalLessonsCount === 0) return 0;
+    const doneCount = prog.completedLessons.length;
+    const percent = Math.min(100, Math.round((doneCount / totalLessonsCount) * 100));
+    return percent;
+}
+
+function isLessonUnlocked(course, modNum, lessonNum) {
+    if (modNum === 1 && lessonNum === 1) return true;
+    if (!isModuleUnlocked(course, modNum)) return false;
+    if (lessonNum === 1) return true;
+    const prog = getStudentProgress(course.id);
+    const prevLessonKey = `m${modNum}_l${lessonNum - 1}`;
+    return prog.completedLessons.includes(prevLessonKey);
+}
+
+function isModuleUnlocked(course, modNum) {
+    if (modNum === 1) return true;
+    const prog = getStudentProgress(course.id);
+    const prevModNum = modNum - 1;
+    if (prog.passedQuizzes.includes(`m${prevModNum}`)) return true;
+    const prevMod = (course.modules || []).find(m => m.id === prevModNum);
+    if (prevMod) {
+        const count = (prevMod.lessons && prevMod.lessons.length) ? prevMod.lessons.length : 2;
+        let allDone = true;
+        for (let i = 1; i <= count; i++) {
+            if (!prog.completedLessons.includes(`m${prevModNum}_l${i}`)) {
+                allDone = false;
+                break;
+            }
+        }
+        return allDone;
+    }
+    return false;
+}
+
+// VIDEO WATCH PROGRESS % MEASUREMENT & COMPLETION ENFORCEMENT (ANTI-CHEAT)
+let currentActiveModNum = 1;
+let currentActiveLessonNum = 1;
+let autoAdvanceInterval = null;
+
+function clearAutoAdvanceToast() {
+    if (autoAdvanceInterval) {
+        clearInterval(autoAdvanceInterval);
+        autoAdvanceInterval = null;
+    }
+    const existing = document.getElementById('lms-auto-advance-toast');
+    if (existing) existing.remove();
+}
+
+function showAutoAdvanceToast() {
+    clearAutoAdvanceToast();
+
+    const videoWrapper = document.querySelector('.video-wrapper');
+    if (!videoWrapper) return;
+
+    let secondsLeft = 5;
+    const toast = document.createElement('div');
+    toast.className = 'auto-advance-toast';
+    toast.id = 'lms-auto-advance-toast';
+    toast.innerHTML = `
+        <div class="count-badge" id="auto-advance-countdown">${secondsLeft}</div>
+        <div style="font-size:0.78rem; line-height:1.3; color:#ffffff;">
+            <strong>Đã xem hết bài giảng!</strong><br>
+            Tự động chuyển sang bài tiếp theo sau <span id="auto-advance-countdown-text">${secondsLeft}s</span>...
+        </div>
+        <button class="btn btn-primary animated-shine-btn" style="padding:4px 10px; font-size:0.75rem; background:#FFD5AE; color:#2F2D74; font-weight:800; border:none; cursor:pointer;" onclick="dismissAutoAdvance(true)">
+            Chuyển Ngay <i class="bi bi-chevron-right"></i>
+        </button>
+        <button class="btn" style="padding:4px 8px; font-size:0.75rem; background:rgba(255,255,255,0.15); color:#ffffff; border:none; cursor:pointer;" onclick="dismissAutoAdvance(false)">
+            Hủy
+        </button>
+    `;
+    videoWrapper.appendChild(toast);
+
+    autoAdvanceInterval = setInterval(() => {
+        secondsLeft--;
+        const badge = document.getElementById('auto-advance-countdown');
+        const text = document.getElementById('auto-advance-countdown-text');
+        if (badge) badge.textContent = secondsLeft;
+        if (text) text.textContent = `${secondsLeft}s`;
+
+        if (secondsLeft <= 0) {
+            clearAutoAdvanceToast();
+            goToNextLesson();
+        }
+    }, 1000);
+}
+
+function dismissAutoAdvance(proceed) {
+    clearAutoAdvanceToast();
+    if (proceed) {
+        goToNextLesson();
+    }
+}
+
+function attachVideoListeners(video, courseId, modNum, lessonNum) {
+    if (!video) return;
+    const minPercentRequired = parseInt(localStorage.getItem('lms_min_watch_percent') || '80');
+
+    video.addEventListener('timeupdate', () => {
+        if (!video.duration || video.duration <= 0) return;
+        const watchedPercent = Math.round((video.currentTime / video.duration) * 100);
+
+        const btn = document.getElementById('btn-mark-complete');
+        const prog = getStudentProgress(courseId);
+        const lessonKey = `m${modNum}_l${lessonNum}`;
+        const isDone = prog.completedLessons.includes(lessonKey);
+
+        if (!isDone && watchedPercent >= minPercentRequired && btn) {
+            btn.innerHTML = '<span><i class="bi bi-check2-circle"></i> Đủ điều kiện hoàn thành (Bấm để xác nhận)</span>';
+            btn.style.background = '#059669';
+        }
+    });
+
+    video.addEventListener('ended', () => {
+        markLessonComplete(true);
+        showAutoAdvanceToast();
+    });
+}
+
+function markLessonComplete(isAuto = false) {
+    if (!currentSelectedCourse) return;
     const video = document.getElementById('lms-video');
-    const minPercentRequired = 80; // Required minimum watch % threshold
+    const minPercentRequired = parseInt(localStorage.getItem('lms_min_watch_percent') || '80');
     
     let watchedPercent = 100;
     if (video && video.duration > 0) {
         watchedPercent = Math.round((video.currentTime / video.duration) * 100);
     }
 
-    // If user hasn't watched enough % of the video yet
-    if (watchedPercent < minPercentRequired && !isCompleted) {
+    const prog = getStudentProgress(currentSelectedCourse.id);
+    const lessonKey = `m${currentActiveModNum}_l${currentActiveLessonNum}`;
+    const alreadyDone = prog.completedLessons.includes(lessonKey);
+
+    // Anti-cheat verification
+    if (!alreadyDone && watchedPercent < minPercentRequired && !isAuto) {
         alert(`BẮT BUỘC XEM VIDEO THỰC TẾ:\nHệ thống đo lường bạn mới xem ${watchedPercent}% video bài giảng.\nBạn cần xem tối thiểu ${minPercentRequired}% thời lượng video để được tính hoàn thành bài học này!`);
         return;
     }
 
+    if (!alreadyDone) {
+        prog.completedLessons.push(lessonKey);
+        prog.lastActive = { modNum: currentActiveModNum, lessonNum: currentActiveLessonNum, time: 0 };
+        saveStudentProgress(currentSelectedCourse.id, prog);
+    }
+
+    // Update UI button
     const btn = document.getElementById('btn-mark-complete');
+    if (btn) {
+        btn.innerHTML = '<span><i class="bi bi-check2-all"></i> Đã Hoàn Thành</span>';
+        btn.style.background = '#059669';
+    }
+
+    // Update Progress Bar
+    const newPercent = calculateCourseProgressPercent(currentSelectedCourse.id);
     const progressFill = document.getElementById('progress-fill');
     const progressText = document.getElementById('progress-text');
-    const headerProgress = document.getElementById('header-user-progress');
+    if (progressFill) progressFill.style.width = `${newPercent}%`;
+    if (progressText) progressText.textContent = `${newPercent}% (${prog.completedLessons.length} Bài)`;
 
-    if (!isCompleted) {
-        isCompleted = true;
-        btn.textContent = 'Đã Hoàn Thành';
-        btn.style.background = '#059669';
-        
-        progressFill.style.width = '48%';
-        progressText.textContent = '48% (4/8 Bài)';
-        if (headerProgress) headerProgress.textContent = 'Chuỗi 5 Ngày Học • 48% Hoàn thành';
-        
-        alert('Chúc mừng bạn đã xem đủ thời lượng video và hoàn thành Bài 2.2. Module 2.3 đã sẵn sàng!');
-    } else {
-        alert('Bạn đã hoàn thành bài học này trước đó.');
+    // Re-render sidebar to unlock next lesson
+    renderClassroomSidebar(currentSelectedCourse, currentActiveModNum, currentActiveLessonNum);
+
+    if (!isAuto) {
+        alert(`CHÚC MỪNG!\nBạn đã hoàn thành Bài ${currentActiveModNum}.${currentActiveLessonNum}. Bài học tiếp theo đã sẵn sàng!`);
     }
+
+    if (newPercent >= 100) {
+        checkCourseCompletion(currentSelectedCourse.id);
+    }
+}
+
+// CLASSROOM NAVIGATION: NEXT / PREVIOUS LESSONS
+function goToNextLesson() {
+    if (!currentSelectedCourse) return;
+    const prog = getStudentProgress(currentSelectedCourse.id);
+    const targetMod = (currentSelectedCourse.modules || []).find(m => m.id === currentActiveModNum);
+    if (!targetMod) return;
+
+    const lessons = targetMod.lessons || [];
+    const currentIdx = lessons.findIndex(l => l.id === currentActiveLessonNum);
+
+    if (currentIdx !== -1 && currentIdx < lessons.length - 1) {
+        const nextLesson = lessons[currentIdx + 1];
+        if (isLessonUnlocked(currentSelectedCourse, currentActiveModNum, nextLesson.id)) {
+            enterCourseLesson(currentSelectedCourse.id, currentActiveModNum, nextLesson.id);
+        } else {
+            alert(`BÀI HỌC ĐANG KHÓA:\nBạn cần hoàn thành Bài ${currentActiveModNum}.${currentActiveLessonNum} để mở khóa bài tiếp theo!`);
+        }
+    } else {
+        const nextModNum = currentActiveModNum + 1;
+        const nextMod = (currentSelectedCourse.modules || []).find(m => m.id === nextModNum);
+        if (nextMod) {
+            if (isModuleUnlocked(currentSelectedCourse, nextModNum)) {
+                enterCourseLesson(currentSelectedCourse.id, nextModNum, 1);
+            } else {
+                alert(`HOÀN THÀNH VIDEO MODULE ${currentActiveModNum}!\n\nBạn đã xem xong toàn bộ video bài giảng của Module này. Hãy làm bài kiểm tra trong tab "Bài Kiểm Tra Module" (đạt từ 80% điểm) để mở khóa Module ${nextModNum}!`);
+                switchTab('quiz');
+            }
+        } else {
+            checkCourseCompletion(currentSelectedCourse.id);
+        }
+    }
+}
+
+function goToPrevLesson() {
+    if (!currentSelectedCourse) return;
+    const targetMod = (currentSelectedCourse.modules || []).find(m => m.id === currentActiveModNum);
+    if (!targetMod) return;
+
+    const lessons = targetMod.lessons || [];
+    const currentIdx = lessons.findIndex(l => l.id === currentActiveLessonNum);
+
+    if (currentIdx > 0) {
+        const prevLesson = lessons[currentIdx - 1];
+        enterCourseLesson(currentSelectedCourse.id, currentActiveModNum, prevLesson.id);
+    } else if (currentActiveModNum > 1) {
+        const prevModNum = currentActiveModNum - 1;
+        const prevMod = (currentSelectedCourse.modules || []).find(m => m.id === prevModNum);
+        if (prevMod && prevMod.lessons && prevMod.lessons.length > 0) {
+            const lastLesson = prevMod.lessons[prevMod.lessons.length - 1];
+            enterCourseLesson(currentSelectedCourse.id, prevModNum, lastLesson.id);
+        }
+    }
+}
+
+// TOGGLE FOCUS MODE (SIDEBAR COLLAPSE)
+function toggleSidebarFocus() {
+    const lmsBody = document.querySelector('.lms-body');
+    const textBtn = document.getElementById('text-toggle-sidebar');
+    if (lmsBody) {
+        lmsBody.classList.toggle('focus-mode');
+        const isFocus = lmsBody.classList.contains('focus-mode');
+        if (textBtn) {
+            textBtn.textContent = isFocus ? 'Hiện Lộ Trình' : 'Thu Gọn Lộ Trình';
+        }
+    }
+}
+
+// INTERACTIVE TIMESTAMP SEEK
+function seekToTimestamp(seconds) {
+    const video = document.getElementById('lms-video');
+    if (video) {
+        video.currentTime = seconds;
+        video.play().catch(() => {});
+    }
+}
+
+// RESUME LEARNING BANNER
+function renderResumeLearningBanner() {
+    const container = document.getElementById('resume-learning-container');
+    if (!container) return;
+
+    reloadCoursesCatalog();
+    const activeCourse = currentSelectedCourse || coursesCatalog[0];
+    if (!activeCourse) {
+        container.style.display = 'none';
+        return;
+    }
+
+    const prog = getStudentProgress(activeCourse.id);
+    const lastActive = prog.lastActive || { modNum: 1, lessonNum: 1 };
+    const percent = calculateCourseProgressPercent(activeCourse.id);
+
+    if (percent === 0 && (!prog.completedLessons || prog.completedLessons.length === 0)) {
+        container.style.display = 'none';
+        return;
+    }
+
+    const mod = (activeCourse.modules || []).find(m => m.id === lastActive.modNum) || (activeCourse.modules || [])[0];
+    const les = (mod && mod.lessons) ? (mod.lessons.find(l => l.id === lastActive.lessonNum) || mod.lessons[0]) : null;
+    const lessonTitle = les ? les.title : `Module ${lastActive.modNum}`;
+
+    container.style.display = 'block';
+    container.innerHTML = `
+        <div class="resume-learning-card">
+            <div>
+                <span class="badge-gold" style="font-size:0.7rem; padding:2px 8px; border-radius:10px; font-weight:800; display:inline-block; margin-bottom:4px;">
+                    <i class="bi bi-arrow-repeat"></i> HỌC TIẾP ĐIỂM DỪNG
+                </span>
+                <div class="resume-title">${activeCourse.title}</div>
+                <div class="resume-desc">Đang dừng tại: <strong>${lessonTitle}</strong> • Đã hoàn thành <strong>${percent}%</strong></div>
+            </div>
+            <button class="btn animated-shine-btn" style="background:#ffffff; color:#2F2D74; font-weight:800; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; flex-shrink:0;" onclick="enterCourseLesson('${activeCourse.id}', ${lastActive.modNum}, ${lastActive.lessonNum})">
+                <span>Tiếp Tục Học Ngay <i class="bi bi-play-circle-fill"></i></span>
+            </button>
+        </div>
+    `;
+}
+
+// CERTIFICATE GENERATOR & MODAL
+function checkCourseCompletion(courseId) {
+    const prog = getStudentProgress(courseId);
+    const percent = calculateCourseProgressPercent(courseId);
+    if (percent >= 100 && !prog.certificateEarned) {
+        prog.certificateEarned = true;
+        prog.earnedDate = new Date().toLocaleDateString('vi-VN');
+        saveStudentProgress(courseId, prog);
+        showCertificateModal(courseId);
+    }
+}
+
+function showCertificateModal(courseId) {
+    const container = document.getElementById('certificate-modal-container');
+    if (!container) return;
+
+    reloadCoursesCatalog();
+    const course = coursesCatalog.find(c => c.id === courseId) || coursesCatalog[0];
+    const user = currentUser || { name: 'Nguyễn Văn An', empId: 'NV-10892', team: 'Phòng KD 101', div: 'Khối Kinh Doanh 1' };
+    const certCode = 'QLA-CERT-' + Math.floor(100000 + Math.random() * 900000);
+    const issueDate = new Date().toLocaleDateString('vi-VN');
+
+    container.style.display = 'block';
+    container.innerHTML = `
+    <div class="certificate-modal-backdrop" onclick="closeCertificateModal(event)">
+        <div class="certificate-frame" onclick="event.stopPropagation()">
+            <div style="position:absolute; top:12px; right:16px; cursor:pointer;" onclick="closeCertificateModal()">
+                <i class="bi bi-x-circle-fill" style="font-size:1.5rem; color:#94a3b8;"></i>
+            </div>
+            
+            <div class="certificate-header-logo">
+                <i class="bi bi-award-fill" style="color:#d97706;"></i> QUEEN LAND ACADEMY
+            </div>
+            <div style="font-size:0.75rem; color:#64748b; letter-spacing:0.1em; text-transform:uppercase;">Hệ Thống Đào Tạo Doanh Nghiệp Chuẩn Quốc Tế</div>
+
+            <div class="certificate-title">CHỨNG NHẬN HOÀN THÀNH KHÓA HỌC</div>
+            <div style="font-size:0.85rem; color:#475569; margin-bottom:16px;">Ban Đào Tạo & Phát Triển Nguồn Nhân Lực chứng nhận học viên:</div>
+
+            <h2 style="font-family:var(--font-label); font-size:1.6rem; color:#1e1b4b; font-weight:900; margin-bottom:4px;">${user.name}</h2>
+            <div style="font-size:0.82rem; font-weight:700; color:#047857; margin-bottom:12px;">MÃ NHÂN VIÊN: ${user.empId} • ${user.team} (${user.div})</div>
+
+            <p style="font-size:0.85rem; color:#334155; line-height:1.5; max-width:480px; margin:0 auto 16px;">
+                Đã hoàn thành xuất sắc 100% thời lượng video bài giảng và vượt qua toàn bộ các bài kiểm tra đánh giá chất lượng của chương trình:
+            </p>
+
+            <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:10px 16px; font-weight:800; color:#2F2D74; font-size:0.95rem; margin-bottom:16px;">
+                ${course.title}
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; padding:0 20px; font-size:0.75rem; color:#64748b; margin-top:20px;">
+                <div style="text-align:left;">
+                    <div>Mã tra cứu: <strong>${certCode}</strong></div>
+                    <div>Ngày cấp: <strong>${issueDate}</strong></div>
+                </div>
+                <div style="text-align:center;">
+                    <div style="font-family:cursive; font-size:1.1rem; color:#0f172a;">Queen Land Academy</div>
+                    <div style="border-top:1px solid #94a3b8; padding-top:2px; font-weight:700;">HỘI ĐỒNG ĐÀO TẠO</div>
+                </div>
+            </div>
+
+            <div style="margin-top:24px; display:flex; justify-content:center; gap:12px;">
+                <button class="btn btn-primary" onclick="window.print()" style="font-size:0.82rem; padding:8px 16px;">
+                    <i class="bi bi-printer-fill"></i> In Chứng Nhận
+                </button>
+                <button class="btn btn-secondary" onclick="closeCertificateModal()" style="font-size:0.82rem; padding:8px 16px;">
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+    `;
+}
+
+function closeCertificateModal() {
+    const container = document.getElementById('certificate-modal-container');
+    if (container) container.style.display = 'none';
 }
 
 // Switch Content Tabs Below Video
@@ -130,17 +502,45 @@ function switchTab(tabId) {
     }
 }
 
+// QUIZ GATE SUBMISSION & MODULE UNLOCK
 function submitQuiz(event) {
     event.preventDefault();
+    if (!currentSelectedCourse) return;
+
+    const prog = getStudentProgress(currentSelectedCourse.id);
+    const quizKey = `m${currentActiveModNum}`;
+
+    if (!prog.passedQuizzes.includes(quizKey)) {
+        prog.passedQuizzes.push(quizKey);
+        saveStudentProgress(currentSelectedCourse.id, prog);
+    }
+
     const resultBox = document.getElementById('quiz-result');
     if (resultBox) {
         resultBox.style.display = 'block';
         resultBox.style.background = '#d1fae5';
         resultBox.style.color = '#065f46';
-        resultBox.style.padding = '12px';
+        resultBox.style.padding = '14px';
         resultBox.style.borderRadius = '8px';
         resultBox.style.marginTop = '12px';
-        resultBox.innerHTML = '<strong>KẾT QUẢ BÀI TEST:</strong> 100/100 Điểm (2/2 Câu Đúng).<br><span style="color:#047857; font-weight:700;">ĐẠT CHUẨN: Bạn đã hoàn thành bài kiểm tra đánh giá Module này!</span>';
+        resultBox.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                <i class="bi bi-patch-check-fill" style="font-size:1.2rem; color:#047857;"></i>
+                <strong>KẾT QUẢ ĐẠT CHUẨN: 100/100 ĐIỂM (ĐẠT YÊU CẦU)!</strong>
+            </div>
+            <p style="margin:0; font-size:0.82rem;">Chúc mừng bạn đã vượt qua bài kiểm tra đánh giá Module ${currentActiveModNum}. Module tiếp theo đã được mở khóa!</p>
+        `;
+    }
+
+    // Re-render sidebar and modules grid to reflect unlocked module
+    renderClassroomSidebar(currentSelectedCourse, currentActiveModNum, currentActiveLessonNum);
+
+    const nextModNum = currentActiveModNum + 1;
+    const nextMod = (currentSelectedCourse.modules || []).find(m => m.id === nextModNum);
+    if (nextMod) {
+        alert(`CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TEST MODULE ${currentActiveModNum}!\n\nModule ${nextModNum} (${nextMod.title}) đã được mở khóa. Bạn có thể bấm tiếp tục học!`);
+    } else {
+        checkCourseCompletion(currentSelectedCourse.id);
     }
 }
 
@@ -363,6 +763,9 @@ function renderStudentCoursesCatalog(filterDiv) {
     const container = document.getElementById('student-courses-catalog-grid');
     if (!container) return;
 
+    // Render resume learning card if student has active course
+    renderResumeLearningBanner();
+
     // Always fetch freshest data
     reloadCoursesCatalog();
 
@@ -411,7 +814,7 @@ function renderStudentCoursesCatalog(filterDiv) {
             materials: 1
         };
         const desc = course.desc || course.rawDesc || 'Lộ trình đào tạo chuẩn kỹ năng cho nhân sự Sales Queen Land.';
-        const progress = typeof course.progress === 'number' ? course.progress : 0;
+        const progress = calculateCourseProgressPercent(course.id);
 
         return `
         <div class="course-program-card card-premium">
@@ -518,16 +921,23 @@ function openCourseModules(courseId, push = true) {
 
     // Render Modules with detailed lessons list
     if (modulesGrid) {
+        const prog = getStudentProgress(course.id);
         modulesGrid.innerHTML = modulesList.map(mod => {
+            // Use real unlocked state from getStudentProgress
+            const isModUnlocked = isModuleUnlocked(course, mod.id);
+            const isModPassed = prog.passedQuizzes.includes(`m${mod.id}`);
+            
             let statusBadgeClass = 'locked';
             let statusIcon = '<i class="bi bi-lock-fill"></i>';
-            if (mod.status === 'completed') {
+            let statusText = 'Chưa Mở Khóa';
+            if (isModPassed) {
                 statusBadgeClass = 'success';
                 statusIcon = '<i class="bi bi-check-circle-fill"></i>';
-            }
-            if (mod.status === 'in-progress') {
+                statusText = 'Đã Hoàn Thành';
+            } else if (isModUnlocked) {
                 statusBadgeClass = 'warning';
                 statusIcon = '<i class="bi bi-play-circle-fill"></i>';
+                statusText = 'Đang Học';
             }
 
             const meta = mod.meta || { videos: 2, duration: '30 Phút', docs: '1 Tài Liệu' };
@@ -543,30 +953,31 @@ function openCourseModules(courseId, push = true) {
                         title: `Bài ${mod.id}.${i}: ${mod.title} - Phần ${i}`,
                         duration: i === 1 ? '12:00' : (i === 2 ? '15:30' : '18:45'),
                         youtubeUrl: mod.youtubeUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                        status: (mod.status === 'completed') ? 'completed' : (i === 1 ? 'in-progress' : 'locked')
+                        status: 'locked'
                     });
                 }
                 mod.lessons = lessons;
             }
 
-            // Render lessons items
+            // Render lessons items with real unlock check
             const lessonsHtml = lessons.map(les => {
-                const isDone = les.status === 'completed' || mod.status === 'completed';
-                const isLocked = mod.status === 'locked';
+                const lessonKey = `m${mod.id}_l${les.id}`;
+                const isDone = prog.completedLessons.includes(lessonKey);
+                const isUnlocked = isLessonUnlocked(course, mod.id, les.id);
                 const icon = isDone 
                     ? '<i class="bi bi-check-circle-fill text-success"></i>' 
-                    : (isLocked ? '<i class="bi bi-lock-fill text-muted"></i>' : '<i class="bi bi-play-circle-fill text-primary"></i>');
+                    : (!isUnlocked ? '<i class="bi bi-lock-fill text-muted"></i>' : '<i class="bi bi-play-circle-fill text-primary"></i>');
 
                 return `
-                <div class="module-lesson-item">
+                <div class="module-lesson-item ${!isUnlocked ? 'locked-item' : ''}">
                     <div class="lesson-main-info">
                         <span class="lesson-icon">${icon}</span>
                         <span class="lesson-title-text" title="${les.title}"><strong>Bài ${mod.id}.${les.id}:</strong> ${les.title.replace(/^Bài \d+\.\d+:?\s*/, '')}</span>
                     </div>
                     <div class="lesson-badges-group">
                         <span class="lesson-duration" style="font-size:0.7rem; color:#64748b;"><i class="bi bi-clock"></i> ${les.duration || '15:00'}</span>
-                        <button class="btn-play-lesson" ${isLocked ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${les.id})" title="Vào xem bài giảng này">
-                            <i class="bi bi-play-fill"></i> <span>Học bài này</span>
+                        <button class="btn-play-lesson" ${!isUnlocked ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${les.id})" title="${!isUnlocked ? 'Hoàn thành bài trước để mở khóa' : 'Vào xem bài giảng này'}">
+                            <i class="bi bi-play-fill"></i> <span>${isDone ? 'Xem lại' : 'Học bài này'}</span>
                         </button>
                     </div>
                 </div>
@@ -574,8 +985,8 @@ function openCourseModules(courseId, push = true) {
             }).join('');
 
             return `
-            <div class="module-card card-premium ${mod.status}">
-                <div class="module-status-badge ${statusBadgeClass}">${statusIcon} ${mod.statusText || 'Bắt Đầu Học'}</div>
+            <div class="module-card card-premium ${!isModUnlocked ? 'locked' : ''}">
+                <div class="module-status-badge ${statusBadgeClass}">${statusIcon} ${statusText}</div>
                 <div class="module-header">
                     <span class="module-number">MODULE 0${mod.id}</span>
                     <h3>${mod.title}</h3>
@@ -595,8 +1006,8 @@ function openCourseModules(courseId, push = true) {
                     <span><i class="bi bi-clock"></i> ${meta.duration}</span>
                     <span><i class="bi bi-file-earmark-text"></i> ${meta.docs}</span>
                 </div>
-                <button class="${mod.buttonClass || 'btn-module primary'} animated-shine-btn" ${mod.status === 'locked' ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${mod.lessonId || 1})">
-                    <span>${mod.buttonText || 'Vào Học Module ' + mod.id} <i class="bi bi-arrow-right"></i></span>
+                <button class="${isModUnlocked ? 'btn-module primary' : 'btn-module disabled'} animated-shine-btn" ${!isModUnlocked ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, 1)">
+                    <span>${!isModUnlocked ? 'Module Đang Khóa' : (isModPassed ? 'Xem Lại Module ' + mod.id : 'Vào Học Module ' + mod.id)} <i class="bi bi-arrow-right"></i></span>
                 </button>
             </div>
             `;
@@ -665,6 +1076,13 @@ function playCourseLesson(courseId, modNum, lessonNum) {
     if (!course) return;
 
     currentSelectedCourse = course;
+    currentActiveModNum = modNum;
+    currentActiveLessonNum = lessonNum;
+
+    // Save as last active in progress
+    const prog = getStudentProgress(course.id);
+    prog.lastActive = { modNum, lessonNum, time: 0 };
+    saveStudentProgress(course.id, prog);
 
     // Ensure modules exist
     if (!course.modules || course.modules.length === 0) {
@@ -700,11 +1118,17 @@ function playCourseLesson(courseId, modNum, lessonNum) {
 
     const targetLesson = targetMod.lessons.find(l => l.id === lessonNum) || targetMod.lessons[0];
 
-    // Update Topbar
+    // Update Topbar Title & Progress
     const topCourseTitle = document.getElementById('current-course-title');
     if (topCourseTitle) {
         topCourseTitle.textContent = `${course.title} - Module ${targetMod.id}`;
     }
+
+    const newPercent = calculateCourseProgressPercent(course.id);
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+    if (progressFill) progressFill.style.width = `${newPercent}%`;
+    if (progressText) progressText.textContent = `${newPercent}% (${prog.completedLessons.length} Bài)`;
 
     // Update Video Title & Tag
     const videoTitle = document.getElementById('video-lesson-title');
@@ -717,9 +1141,29 @@ function playCourseLesson(courseId, modNum, lessonNum) {
         playingTag.textContent = `ĐANG PHÁT BÀI ${targetMod.id}.${targetLesson.id}`;
     }
 
+    // Update btn-mark-complete state
+    const isDone = prog.completedLessons.includes(`m${targetMod.id}_l${targetLesson.id}`);
+    const btnComplete = document.getElementById('btn-mark-complete');
+    if (btnComplete) {
+        if (isDone) {
+            btnComplete.innerHTML = '<span><i class="bi bi-check2-all"></i> Đã Hoàn Thành</span>';
+            btnComplete.style.background = '#059669';
+        } else {
+            btnComplete.innerHTML = '<span><i class="bi bi-check2-circle"></i> Đánh dấu đã xem xong</span>';
+            btnComplete.style.background = 'var(--success)';
+        }
+    }
+
+    // Update Prev / Next buttons
+    const btnPrev = document.getElementById('btn-prev-lesson');
+    if (btnPrev) {
+        btnPrev.disabled = (modNum === 1 && lessonNum === 1);
+    }
+
     // Embed Video: YouTube iframe or MP4
     const videoWrapper = document.querySelector('.video-wrapper');
     if (videoWrapper && targetLesson) {
+        clearAutoAdvanceToast();
         const url = targetLesson.youtubeUrl || '';
         const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
         if (ytMatch && ytMatch[1]) {
@@ -734,7 +1178,10 @@ function playCourseLesson(courseId, modNum, lessonNum) {
                 </video>
             `;
             const video = document.getElementById('lms-video');
-            if (video) video.play().catch(() => {});
+            if (video) {
+                attachVideoListeners(video, course.id, targetMod.id, targetLesson.id);
+                video.play().catch(() => {});
+            }
         }
     }
 
@@ -745,7 +1192,7 @@ function playCourseLesson(courseId, modNum, lessonNum) {
     renderClassroomQuizTab(course.id);
 }
 
-// RENDER DYNAMIC SIDEBAR ACCORDIONS IN CLASSROOM
+// RENDER DYNAMIC SIDEBAR ACCORDIONS IN CLASSROOM WITH SEQUENTIAL LOCKING
 function renderClassroomSidebar(course, activeModNum, activeLessonNum) {
     const listContainer = document.querySelector('.sidebar-modules-list');
     if (!listContainer || !course) return;
@@ -759,12 +1206,17 @@ function renderClassroomSidebar(course, activeModNum, activeLessonNum) {
         return;
     }
 
+    const prog = getStudentProgress(course.id);
+
     listContainer.innerHTML = course.modules.map(mod => {
         const isModActive = mod.id === activeModNum;
-        const modClass = mod.status === 'completed' ? 'completed-mod' : (isModActive ? 'active-mod' : (mod.status === 'locked' ? 'locked-mod' : ''));
-        const iconHtml = mod.status === 'completed' 
+        const isModUnlocked = isModuleUnlocked(course, mod.id);
+        const isModPassed = prog.passedQuizzes.includes(`m${mod.id}`);
+
+        const modClass = isModPassed ? 'completed-mod' : (isModActive ? 'active-mod' : (!isModUnlocked ? 'locked-mod' : ''));
+        const iconHtml = isModPassed 
             ? '<i class="bi bi-check-circle-fill" style="color:var(--secondary-brand);"></i>' 
-            : (isModActive ? '<i class="bi bi-hourglass-split" style="color:var(--warning);"></i>' : '<i class="bi bi-play-circle-fill"></i>');
+            : (isModActive ? '<i class="bi bi-hourglass-split" style="color:var(--warning);"></i>' : (!isModUnlocked ? '<i class="bi bi-lock-fill text-muted"></i>' : '<i class="bi bi-play-circle-fill"></i>'));
 
         let lessons = mod.lessons;
         if (!lessons || !Array.isArray(lessons) || lessons.length === 0) {
@@ -776,7 +1228,7 @@ function renderClassroomSidebar(course, activeModNum, activeLessonNum) {
                     title: `Bài ${mod.id}.${i}: ${mod.title} - Phần ${i}`,
                     duration: '15:00',
                     youtubeUrl: mod.youtubeUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                    status: i === 1 ? 'in-progress' : 'locked'
+                    status: 'locked'
                 });
             }
             mod.lessons = lessons;
@@ -784,20 +1236,24 @@ function renderClassroomSidebar(course, activeModNum, activeLessonNum) {
 
         const lessonsHtml = lessons.map(les => {
             const isPlaying = (mod.id === activeModNum && les.id === activeLessonNum);
-            const isDone = les.status === 'completed';
-            const isLocked = les.status === 'locked';
+            const isDone = prog.completedLessons.includes(`m${mod.id}_l${les.id}`);
+            const isUnlocked = isLessonUnlocked(course, mod.id, les.id);
 
             let lesClass = 'lesson-item';
             if (isPlaying) lesClass += ' playing';
             else if (isDone) lesClass += ' done';
-            else if (isLocked) lesClass += ' locked-item';
+            else if (!isUnlocked) lesClass += ' locked-item';
 
             const statusIcon = isDone 
                 ? '<i class="bi bi-check2"></i>' 
-                : (isPlaying ? '<i class="bi bi-play-fill"></i>' : (isLocked ? '<i class="bi bi-lock"></i>' : '<i class="bi bi-circle"></i>'));
+                : (isPlaying ? '<i class="bi bi-play-fill"></i>' : (!isUnlocked ? '<i class="bi bi-lock"></i>' : '<i class="bi bi-circle"></i>'));
+
+            const clickHandler = isUnlocked 
+                ? `onclick="playCourseLesson('${course.id}', ${mod.id}, ${les.id})"` 
+                : `onclick="alert('BÀI HỌC ĐANG KHÓA:\\nHọc viên cần hoàn thành bài học trước để mở khóa bài này!')" style="cursor:not-allowed;"`;
 
             return `
-                <div class="${lesClass}" id="lesson-${mod.id}-${les.id}" onclick="playCourseLesson('${course.id}', ${mod.id}, ${les.id})">
+                <div class="${lesClass}" id="lesson-${mod.id}-${les.id}" ${clickHandler}>
                     <span class="status-icon">${statusIcon}</span>
                     <span class="lesson-name">${les.title}</span>
                     <span class="duration">${les.duration || '15:00'}</span>
@@ -807,7 +1263,7 @@ function renderClassroomSidebar(course, activeModNum, activeLessonNum) {
 
         return `
             <div class="accordion-item ${modClass}">
-                <div class="accordion-header" onclick="toggleAccordion('mod-accord-${mod.id}')">
+                <div class="accordion-header" onclick="${isModUnlocked ? `toggleAccordion('mod-accord-${mod.id}')` : `alert('MODULE ĐANG KHÓA:\\nHọc viên cần vượt qua bài kiểm tra Module trước để mở khóa!')`}">
                     <div class="mod-title">
                         <span class="mod-icon">${iconHtml}</span>
                         <span>Module ${mod.id}: ${mod.title}</span>
@@ -907,6 +1363,26 @@ function submitDynamicQuiz(event, courseId) {
             ${isPass ? '<span style="color:#0C5A3E; font-weight:700;">Hệ thống đã ghi nhận hoàn thành bài kiểm tra cho tài khoản của bạn.</span>' : 'Vui lòng xem lại video bài giảng và làm lại bài kiểm tra để đạt tối thiểu 80đ.'}
         </div>
     `;
+
+    if (isPass) {
+        const prog = getStudentProgress(courseId);
+        const quizKey = `m${currentActiveModNum}`;
+        if (!prog.passedQuizzes.includes(quizKey)) {
+            prog.passedQuizzes.push(quizKey);
+            saveStudentProgress(courseId, prog);
+        }
+
+        if (currentSelectedCourse) {
+            renderClassroomSidebar(currentSelectedCourse, currentActiveModNum, currentActiveLessonNum);
+            const nextModNum = currentActiveModNum + 1;
+            const nextMod = (currentSelectedCourse.modules || []).find(m => m.id === nextModNum);
+            if (nextMod) {
+                alert(`CHÚC MỪNG BẠN ĐÃ ĐẠT ${score}/100 ĐIỂM!\n\nModule ${nextModNum} (${nextMod.title}) đã được mở khóa. Bạn có thể tiếp tục lộ trình học tập!`);
+            } else {
+                checkCourseCompletion(currentSelectedCourse.id);
+            }
+        }
+    }
 }
 
 // DYNAMIC STUDENT DIVISION FILTERING & FILTER TABS
