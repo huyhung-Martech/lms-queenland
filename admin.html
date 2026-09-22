@@ -182,20 +182,33 @@
 
                                 <div style="margin-bottom:10px;">
                                      <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Danh Mục Đào Tạo:</label>
-                                     <select id="new-course-category" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
-                                         <option value="sales">Kỹ Năng Bán Hàng & Sales BĐS</option>
-                                         <option value="marketing">Marketing & Branding</option>
-                                         <option value="project">Quy Trình Dự Án & Vận Hành</option>
+                                     <select id="new-course-category" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:600;">
+                                         <option value="Căn Hộ Đô Thị">Căn Hộ Đô Thị</option>
+                                         <option value="Nghỉ Dưỡng Cao Cấp">Nghỉ Dưỡng Cao Cấp</option>
+                                         <option value="Kỹ Năng Thực Chiến">Kỹ Năng Thực Chiến</option>
+                                         <option value="Pháp Lý Dự Án">Pháp Lý Dự Án</option>
+                                         <option value="Kỹ Năng Bán Hàng & Sales BĐS">Kỹ Năng Bán Hàng & Sales BĐS</option>
+                                         <option value="Quản Trị & Lãnh Đạo Sales">Quản Trị & Lãnh Đạo Sales</option>
                                      </select>
                                 </div>
 
-                                <div style="margin-bottom:14px;">
+                                <div style="margin-bottom:10px;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Giảng Viên / Đơn Vị Phụ Trách:</label>
+                                     <input type="text" id="new-course-instructor" placeholder="Mặc định: Ban Đào Tạo Queen Land" value="Ban Đào Tạo Queen Land" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                </div>
+
+                                <div style="margin-bottom:10px;">
                                      <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Quyền Hiển Thị / Gán Khóa Học:</label>
                                      <select id="new-course-access" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700;">
                                          <option value="DIV1" selected>Gán Cho Khối Kinh Doanh 1</option>
                                          <option value="DIV2">Gán Cho Khối Kinh Doanh 2</option>
                                          <option value="PUBLIC">Mở Công Khai Cho Tất Cả Sales</option>
                                      </select>
+                                </div>
+
+                                <div style="margin-bottom:14px;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Mô Tả Tóm Tắt Khóa Học:</label>
+                                     <textarea id="new-course-desc" rows="2" placeholder="Nhập lộ trình đào tạo, kỹ năng cần đạt..." style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-family:var(--font-sans); resize:vertical;"></textarea>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary" style="width:100%;">Xuất Bản Khóa Học</button>
@@ -299,9 +312,61 @@
 
                 <!-- PANE 3: QUIZ BUILDER INDEPENDENT -->
                 <div id="pane-quiz" class="pane">
-                    <div class="table-card" style="padding:20px;">
-                        <h3>Quản Lý Bộ Đề Trắc Nghiệm Đào Tạo Sales</h3>
-                        <p style="font-size:0.8rem; color:var(--text-secondary); margin-top:4px;">Chỉnh sửa, cập nhật bộ câu hỏi kiểm tra đánh giá năng lực Sales theo từng dự án.</p>
+                    <div style="display: grid; grid-template-columns: 380px 1fr; gap: 20px;">
+                        <!-- CREATE QUIZ QUESTION FORM -->
+                        <div class="table-card" style="padding:20px;">
+                            <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">Thêm Câu Hỏi Trắc Nghiệm</h3>
+                            <p style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:14px;">Gán câu hỏi trắc nghiệm vào khóa học để chấm điểm tự động cho học viên.</p>
+
+                            <form id="standalone-quiz-form" onsubmit="handleCreateStandaloneQuiz(event)">
+                                <div style="margin-bottom:10px;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Chọn Khóa Học Áp Dụng:</label>
+                                     <select id="standalone-quiz-course-select" style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem; font-weight:700; background:#f8fafc;" onchange="renderStandaloneQuizList()">
+                                         <!-- DYNAMIC -->
+                                     </select>
+                                </div>
+
+                                <div style="margin-bottom:10px;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Nội Dung Câu Hỏi:</label>
+                                     <input type="text" id="standalone-quiz-title" placeholder="VD: Bước đầu tiên trong quy trình tư vấn là gì?" required style="width:100%; padding:8px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.8rem;">
+                                </div>
+
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:10px;">
+                                     <div><input type="text" id="standalone-quiz-a" placeholder="Đáp án A" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
+                                     <div><input type="text" id="standalone-quiz-b" placeholder="Đáp án B" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
+                                     <div><input type="text" id="standalone-quiz-c" placeholder="Đáp án C" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
+                                     <div><input type="text" id="standalone-quiz-d" placeholder="Đáp án D" required style="width:100%; padding:6px; border-radius:4px; border:1px solid #cbd5e1; font-size:0.75rem;"></div>
+                                </div>
+
+                                <div style="margin-bottom:14px;">
+                                     <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Đáp Án Đúng:</label>
+                                     <select id="standalone-quiz-correct" style="width:100%; padding:8px; border-radius:6px; border:1px solid var(--secondary-brand); font-size:0.8rem; font-weight:700; background:var(--secondary-brand-light); color:var(--secondary-brand);">
+                                         <option value="A">Đáp án A đúng</option>
+                                         <option value="B">Đáp án B đúng</option>
+                                         <option value="C">Đáp án C đúng</option>
+                                         <option value="D">Đáp án D đúng</option>
+                                     </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width:100%;">+ Thêm Câu Hỏi Vào Bộ Đề</button>
+                            </form>
+                            <div id="standalone-quiz-msg" style="margin-top:10px; font-size:0.78rem; font-weight:700; color:var(--secondary-brand); display:none;"></div>
+                        </div>
+
+                        <!-- LIST QUESTIONS -->
+                        <div class="table-card" style="padding:20px;">
+                            <div class="table-title" style="margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                     <h3>Bộ Đề Trắc Nghiệm Đào Tạo</h3>
+                                     <p>Các câu hỏi sẽ xuất hiện trong tab "Bài Kiểm Tra Module" của học viên khi hoàn thành bài giảng</p>
+                                </div>
+                                <span id="total-quizzes-badge" style="background:#e0e7ff; color:#2F2D74; font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:20px;">Đang tải...</span>
+                            </div>
+
+                            <div id="standalone-quiz-list-container">
+                                <!-- DYNAMIC -->
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -633,19 +698,111 @@
                 </div>
 
                 <div style="margin-bottom:14px;">
-                    <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin    <!-- TOAST NOTIFICATION -->
+                    <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Giảng Viên / Đơn Vị Phụ Trách:</label>
+                    <input type="text" id="edit-course-instructor" required style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.85rem; font-weight:600; color:#0f172a; outline:none;">
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Mô Tả Khóa Học / Lộ Trình:</label>
+                    <textarea id="edit-course-desc" rows="3" style="width:100%; padding:9px 12px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.85rem; font-family:var(--font-sans); color:#0f172a; outline:none; resize:vertical;"></textarea>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button type="button" class="btn btn-secondary" style="padding:9px 18px; font-size:0.85rem;" onclick="closeEditCourseModal()">Hủy Bỏ</button>
+                    <button type="submit" class="btn btn-primary" style="padding:9px 20px; font-size:0.85rem;">Lưu Thay Đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
     <div id="adminToast" style="display:none; position:fixed; bottom:24px; right:24px; background:#0f172a; color:#ffffff; padding:14px 20px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.2); z-index:999; font-size:0.85rem; font-weight:700; align-items:center; gap:10px; border-left:4px solid #10b981; animation:modalPop 0.25s ease;">
         <span id="adminToastMsg">Đã lưu thay đổi thành công!</span>
     </div>
 
     <!-- APP DYNAMIC STATE SCRIPT -->
     <script>
-        let coursesState = JSON.parse(localStorage.getItem('lms_courses_list') || 'null') || [
-            { id: 'c1', title: 'Khóa 1: Quy Trình Tư Vấn Căn Hộ Đô Thị 2026', cat: 'Căn Hộ Đô Thị', access: 'DIV1', desc: 'Gồm 4 Module • 18 Video', instructor: 'Ban Đào Tạo Queen Land', rawDesc: 'Lộ trình đào tạo chuẩn kỹ năng tư vấn, tiếp cận khách hàng cao cấp, phân tích bảng giá và kịch bản chốt hợp đồng căn hộ thương mại.' },
-            { id: 'c2', title: 'Khóa 2: Phân Tích Dòng Tiền & Pháp Lý Biệt Thự Biển Hạ Long', cat: 'Nghỉ Dưỡng Cao Cấp', access: 'DIV2', desc: 'Gồm 3 Module • 12 Video', instructor: 'Chuyên Gia Tài Chính Queen Land', rawDesc: 'Phân tích chuyên sâu bảng tính ROI dòng tiền, bài toán đòn bẩy tài chính ngân hàng và kỹ năng tư vấn khách hàng VIP biệt thự nghỉ dưỡng.' },
-            { id: 'c3', title: 'Khóa 3: Kỹ Năng Đàm Phán & Chốt Cọc Bất Động Sản Đỉnh Cao', cat: 'Kỹ Năng Thực Chiến', access: 'PUBLIC', desc: 'Gồm 3 Module • 10 Video', instructor: 'Giám Đốc Đào Tạo Queen Land', rawDesc: 'Nghệ thuật xử lý phản đối, đọc vị tâm lý khách hàng đầu tư bất động sản và kỹ thuật đàm phán chốt hợp đồng trong 24h.' },
-            { id: 'c4', title: 'Khóa 4: Pháp Lý Bất Động Sản & Thẩm Định Quy Hoạch Dự Án', cat: 'Pháp Lý Dự Án', access: 'DIV3', desc: 'Gồm 2 Module • 8 Video', instructor: 'Phòng Pháp Chế Queen Land', rawDesc: 'Nắm vững luật kinh doanh BĐS mới nhất, quy trình kiểm tra quy hoạch 1/500, hồ sơ pháp lý dự án và các điều khoản hợp đồng mua bán.' }
+        // ==========================================
+        // 1. UNIFIED STATE & STORAGE SYNCHRONIZATION
+        // ==========================================
+        const defaultCoursesSeed = [
+            {
+                id: 'c1',
+                title: 'Khóa 1: Quy Trình Tư Vấn Căn Hộ Đô Thị 2026',
+                category: 'Căn Hộ Đô Thị',
+                cat: 'Căn Hộ Đô Thị',
+                access: 'DIV1',
+                desc: 'Lộ trình đào tạo chuẩn kỹ năng tư vấn, tiếp cận khách hàng cao cấp, phân tích bảng giá và kịch bản chốt hợp đồng căn hộ thương mại.',
+                rawDesc: 'Lộ trình đào tạo chuẩn kỹ năng tư vấn, tiếp cận khách hàng cao cấp, phân tích bảng giá và kịch bản chốt hợp đồng căn hộ thương mại.',
+                stats: { modules: 4, videos: 18, duration: '4 Giờ Học', materials: 4 },
+                progress: 35,
+                instructor: 'Ban Đào Tạo Queen Land',
+                modules: [
+                    { id: 1, title: 'Tổng Quan & Định Hướng Kiến Thức Nền Tảng', desc: 'Giới thiệu tổng quan hệ thống dự án căn hộ cao cấp.', status: 'completed', statusText: 'Đã Hoàn Thành', meta: { videos: 4, duration: '45 Phút', docs: '2 Tài Liệu' }, buttonText: 'Xem Lại Module 1', buttonClass: 'btn-module', lessonId: 1 },
+                    { id: 2, title: 'Quy Trình & Kỹ Thuật Thực Hành Chuyên Sâu', desc: 'Hướng dẫn từng bước thao tác thực tế qua bài giảng video chi tiết.', status: 'in-progress', statusText: 'Đang Học (Bài 2/3)', meta: { videos: 6, duration: '90 Phút', docs: '1 Bài Quiz' }, buttonText: 'Tiếp Tục Học Ngay', buttonClass: 'btn-module primary', lessonId: 2 },
+                    { id: 3, title: 'Tối Ưu Hóa & Đánh Giá Năng Lực Sales', desc: 'Phân tích chuyên sâu các case study thực tế.', status: 'locked', statusText: 'Chưa Mở Khóa', meta: { videos: 5, duration: '60 Phút', docs: '1 Bài Test' }, buttonText: 'Chưa Mở Khóa', buttonClass: 'btn-module disabled', lessonId: 3 },
+                    { id: 4, title: 'Đồ Án Tốt Nghiệp & Cấp Chứng Nhận', desc: 'Thực hiện bài kiểm tra tổng hợp cuối khóa.', status: 'locked', statusText: 'Chưa Mở Khóa', meta: { videos: 3, duration: '120 Phút', docs: 'Cấp Chứng Nhận' }, buttonText: 'Chưa Mở Khóa', buttonClass: 'btn-module disabled', lessonId: 4 }
+                ]
+            },
+            {
+                id: 'c2',
+                title: 'Khóa 2: Phân Tích Dòng Tiền & Pháp Lý Biệt Thự Biển Hạ Long',
+                category: 'Nghỉ Dưỡng Cao Cấp',
+                cat: 'Nghỉ Dưỡng Cao Cấp',
+                access: 'DIV2',
+                desc: 'Phân tích chuyên sâu bảng tính ROI dòng tiền, bài toán đòn bẩy tài chính ngân hàng và kỹ năng tư vấn khách hàng VIP biệt thự nghỉ dưỡng.',
+                rawDesc: 'Phân tích chuyên sâu bảng tính ROI dòng tiền, bài toán đòn bẩy tài chính ngân hàng và kỹ năng tư vấn khách hàng VIP biệt thự nghỉ dưỡng.',
+                stats: { modules: 3, videos: 12, duration: '3.5 Giờ Học', materials: 3 },
+                progress: 0,
+                instructor: 'Chuyên Gia Tài Chính Queen Land',
+                modules: [
+                    { id: 1, title: 'Tổng Quan Thị Trường Nghỉ Dưỡng & Quy Hoạch Hạ Long 2026', desc: 'Nắm vững quy hoạch tổng thể và tiềm năng tăng giá.', status: 'in-progress', statusText: 'Bắt Đầu Học', meta: { videos: 4, duration: '50 Phút', docs: '2 Bản Đồ QH' }, buttonText: 'Vào Học Module 1', buttonClass: 'btn-module primary', lessonId: 1 },
+                    { id: 2, title: 'Phân Tích Bảng Tính Dòng Tiền ROI & Đòn Bẩy Ngân Hàng', desc: 'Thực hành tính toán lợi suất cho thuê.', status: 'locked', statusText: 'Chưa Mở Khóa', meta: { videos: 5, duration: '75 Phút', docs: '1 Bài Quiz' }, buttonText: 'Chưa Mở Khóa', buttonClass: 'btn-module disabled', lessonId: 2 },
+                    { id: 3, title: 'Kỹ Thuật Xử Lý Từ Chối & Kịch Bản Chốt Cọc Biệt Thự Triệu Đô', desc: 'Các tình huống thực chiến với khách hàng VIP.', status: 'locked', statusText: 'Chưa Mở Khóa', meta: { videos: 3, duration: '60 Phút', docs: '1 Bài Test' }, buttonText: 'Chưa Mở Khóa', buttonClass: 'btn-module disabled', lessonId: 3 }
+                ]
+            },
+            {
+                id: 'c3',
+                title: 'Khóa 3: Kỹ Năng Đàm Phán & Chốt Cọc Bất Động Sản Đỉnh Cao',
+                category: 'Kỹ Năng Thực Chiến',
+                cat: 'Kỹ Năng Thực Chiến',
+                access: 'PUBLIC',
+                desc: 'Nghệ thuật xử lý phản đối, đọc vị tâm lý khách hàng đầu tư bất động sản và kỹ thuật đàm phán chốt hợp đồng trong 24h.',
+                rawDesc: 'Nghệ thuật xử lý phản đối, đọc vị tâm lý khách hàng đầu tư bất động sản và kỹ thuật đàm phán chốt hợp đồng trong 24h.',
+                stats: { modules: 3, videos: 10, duration: '3 Giờ Học', materials: 2 },
+                progress: 15,
+                instructor: 'Giám Đốc Đào Tạo Queen Land',
+                modules: [
+                    { id: 1, title: 'Tâm Lý Học Khách Hàng Đầu Tư Bất Động Sản', desc: 'Phân loại các nhóm tính cách nhà đầu tư.', status: 'completed', statusText: 'Đã Hoàn Thành', meta: { videos: 3, duration: '40 Phút', docs: '1 Tài Liệu' }, buttonText: 'Xem Lại Module 1', buttonClass: 'btn-module', lessonId: 1 },
+                    { id: 2, title: 'Kỹ Thuật Đặt Câu Hỏi Điều Hướng & Đàm Phán Giá', desc: 'Nghệ thuật dẫn dắt cuộc trò chuyện.', status: 'in-progress', statusText: 'Đang Học (Bài 1/3)', meta: { videos: 4, duration: '60 Phút', docs: '1 Bài Quiz' }, buttonText: 'Tiếp Tục Học Ngay', buttonClass: 'btn-module primary', lessonId: 2 },
+                    { id: 3, title: 'Kịch Bản Chốt Cọc Thực Chiến & Xử Lý Do Dự', desc: 'Kỹ thuật tạo sự khan hiếm tự nhiên.', status: 'locked', statusText: 'Chưa Mở Khóa', meta: { videos: 3, duration: '50 Phút', docs: '1 Bài Test' }, buttonText: 'Chưa Mở Khóa', buttonClass: 'btn-module disabled', lessonId: 3 }
+                ]
+            },
+            {
+                id: 'c4',
+                title: 'Khóa 4: Pháp Lý Bất Động Sản & Thẩm Định Quy Hoạch Dự Án',
+                category: 'Pháp Lý Dự Án',
+                cat: 'Pháp Lý Dự Án',
+                access: 'DIV3',
+                desc: 'Nắm vững luật kinh doanh BĐS mới nhất, quy trình kiểm tra quy hoạch 1/500, hồ sơ pháp lý dự án và các điều khoản hợp đồng mua bán.',
+                rawDesc: 'Nắm vững luật kinh doanh BĐS mới nhất, quy trình kiểm tra quy hoạch 1/500, hồ sơ pháp lý dự án và các điều khoản hợp đồng mua bán.',
+                stats: { modules: 2, videos: 8, duration: '2.5 Giờ Học', materials: 4 },
+                progress: 0,
+                instructor: 'Phòng Pháp Chế Queen Land',
+                modules: [
+                    { id: 1, title: 'Bộ Luật Đất Đai & Pháp Lý Dự Án Bất Động Sản 2026', desc: 'Cập nhật những điểm mới của luật đất đai.', status: 'in-progress', statusText: 'Bắt Đầu Học', meta: { videos: 4, duration: '60 Phút', docs: '4 Văn Bản Luật' }, buttonText: 'Vào Học Module 1', buttonClass: 'btn-module primary', lessonId: 1 },
+                    { id: 2, title: 'Kỹ Năng Đọc Bản Đồ Quy Hoạch & Hướng Dẫn Ký HĐMB', desc: 'Thực hành tra cứu quy hoạch địa chính.', status: 'locked', statusText: 'Chưa Mở Khóa', meta: { videos: 4, duration: '65 Phút', docs: '1 Bài Quiz' }, buttonText: 'Chưa Mở Khóa', buttonClass: 'btn-module disabled', lessonId: 2 }
+                ]
+            }
         ];
+
+        // Load and sync courses state
+        let coursesState = JSON.parse(localStorage.getItem('lms_courses_catalog') || 'null');
+        if (!coursesState || !Array.isArray(coursesState) || coursesState.length === 0) {
+            coursesState = defaultCoursesSeed;
+            localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesState));
+        }
+        localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
 
         let divisionsState = JSON.parse(localStorage.getItem('lms_divisions_list') || 'null') || [
             { id: 'DIV1', name: 'Khối Kinh Doanh 1', teams: ['Phòng KD 101', 'Phòng KD 102', 'Phòng KD 103'] },
@@ -659,18 +816,28 @@
             { empId: 'NV-20411', name: 'Lê Hoàng Cường', div: 'DIV2', team: 'Phòng KD 201', pass: '123456' }
         ];
 
+        let quizzesDatabase = JSON.parse(localStorage.getItem('lms_quizzes') || 'null') || [
+            { id: 'q1', courseId: 'c1', title: 'Quy trình tư vấn căn hộ chuẩn gồm bao nhiêu bước?', a: '3 bước', b: '5 bước cốt lõi', c: '7 bước', d: 'Không cố định', correct: 'B' },
+            { id: 'q2', courseId: 'c1', title: 'Khi khách hàng do dự về tiến độ bàn giao, tư vấn viên cần làm gì?', a: 'Giục khách cọc ngay', b: 'Cung cấp biên bản nghiệm thu & hình ảnh tiến độ thực tế', c: 'Giảm giá căn hộ', d: 'Chờ khách tự quyết định', correct: 'B' },
+            { id: 'q3', courseId: 'c2', title: 'Đòn bẩy tài chính tối đa khuyến nghị cho khách đầu tư biệt thự nghỉ dưỡng là bao nhiêu?', a: '30% - 50% giá trị căn', b: '70% - 80% giá trị căn', c: '100% giá trị căn', d: 'Không dùng đòn bẩy', correct: 'A' }
+        ];
+
         let allowSelfReg = localStorage.getItem('lms_allow_self_reg') !== 'false';
         let isDivModeOn = true;
 
+        // ==========================================
+        // 2. LIFECYCLE & NAVIGATION
+        // ==========================================
         window.addEventListener('DOMContentLoaded', () => {
             renderCoursesUI();
             renderCourseDropdowns();
             renderDivisionsUI();
             renderAdminStudentsUI();
+            renderReportsTable();
+            renderStandaloneQuizList();
             updateSelfRegButtonUI();
         });
 
-        // Switch Sidebar Navigation
         function switchNav(navId) {
             document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.pane').forEach(el => el.classList.remove('active'));
@@ -693,27 +860,35 @@
             document.getElementById('current-page-title').textContent = titles[navId] || 'Quản Trị LMS';
         }
 
-        function toggleDivMode() {
-            isDivModeOn = !isDivModeOn;
-            const btn = document.getElementById('toggle-div-btn');
-            const accessSelect = document.getElementById('new-course-access');
-
-            if (isDivModeOn) {
-                btn.textContent = 'BẬT (Gán Theo Khối)';
-                btn.className = 'toggle-switch-btn on';
-                if (accessSelect) accessSelect.value = 'DIV1';
-                showAdminToast('Đã BẬT Chế độ gán theo Khối!');
-            } else {
-                btn.textContent = 'TẮT (Mở Công Khai Tự Do)';
-                btn.className = 'toggle-switch-btn off';
-                if (accessSelect) accessSelect.value = 'PUBLIC';
-                showAdminToast('Đã TẮT Chế độ gán theo Khối!');
+        function showAdminToast(msg) {
+            const toast = document.getElementById('adminToast');
+            const toastMsg = document.getElementById('adminToastMsg');
+            if (toast && toastMsg) {
+                toastMsg.textContent = msg;
+                toast.style.display = 'flex';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3500);
             }
         }
 
+        // ==========================================
+        // 3. COURSES CRUD & STUDENT VIEW SYNC
+        // ==========================================
         function renderCoursesUI() {
             const container = document.getElementById('courses-list-container');
             if (!container) return;
+
+            if (coursesState.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:36px 16px; border:2px dashed #cbd5e1; border-radius:12px; background:#f8fafc;">
+                        <i class="bi bi-journal-x" style="font-size:2rem; color:#94a3b8;"></i>
+                        <p style="margin-top:8px; font-size:0.9rem; font-weight:700; color:#64748b;">Chưa có khóa học nào trên hệ thống.</p>
+                        <p style="font-size:0.78rem; color:#94a3b8;">Hãy sử dụng form bên trái để khởi tạo khóa học mới.</p>
+                    </div>
+                `;
+                return;
+            }
 
             container.innerHTML = coursesState.map(c => {
                 let divName = 'Mở Công Khai Tự Do';
@@ -724,20 +899,24 @@
                     accessBadgeClass = 'div-badge';
                 }
 
+                const modCount = c.modules ? c.modules.length : (c.stats?.modules || 0);
+                const videoCount = c.stats?.videos || modCount;
+
                 return `
                 <div class="card-premium" style="border:1px solid #e2e8f0; border-radius:12px; padding:16px 20px; margin-bottom:12px; background:#ffffff; display:flex; justify-content:space-between; align-items:center;">
                     <div style="flex-grow:1; padding-right:16px;">
                         <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-                            <span class="badge-gold" style="font-size:0.72rem; padding:2px 8px; border-radius:10px; font-weight:700;">${c.cat || 'Khóa Học'}</span>
+                            <span class="badge-gold" style="font-size:0.72rem; padding:2px 8px; border-radius:10px; font-weight:700;">${c.category || c.cat || 'Khóa Học'}</span>
                             <span class="${accessBadgeClass}" style="font-size:0.72rem; padding:2px 8px; border-radius:10px; font-weight:700;">
                                 ${divName}
                             </span>
                         </div>
                         <h4 style="font-size:0.98rem; font-weight:800; color:var(--primary-dark); font-family:var(--font-label); margin:4px 0 3px;">${c.title}</h4>
                         <p style="font-size:0.8rem; color:#64748b; line-height:1.45; margin:0;">${c.rawDesc || c.desc || 'Mới khởi tạo'}</p>
-                        <div style="margin-top:8px; font-size:0.73rem; color:#475569; font-weight:600; display:flex; gap:16px;">
+                        <div style="margin-top:8px; font-size:0.73rem; color:#475569; font-weight:600; display:flex; flex-wrap:wrap; gap:16px;">
                             <span><i class="bi bi-person-badge"></i> Phụ trách: <strong>${c.instructor || 'Ban Đào Tạo Queen Land'}</strong></span>
-                            <span><i class="bi bi-collection"></i> <strong>${c.desc || 'Module đào tạo'}</strong></span>
+                            <span><i class="bi bi-collection"></i> <strong>${modCount} Module</strong></span>
+                            <span><i class="bi bi-play-circle"></i> <strong>${videoCount} Video</strong></span>
                         </div>
                     </div>
                     <div style="display:flex; gap:8px; flex-shrink:0;">
@@ -753,16 +932,75 @@
             }).join('');
         }
 
-        // EDIT COURSE MODAL CONTROLLERS
+        function handleCreateCourse(event) {
+            event.preventDefault();
+            const title = document.getElementById('new-course-title').value.trim();
+            const cat = document.getElementById('new-course-category').value;
+            const access = document.getElementById('new-course-access').value;
+            const instructor = (document.getElementById('new-course-instructor')?.value || 'Ban Đào Tạo Queen Land').trim();
+            const desc = (document.getElementById('new-course-desc')?.value || 'Lộ trình đào tạo chuẩn kỹ năng cho nhân sự Sales Queen Land.').trim();
+
+            const courseId = 'course_' + Date.now();
+            const newCourse = {
+                id: courseId,
+                title: title,
+                cat: cat,
+                category: cat,
+                access: access,
+                desc: desc,
+                rawDesc: desc,
+                instructor: instructor,
+                progress: 0,
+                stats: { modules: 1, videos: 1, duration: '45 Phút', materials: 1 },
+                modules: [
+                    {
+                        id: 1,
+                        title: 'Module 1: Giới Thiệu & Kiến Thức Cốt Lõi',
+                        desc: `Tổng quan và định hướng chương trình đào tạo: ${title}.`,
+                        status: 'in-progress',
+                        statusText: 'Bắt Đầu Học',
+                        meta: { videos: 1, duration: '45 Phút', docs: '1 Tài Liệu' },
+                        buttonText: 'Vào Học Module 1',
+                        buttonClass: 'btn-module primary',
+                        lessonId: 1
+                    }
+                ]
+            };
+
+            coursesState.unshift(newCourse);
+            // Save to both storage keys
+            localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
+            localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesState));
+
+            renderCoursesUI();
+            renderCourseDropdowns();
+            renderReportsTable();
+
+            const msg = document.getElementById('create-course-msg');
+            if (msg) {
+                msg.style.display = 'block';
+                msg.textContent = `Đã xuất bản thành công "${title}"! Khóa học đã xuất hiện trên giao diện học viên và đồng bộ sang Tab Module.`;
+            }
+
+            document.getElementById('create-course-form').reset();
+            if (document.getElementById('new-course-instructor')) {
+                document.getElementById('new-course-instructor').value = 'Ban Đào Tạo Queen Land';
+            }
+            showAdminToast(`Đã xuất bản khóa học mới: "${title}"!`);
+        }
+
         function openEditCourseModal(courseId) {
             const course = coursesState.find(c => c.id === courseId);
-            if (!course) return;
+            if (!course) {
+                alert('Không tìm thấy thông tin khóa học để chỉnh sửa!');
+                return;
+            }
 
             document.getElementById('edit-course-id').value = course.id;
             document.getElementById('edit-course-title').value = course.title || '';
-            document.getElementById('edit-course-category').value = course.cat || 'Căn Hộ Đô Thị';
+            document.getElementById('edit-course-category').value = course.category || course.cat || 'Căn Hộ Đô Thị';
             document.getElementById('edit-course-instructor').value = course.instructor || 'Ban Đào Tạo Queen Land';
-            document.getElementById('edit-course-desc').value = course.rawDesc || course.desc || '';
+            document.getElementById('edit-course-desc').value = course.desc || course.rawDesc || '';
 
             // Populate access dropdown with current divisions
             const accessSelect = document.getElementById('edit-course-access');
@@ -786,18 +1024,6 @@
             if (modal) modal.style.display = 'none';
         }
 
-        function showAdminToast(msg) {
-            const toast = document.getElementById('adminToast');
-            const toastMsg = document.getElementById('adminToastMsg');
-            if (toast && toastMsg) {
-                toastMsg.textContent = msg;
-                toast.style.display = 'flex';
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 3500);
-            }
-        }
-
         function handleSaveCourseEdit(event) {
             event.preventDefault();
             const id = document.getElementById('edit-course-id').value;
@@ -811,72 +1037,292 @@
             if (courseIndex !== -1) {
                 coursesState[courseIndex].title = title;
                 coursesState[courseIndex].cat = cat;
+                coursesState[courseIndex].category = cat;
                 coursesState[courseIndex].access = access;
                 coursesState[courseIndex].instructor = instructor;
                 coursesState[courseIndex].rawDesc = desc;
-                localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
-            }
+                coursesState[courseIndex].desc = desc;
 
-            // Also synchronize with lms_courses_catalog so student view updates immediately
-            let catalog = JSON.parse(localStorage.getItem('lms_courses_catalog') || 'null');
-            if (catalog) {
-                const catTarget = catalog.find(item => item.id === id);
-                if (catTarget) {
-                    catTarget.title = title;
-                    catTarget.category = cat;
-                    catTarget.access = access;
-                    catTarget.desc = desc;
-                    catTarget.instructor = instructor;
-                    localStorage.setItem('lms_courses_catalog', JSON.stringify(catalog));
-                }
+                // Save to both storage keys
+                localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
+                localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesState));
             }
 
             renderCoursesUI();
             renderCourseDropdowns();
+            renderReportsTable();
             closeEditCourseModal();
             showAdminToast(`Đã cập nhật thành công khóa học: "${title}"!`);
         }
 
+        function deleteCourse(id) {
+            const course = coursesState.find(c => c.id === id);
+            const courseTitle = course ? course.title : 'khóa học này';
+
+            const confirmDelete = confirm(
+                `XÁC NHẬN XÓA KHÓA HỌC:\n\n` +
+                `Bạn có chắc chắn muốn xóa "${courseTitle}" không?\n\n` +
+                `• Khóa học sẽ bị gỡ khỏi trang quản trị.\n` +
+                `• Toàn bộ học viên Sales sẽ không còn nhìn thấy khóa học này.\n` +
+                `• Hành động này KHÔNG THỂ HOÀN TÁC!`
+            );
+
+            if (!confirmDelete) return;
+
+            coursesState = coursesState.filter(c => c.id !== id);
+            // Sync both storage keys
+            localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
+            localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesState));
+
+            renderCoursesUI();
+            renderCourseDropdowns();
+            renderReportsTable();
+            renderStandaloneQuizList();
+            showAdminToast(`Đã xóa thành công khóa học "${courseTitle}"!`);
+        }
+
+        // ==========================================
+        // 4. MODULE & LESSONS MANAGEMENT (TAB 2)
+        // ==========================================
+        function renderCourseDropdowns() {
+            const selectLesson = document.getElementById('lesson-course-select');
+            const selectQuiz = document.getElementById('standalone-quiz-course-select');
+
+            const optionsHtml = coursesState.map(c => `
+                <option value="${c.id}">${c.title}</option>
+            `).join('');
+
+            if (selectLesson) selectLesson.innerHTML = optionsHtml;
+            if (selectQuiz) selectQuiz.innerHTML = optionsHtml;
+        }
+
+        function handleAddLesson(event) {
+            event.preventDefault();
+            const courseId = document.getElementById('lesson-course-select').value;
+            const modTitle = document.getElementById('lesson-module-title').value.trim();
+            const lessonName = document.getElementById('lesson-name-input').value.trim();
+            const youtubeUrl = document.getElementById('lesson-youtube-url').value.trim();
+
+            const targetCourse = coursesState.find(c => c.id === courseId);
+            if (!targetCourse) {
+                alert('Vui lòng chọn khóa học hợp lệ!');
+                return;
+            }
+
+            if (!targetCourse.modules) targetCourse.modules = [];
+            const newModId = targetCourse.modules.length + 1;
+
+            const newModule = {
+                id: newModId,
+                title: modTitle || `Module ${newModId}: ${lessonName}`,
+                desc: `Bài giảng video: ${lessonName}. Cung cấp kiến thức và kỹ năng thực hành chi tiết.`,
+                status: newModId === 1 ? 'in-progress' : 'locked',
+                statusText: newModId === 1 ? 'Bắt Đầu Học' : 'Chưa Mở Khóa',
+                meta: { videos: 1, duration: '30 Phút', docs: '1 Video' },
+                buttonText: newModId === 1 ? 'Vào Học Module' : 'Chưa Mở Khóa',
+                buttonClass: newModId === 1 ? 'btn-module primary' : 'btn-module disabled',
+                lessonId: newModId,
+                youtubeUrl: youtubeUrl
+            };
+
+            targetCourse.modules.push(newModule);
+            if (!targetCourse.stats) targetCourse.stats = { modules: 0, videos: 0, duration: '1 Giờ', materials: 1 };
+            targetCourse.stats.modules = targetCourse.modules.length;
+            targetCourse.stats.videos = (targetCourse.stats.videos || 0) + 1;
+            targetCourse.desc = `Gồm ${targetCourse.modules.length} Module • ${targetCourse.stats.videos} Video Bài Giảng`;
+            targetCourse.rawDesc = targetCourse.desc;
+
+            // Save to both storage keys
+            localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
+            localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesState));
+
+            renderCoursesUI();
+
+            const msg = document.getElementById('add-lesson-msg');
+            if (msg) {
+                msg.style.display = 'block';
+                msg.textContent = `Đã thêm thành công bài "${lessonName}" vào "${targetCourse.title}"!`;
+            }
+
+            document.getElementById('add-lesson-form').reset();
+            showAdminToast(`Đã lưu bài giảng "${lessonName}" vào ${targetCourse.title}!`);
+        }
+
+        // ==========================================
+        // 5. QUIZ BUILDER MANAGEMENT (TAB 3)
+        // ==========================================
+        function handleCreateQuiz(event) {
+            event.preventDefault();
+            const courseSelect = document.getElementById('lesson-course-select');
+            const courseId = courseSelect ? courseSelect.value : (coursesState[0]?.id || 'c1');
+            const q = document.getElementById('quiz-q-title').value.trim();
+            const a = document.getElementById('quiz-opt-a').value.trim();
+            const b = document.getElementById('quiz-opt-b').value.trim();
+            const c = document.getElementById('quiz-opt-c').value.trim();
+            const d = document.getElementById('quiz-opt-d').value.trim();
+            const correct = document.getElementById('quiz-correct-opt').value;
+
+            const newQuiz = {
+                id: 'q_' + Date.now(),
+                courseId: courseId,
+                title: q,
+                a: a,
+                b: b,
+                c: c,
+                d: d,
+                correct: correct
+            };
+
+            quizzesDatabase.push(newQuiz);
+            localStorage.setItem('lms_quizzes', JSON.stringify(quizzesDatabase));
+
+            const box = document.getElementById('quiz-list-box');
+            if (box) {
+                const item = document.createElement('div');
+                item.style.cssText = "font-size:0.75rem; color:#0C5A3E; margin-top:4px; background:#ecfdf5; padding:6px 10px; border-radius:6px; border:1px solid #a7f3d0;";
+                item.textContent = `Câu ${quizzesDatabase.length}: ${q} (Đáp án đúng: ${correct})`;
+                box.appendChild(item);
+            }
+
+            renderStandaloneQuizList();
+            showAdminToast('Đã thêm câu hỏi trắc nghiệm vào bộ đề!');
+            document.getElementById('create-quiz-form').reset();
+        }
+
+        function handleCreateStandaloneQuiz(event) {
+            event.preventDefault();
+            const courseId = document.getElementById('standalone-quiz-course-select').value;
+            const title = document.getElementById('standalone-quiz-title').value.trim();
+            const a = document.getElementById('standalone-quiz-a').value.trim();
+            const b = document.getElementById('standalone-quiz-b').value.trim();
+            const c = document.getElementById('standalone-quiz-c').value.trim();
+            const d = document.getElementById('standalone-quiz-d').value.trim();
+            const correct = document.getElementById('standalone-quiz-correct').value;
+
+            const newQuiz = {
+                id: 'q_' + Date.now(),
+                courseId: courseId,
+                title: title,
+                a: a,
+                b: b,
+                c: c,
+                d: d,
+                correct: correct
+            };
+
+            quizzesDatabase.push(newQuiz);
+            localStorage.setItem('lms_quizzes', JSON.stringify(quizzesDatabase));
+
+            renderStandaloneQuizList();
+
+            const msg = document.getElementById('standalone-quiz-msg');
+            if (msg) {
+                msg.style.display = 'block';
+                msg.textContent = `Đã lưu câu hỏi thành công!`;
+            }
+
+            document.getElementById('standalone-quiz-form').reset();
+            showAdminToast('Đã thêm câu hỏi trắc nghiệm mới!');
+        }
+
+        function renderStandaloneQuizList() {
+            const container = document.getElementById('standalone-quiz-list-container');
+            const totalBadge = document.getElementById('total-quizzes-badge');
+            const selectEl = document.getElementById('standalone-quiz-course-select');
+            if (!container) return;
+
+            const selectedCourseId = selectEl ? selectEl.value : null;
+            const filteredQuizzes = selectedCourseId ? quizzesDatabase.filter(q => q.courseId === selectedCourseId) : quizzesDatabase;
+
+            if (totalBadge) {
+                totalBadge.textContent = `${filteredQuizzes.length} Câu Hỏi`;
+            }
+
+            if (filteredQuizzes.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:30px 16px; border:1px dashed #cbd5e1; border-radius:8px; color:#64748b; font-size:0.85rem;">
+                        Chưa có câu hỏi trắc nghiệm nào cho khóa học này. Hãy thêm câu hỏi ở form bên cạnh.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredQuizzes.map((q, idx) => {
+                const matchedCourse = coursesState.find(c => c.id === q.courseId);
+                const courseName = matchedCourse ? matchedCourse.title : 'Khóa Học';
+
+                return `
+                <div style="border:1px solid #e2e8f0; border-radius:10px; padding:14px; margin-bottom:10px; background:#ffffff;">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+                        <div>
+                            <span style="font-size:0.7rem; background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:4px; font-weight:700;">${courseName}</span>
+                            <h4 style="font-size:0.88rem; font-weight:800; color:#0f172a; margin-top:4px;">Câu ${idx + 1}: ${q.title}</h4>
+                        </div>
+                        <button class="btn" style="padding:4px 8px; font-size:0.7rem; background:#fee2e2; color:#ef4444; border:none;" onclick="deleteQuizQuestion('${q.id}')">
+                            <i class="bi bi-trash"></i> Xóa
+                        </button>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:0.75rem; color:#475569; margin-top:8px;">
+                        <span style="${q.correct === 'A' ? 'color:#0C5A3E; font-weight:800;' : ''}">A. ${q.a} ${q.correct === 'A' ? '✓ (Đáp Án)' : ''}</span>
+                        <span style="${q.correct === 'B' ? 'color:#0C5A3E; font-weight:800;' : ''}">B. ${q.b} ${q.correct === 'B' ? '✓ (Đáp Án)' : ''}</span>
+                        <span style="${q.correct === 'C' ? 'color:#0C5A3E; font-weight:800;' : ''}">C. ${q.c} ${q.correct === 'C' ? '✓ (Đáp Án)' : ''}</span>
+                        <span style="${q.correct === 'D' ? 'color:#0C5A3E; font-weight:800;' : ''}">D. ${q.d} ${q.correct === 'D' ? '✓ (Đáp Án)' : ''}</span>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        function deleteQuizQuestion(quizId) {
+            if (!confirm('Bạn có chắc chắn muốn xóa câu hỏi trắc nghiệm này không?')) return;
+            quizzesDatabase = quizzesDatabase.filter(q => q.id !== quizId);
+            localStorage.setItem('lms_quizzes', JSON.stringify(quizzesDatabase));
+            renderStandaloneQuizList();
+            showAdminToast('Đã xóa câu hỏi trắc nghiệm!');
+        }
+
+        // ==========================================
+        // 6. DIVISIONS & TEAMS MANAGEMENT (TAB 4)
+        // ==========================================
         function renderDivisionsUI() {
             const listContainer = document.getElementById('divisions-list-container');
             const teamSelect = document.getElementById('team-div-select');
             const courseAccessSelect = document.getElementById('new-course-access');
 
-            // 1. Render Divisions visual list
             if (listContainer) {
                 listContainer.innerHTML = divisionsState.map(div => {
                     const assignedCourses = coursesState.filter(c => c.access === div.id);
-                    const teamsBadges = div.teams.map(t => `<span style="display:inline-block; background:#e0e7ff; color:#3730a3; padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; margin-right:4px; margin-bottom:4px;">${t}</span>`).join('');
+                    const teamsBadges = div.teams.map(t => `<span style="display:inline-block; background:#e0e7ff; color:#2F2D74; padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; margin-right:4px; margin-bottom:4px;">${t}</span>`).join('');
 
                     return `
                     <div style="border:1px solid #cbd5e1; border-radius:10px; padding:16px; margin-bottom:14px; background:#fff; box-shadow:0 2px 4px rgba(0,0,0,0.03);">
                         <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                             <div>
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <span style="background:#4f46e5; color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:4px;">MÃ: ${div.id}</span>
+                                    <span style="background:var(--primary); color:#fff; font-size:0.72rem; font-weight:800; padding:2px 8px; border-radius:4px;">MÃ: ${div.id}</span>
                                     <h4 style="font-size:1rem; font-weight:800; color:#0f172a;">${div.name}</h4>
                                 </div>
                                 <div style="margin-top:8px;">
                                     <span style="font-size:0.75rem; color:#64748b; font-weight:700; display:block; margin-bottom:4px;">Phòng Sales Trực Thuộc (${div.teams.length} phòng):</span>
                                     <div>${teamsBadges || '<em style="font-size:0.72rem; color:#94a3b8;">Chưa có phòng</em>'}</div>
                                 </div>
-                                <div style="margin-top:8px; font-size:0.75rem; color:#047857; font-weight:700;">
-                                    ${assignedCourses.length} Khóa học dành riêng cho Khối này
+                                <div style="margin-top:8px; font-size:0.75rem; color:#0C5A3E; font-weight:700;">
+                                    <i class="bi bi-journal-check"></i> ${assignedCourses.length} Khóa học dành riêng cho Khối này
                                 </div>
                             </div>
-                            <button class="btn" style="padding:4px 8px; font-size:0.72rem; background:#fee2e2; color:#ef4444;" onclick="deleteDivision('${div.id}')">Xóa Khối</button>
+                            <button class="btn" style="padding:5px 10px; font-size:0.72rem; background:#fee2e2; color:#ef4444; border:none;" onclick="deleteDivision('${div.id}')">
+                                <i class="bi bi-trash"></i> Xóa Khối
+                            </button>
                         </div>
                     </div>
                     `;
                 }).join('');
             }
 
-            // 2. Render Team Select Dropdown
             if (teamSelect) {
                 teamSelect.innerHTML = divisionsState.map(d => `<option value="${d.id}">${d.name} (${d.id})</option>`).join('');
             }
 
-            // 3. Render Course Access Select Dropdown (in course creation form)
             if (courseAccessSelect) {
                 let optionsHtml = `<option value="PUBLIC">Mở Công Khai Cho Tất Cả Sales</option>`;
                 divisionsState.forEach(d => {
@@ -898,7 +1344,6 @@
             }
 
             const teamsList = teamsRaw.split(',').map(t => t.trim()).filter(t => t.length > 0);
-
             const newDiv = {
                 id: id,
                 name: name,
@@ -912,10 +1357,13 @@
             renderCoursesUI();
 
             const msg = document.getElementById('create-div-msg');
-            msg.style.display = 'block';
-            msg.textContent = `Đã tạo thành công "${name}"! Khối mới đã cập nhật vào Menu Gán Khóa Học.`;
+            if (msg) {
+                msg.style.display = 'block';
+                msg.textContent = `Đã tạo thành công "${name}"! Khối mới đã cập nhật vào Menu Gán Khóa Học.`;
+            }
 
             document.getElementById('create-div-form').reset();
+            showAdminToast(`Đã tạo Khối Kinh Doanh: ${name}!`);
         }
 
         function handleAddTeam(event) {
@@ -929,7 +1377,7 @@
                     targetDiv.teams.push(teamName);
                     localStorage.setItem('lms_divisions_list', JSON.stringify(divisionsState));
                     renderDivisionsUI();
-                    alert(`Đã thêm "${teamName}" vào ${targetDiv.name}!`);
+                    showAdminToast(`Đã thêm "${teamName}" vào ${targetDiv.name}!`);
                 } else {
                     alert(`${teamName} đã có trong ${targetDiv.name}!`);
                 }
@@ -938,15 +1386,35 @@
         }
 
         function deleteDivision(divId) {
-            if (confirm(`Bạn có chắc chắn muốn xóa Khối này?`)) {
-                divisionsState = divisionsState.filter(d => d.id !== divId);
-                localStorage.setItem('lms_divisions_list', JSON.stringify(divisionsState));
-                renderDivisionsUI();
-                renderCoursesUI();
-                alert('Đã xóa Khối Kinh Doanh!');
+            const div = divisionsState.find(d => d.id === divId);
+            const divName = div ? div.name : divId;
+            const assignedCourses = coursesState.filter(c => c.access === divId);
+
+            let warningMsg = `XÁC NHẬN XÓA KHỐI KINH DOANH:\n\nBạn có chắc chắn muốn xóa "${divName}" (${divId}) không?`;
+            if (assignedCourses.length > 0) {
+                warningMsg += `\n\nCẢNH BÁO: Khối này đang có ${assignedCourses.length} khóa học gán riêng. Sau khi xóa, các khóa học này sẽ tự động chuyển sang dạng Công Khai (PUBLIC).`;
             }
+
+            if (!confirm(warningMsg)) return;
+
+            // Reassign assigned courses to PUBLIC
+            coursesState.forEach(c => {
+                if (c.access === divId) c.access = 'PUBLIC';
+            });
+            localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
+            localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesState));
+
+            divisionsState = divisionsState.filter(d => d.id !== divId);
+            localStorage.setItem('lms_divisions_list', JSON.stringify(divisionsState));
+
+            renderDivisionsUI();
+            renderCoursesUI();
+            showAdminToast(`Đã xóa thành công Khối "${divName}"!`);
         }
 
+        // ==========================================
+        // 7. SALES STUDENTS MANAGEMENT (TAB 5)
+        // ==========================================
         function renderAdminStudentsUI() {
             const tbody = document.getElementById('admin-students-table-body');
             const totalBadge = document.getElementById('total-students-badge');
@@ -969,16 +1437,18 @@
                 return `
                 <tr>
                     <td style="font-weight:700; color:#0f172a;">${u.name}</td>
-                    <td><strong style="color:var(--primary);">${u.empId}</strong></td>
+                    <td><strong style="color:var(--primary); font-family:var(--font-label);">${u.empId}</strong></td>
                     <td>
-                        <span class="status-badge" style="background:#e0e7ff; color:#4f46e5; font-size:0.75rem;">${u.team}</span>
+                        <span class="status-badge" style="background:#e0e7ff; color:#2F2D74; font-size:0.75rem;">${u.team}</span>
                         <div style="font-size:0.7rem; color:#64748b; margin-top:2px;">${divName}</div>
                     </td>
                     <td>
-                        <span class="status-badge success">Đã Kích Hoạt</span>
+                        <span class="status-badge success"><i class="bi bi-check-circle-fill"></i> Đã Kích Hoạt</span>
                     </td>
                     <td>
-                        <button class="btn" style="padding:4px 8px; font-size:0.72rem; background:#fee2e2; color:#ef4444;" onclick="deleteAdminStudent('${u.empId}')">Thu Hồi</button>
+                        <button class="btn" style="padding:5px 10px; font-size:0.72rem; background:#fee2e2; color:#ef4444; border:none;" onclick="deleteAdminStudent('${u.empId}')">
+                            <i class="bi bi-person-x"></i> Thu Hồi
+                        </button>
                     </td>
                 </tr>
                 `;
@@ -1003,29 +1473,45 @@
             localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
 
             renderAdminStudentsUI();
+            renderReportsTable();
 
             const msg = document.getElementById('admin-create-student-msg');
-            msg.style.display = 'block';
-            msg.textContent = `Đã cấp tài khoản thành công cho Sales: ${name} (${empId})! Mật khẩu: ${pass}`;
+            if (msg) {
+                msg.style.display = 'block';
+                msg.textContent = `Đã cấp tài khoản thành công cho Sales: ${name} (${empId})! Mật khẩu: ${pass}`;
+            }
 
             document.getElementById('admin-create-student-form').reset();
             document.getElementById('admin-student-pass').value = '123456';
+            showAdminToast(`Đã cấp tài khoản mới cho Sales: ${name}!`);
         }
 
         function deleteAdminStudent(empId) {
-            if (confirm(`Bạn có chắc chắn muốn thu hồi tài khoản của Mã NV "${empId}"?`)) {
-                usersDatabase = usersDatabase.filter(u => u.empId !== empId);
-                localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
-                renderAdminStudentsUI();
-                alert(`Đã thu hồi tài khoản của nhân viên ${empId}!`);
+            const user = usersDatabase.find(u => u.empId === empId);
+            const userName = user ? `${user.name} (${user.empId})` : empId;
+
+            if (!confirm(`XÁC NHẬN THU HỒI TÀI KHOẢN:\n\nBạn có chắc chắn muốn thu hồi tài khoản của Sales "${userName}" không?\n\nNhân viên này sẽ bị đăng xuất và không thể truy cập lộ trình bài giảng nữa.`)) {
+                return;
             }
+
+            usersDatabase = usersDatabase.filter(u => u.empId !== empId);
+            localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
+
+            const currentUser = JSON.parse(localStorage.getItem('lms_current_user') || 'null');
+            if (currentUser && currentUser.empId === empId) {
+                localStorage.removeItem('lms_current_user');
+            }
+
+            renderAdminStudentsUI();
+            renderReportsTable();
+            showAdminToast(`Đã thu hồi tài khoản của nhân viên: ${userName}!`);
         }
 
         function toggleSelfRegMode() {
             allowSelfReg = !allowSelfReg;
             localStorage.setItem('lms_allow_self_reg', allowSelfReg ? 'true' : 'false');
             updateSelfRegButtonUI();
-            alert(allowSelfReg ? 'Đã BẬT cho phép Sales tự đăng ký tài khoản!' : 'Đã TẮT tự đăng ký: Chỉ Admin mới được cấp tài khoản!');
+            showAdminToast(allowSelfReg ? 'Đã BẬT cho phép Sales tự đăng ký tài khoản!' : 'Đã TẮT tự đăng ký: Chỉ Admin mới được cấp tài khoản!');
         }
 
         function updateSelfRegButtonUI() {
@@ -1040,78 +1526,91 @@
             }
         }
 
-        function renderCourseDropdowns() {
-            const select = document.getElementById('lesson-course-select');
-            if (!select) return;
+        // ==========================================
+        // 8. DETAILED PROGRESS REPORTS (TAB 6)
+        // ==========================================
+        function renderReportsTable() {
+            const tbody = document.querySelector('#pane-reports .data-table tbody');
+            if (!tbody) return;
 
-            select.innerHTML = coursesState.map(c => `
-                <option value="${c.id}">${c.title}</option>
-            `).join('');
+            tbody.innerHTML = usersDatabase.map(u => {
+                const divObj = divisionsState.find(d => d.id === u.div);
+                const divName = divObj ? `${u.team} - ${divObj.name}` : `${u.team} - ${u.div}`;
+                const userCourses = coursesState.filter(c => c.access === 'PUBLIC' || c.access === u.div);
+                const primaryCourse = userCourses[0] || coursesState[0] || { title: 'Quy Trình Tư Vấn Căn Hộ Đô Thị 2026' };
+
+                return `
+                <tr>
+                    <td style="font-weight:700; color:#0f172a;">${u.name}</td>
+                    <td><strong style="color:var(--primary); font-family:var(--font-label);">${u.empId}</strong></td>
+                    <td><span class="status-badge" style="background:#e0e7ff; color:#2F2D74; font-size:0.75rem;">${divName}</span></td>
+                    <td style="font-weight:700; color:#0f172a;">${primaryCourse.title}</td>
+                    <td>
+                        <div style="font-size:0.75rem; line-height:1.5;">
+                            <span style="color:#0C5A3E; font-weight:700;">• Mod 1: 100% (Hoàn thành)</span><br>
+                            <span style="color:#b45309; font-weight:700;">• Mod 2: 60% (Đang học)</span><br>
+                            <span style="color:#6b7280; font-weight:700;">• Mod 3: 0% (Chưa mở khóa)</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display:flex; gap:6px;">
+                            <button class="btn btn-primary" style="padding:5px 10px; font-size:0.72rem;" onclick="openSalesModal('${u.name}', '${u.empId}', '${divName}', '${primaryCourse.title}', 'Mod 1: 100% | Mod 2: 60% | Mod 3: 0%')">Xem Chi Tiết</button>
+                            <button class="btn btn-secondary" style="padding:5px 10px; font-size:0.72rem; border-color:#cbd5e1;" onclick="alert('Đã gửi thông báo nhắc học bài đến Sales ${u.name} (${u.empId})!')">Nhắc Học Tiếp</button>
+                        </div>
+                    </td>
+                </tr>
+                `;
+            }).join('');
         }
 
-        function handleCreateCourse(event) {
-            event.preventDefault();
-            const title = document.getElementById('new-course-title').value;
-            const cat = document.getElementById('new-course-category').value;
-            const access = document.getElementById('new-course-access').value;
+        function exportExcelReport() {
+            let csvContent = "\uFEFF\"Họ và Tên\",\"Mã Nhân Viên\",\"Phòng KD / Khối Kinh Doanh\",\"Tên Khóa Học\",\"Tình Trạng Module Từng Khóa Học\"\n";
+            usersDatabase.forEach(u => {
+                const divObj = divisionsState.find(d => d.id === u.div);
+                const divName = divObj ? `${u.team} - ${divObj.name}` : `${u.team} - ${u.div}`;
+                const userCourses = coursesState.filter(c => c.access === 'PUBLIC' || c.access === u.div);
+                const courseTitle = userCourses.length > 0 ? userCourses[0].title : 'Quy Trình Tư Vấn BĐS 2026';
+                const progressStr = 'Mod 1: 100% (Hoàn thành) | Mod 2: 60% (Đang học) | Mod 3: 0% (Chưa mở khóa)';
 
-            const newCourse = {
-                id: 'course_' + Date.now(),
-                title: title,
-                cat: cat,
-                desc: 'Vừa khởi tạo • 0 Module',
-                access: access
-            };
+                csvContent += `"${u.name}","${u.empId}","${divName}","${courseTitle}","${progressStr}"\n`;
+            });
 
-            coursesState.unshift(newCourse);
-            localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
-
-            renderCoursesUI();
-            renderCourseDropdowns();
-
-            const msg = document.getElementById('create-course-msg');
-            msg.style.display = 'block';
-            msg.textContent = `Đã xuất bản Khóa Học "${title}"! Khóa học đã ĐỒNG BỘ NGAY VÀO DROPDOWN ở Tab Module!`;
-
-            document.getElementById('create-course-form').reset();
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", "Bao_Cao_Tien_Do_Dao_Tao_LMS_5_Cot.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showAdminToast('Đã xuất file báo cáo Excel (.CSV) thành công!');
         }
 
-        function deleteCourse(id) {
-            coursesState = coursesState.filter(c => c.id !== id);
-            localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
-            renderCoursesUI();
-            renderCourseDropdowns();
-            alert('Đã xóa khóa học!');
-        }
+        // ==========================================
+        // 9. MODALS & GLOBAL SETTINGS
+        // ==========================================
+        function toggleDivMode() {
+            isDivModeOn = !isDivModeOn;
+            const btn = document.getElementById('toggle-div-btn');
+            const accessSelect = document.getElementById('new-course-access');
 
-        function handleAddLesson(event) {
-            event.preventDefault();
-            const name = document.getElementById('lesson-name-input').value;
-            const msg = document.getElementById('add-lesson-msg');
-            msg.style.display = 'block';
-            msg.textContent = `Đã lưu bài giảng "${name}" thành công vào Module!`;
-            document.getElementById('add-lesson-form').reset();
-        }
-
-        function handleCreateQuiz(event) {
-            event.preventDefault();
-            const q = document.getElementById('quiz-q-title').value;
-            const correct = document.getElementById('quiz-correct-opt').value;
-
-            const box = document.getElementById('quiz-list-box');
-            const item = document.createElement('div');
-            item.style.cssText = "font-size:0.75rem; color:#047857; margin-top:4px; background:#f0fdf4; padding:6px 10px; border-radius:6px; border:1px solid #bbf7d0;";
-            item.textContent = `Câu hỏi: ${q} (Đáp án đúng: ${correct})`;
-            box.appendChild(item);
-
-            alert('Đã thêm câu hỏi trắc nghiệm thành công vào bài test!');
-            document.getElementById('create-quiz-form').reset();
+            if (isDivModeOn) {
+                btn.textContent = 'BẬT (Gán Theo Khối)';
+                btn.className = 'toggle-switch-btn on';
+                if (accessSelect) accessSelect.value = 'DIV1';
+                showAdminToast('Đã BẬT Chế độ gán theo Khối!');
+            } else {
+                btn.textContent = 'TẮT (Mở Công Khai Tự Do)';
+                btn.className = 'toggle-switch-btn off';
+                if (accessSelect) accessSelect.value = 'PUBLIC';
+                showAdminToast('Đã TẮT Chế độ gán theo Khối!');
+            }
         }
 
         function saveSystemSettings() {
             const minWatch = document.getElementById('min-video-percent').value;
             const minScore = document.getElementById('passing-score-input').value;
-            alert(`Đã lưu Cấu hình Quy định Hệ thống!\n- Yêu cầu xem video tối thiểu: ${minWatch}%\n- Điểm chuẩn bài Quiz: ${minScore}/100đ`);
+            showAdminToast(`Đã lưu cài đặt: Watch tối thiểu ${minWatch}%, Điểm đạt Quiz ${minScore}/100đ!`);
         }
 
         function openSalesModal(name, empId, dept, course, watch) {
@@ -1128,27 +1627,33 @@
             document.getElementById('salesModal').style.display = 'none';
         }
 
-        // EXPORT EXCEL FILE WITH EXACT 5 REQUIRED COLUMNS
-        function exportExcelReport() {
-            // UTF-8 BOM for Excel Vietnamese compatibility & quoted fields for column safety
-            let csvContent = "\uFEFF\"Họ và Tên\",\"Mã Nhân Viên\",\"Phòng KD / Khối Kinh Doanh\",\"Tên Khóa Học\",\"Tình Trạng Module Từng Khóa Học\"\n";
-            csvContent += '"Nguyễn Văn An","NV-10892","Phòng KD 101 - Khối KD 1","Quy Trình Tư Vấn Căn Hộ Đô Thị 2026","Mod 1: 100% (Hoàn thành) | Mod 2: 100% (Hoàn thành) | Mod 3: 100% (Hoàn thành)"\n';
-            csvContent += '"Trần Thị Bình","NV-10893","Phòng KD 102 - Khối KD 1","Quy Trình Tư Vấn Căn Hộ Đô Thị 2026","Mod 1: 100% (Hoàn thành) | Mod 2: 40% (Đang học) | Mod 3: 0% (Chưa mở khóa)"\n';
-            csvContent += '"Lê Hoàng Cường","NV-20411","Phòng KD 201 - Khối KD 2","Phân Tích Dòng Tiền Biệt Thự Biển","Mod 1: 100% (Hoàn thành) | Mod 2: 85% (Đang học) | Mod 3: 0% (Chưa mở khóa)"\n';
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", "Bao_Cao_Tien_Do_Dao_Tao_LMS_5_Cot.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
         function toggleMobileSidebar() {
             document.getElementById('adminSidebar').classList.toggle('open');
         }
+
+        // REAL-TIME BI-DIRECTIONAL STORAGE SYNC
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'lms_courses_catalog' || e.key === 'lms_courses_list') {
+                coursesState = JSON.parse(localStorage.getItem('lms_courses_catalog') || '[]');
+                renderCoursesUI();
+                renderCourseDropdowns();
+                renderReportsTable();
+            }
+            if (e.key === 'lms_users_db') {
+                usersDatabase = JSON.parse(localStorage.getItem('lms_users_db') || '[]');
+                renderAdminStudentsUI();
+                renderReportsTable();
+            }
+            if (e.key === 'lms_divisions_list') {
+                divisionsState = JSON.parse(localStorage.getItem('lms_divisions_list') || '[]');
+                renderDivisionsUI();
+                renderCoursesUI();
+            }
+            if (e.key === 'lms_quizzes') {
+                quizzesDatabase = JSON.parse(localStorage.getItem('lms_quizzes') || '[]');
+                renderStandaloneQuizList();
+            }
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             const canvas = document.getElementById('salesDivisionChart');
@@ -1161,7 +1666,7 @@
                         datasets: [{
                             label: '% Hoàn Thành Bài Học Trung Bình',
                             data: [88, 75],
-                            backgroundColor: ['#4f46e5', '#059669'],
+                            backgroundColor: ['#2F2D74', '#0C5A3E'],
                             borderRadius: 6
                         }]
                     },

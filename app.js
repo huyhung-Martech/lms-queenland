@@ -330,15 +330,49 @@ const defaultCoursesCatalog = [
     }
 ];
 
-let coursesCatalog = JSON.parse(localStorage.getItem('lms_courses_catalog') || 'null') || defaultCoursesCatalog;
+let coursesCatalog = defaultCoursesCatalog;
 let currentSelectedCourse = null;
+
+// RELOAD COURSES CATALOG FROM LOCALSTORAGE SAFELY
+function reloadCoursesCatalog() {
+    try {
+        const stored = localStorage.getItem('lms_courses_catalog') || localStorage.getItem('lms_courses_list');
+        if (stored) {
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                coursesCatalog = parsed;
+                return;
+            }
+        }
+    } catch (e) {
+        console.error("Lỗi đọc lms_courses_catalog:", e);
+    }
+    coursesCatalog = defaultCoursesCatalog;
+    try {
+        localStorage.setItem('lms_courses_catalog', JSON.stringify(defaultCoursesCatalog));
+        localStorage.setItem('lms_courses_list', JSON.stringify(defaultCoursesCatalog));
+    } catch (e) {}
+}
+
+// Initial load
+reloadCoursesCatalog();
 
 // RENDER LEVEL 1: CHƯƠNG TRÌNH HỌC (COURSES CATALOG)
 function renderStudentCoursesCatalog(filterDiv) {
     const container = document.getElementById('student-courses-catalog-grid');
     if (!container) return;
 
+    // Always fetch freshest data
+    reloadCoursesCatalog();
+
     const targetDiv = filterDiv || (document.getElementById('student-div-select')?.value) || 'ALL';
+
+    // Get current divisions for readable labels
+    const divisions = JSON.parse(localStorage.getItem('lms_divisions_list') || 'null') || [
+        { id: 'DIV1', name: 'Khối Kinh Doanh 1' },
+        { id: 'DIV2', name: 'Khối Kinh Doanh 2' },
+        { id: 'DIV3', name: 'Khối Kinh Doanh 3 - Miền Nam' }
+    ];
 
     // Filter courses: match student's division or PUBLIC courses or ALL
     const filteredCourses = coursesCatalog.filter(c => {
@@ -362,33 +396,45 @@ function renderStudentCoursesCatalog(filterDiv) {
     }
 
     container.innerHTML = filteredCourses.map(course => {
-        const isPublic = course.access === 'PUBLIC';
-        const accessLabel = isPublic ? 'Dành Cho Toàn Bộ Sales' : `Khóa Riêng ${course.access}`;
+        const isPublic = !course.access || course.access === 'PUBLIC';
+        const matchedDiv = divisions.find(d => d.id === course.access);
+        const accessLabel = isPublic ? 'Dành Cho Toàn Bộ Sales' : (matchedDiv ? `Khóa Riêng ${matchedDiv.name}` : `Khóa Riêng ${course.access}`);
         const accessClass = isPublic ? 'badge-forest' : 'div-badge';
+
+        // Robust fallbacks for properties
+        const category = course.category || course.cat || 'Chuyên Đề';
+        const stats = course.stats || {
+            modules: (course.modules && course.modules.length) ? course.modules.length : 1,
+            videos: (course.modules && course.modules.length) ? course.modules.length : 2,
+            duration: '1 Giờ Học',
+            materials: 1
+        };
+        const desc = course.desc || course.rawDesc || 'Lộ trình đào tạo chuẩn kỹ năng cho nhân sự Sales Queen Land.';
+        const progress = typeof course.progress === 'number' ? course.progress : 0;
 
         return `
         <div class="course-program-card card-premium">
             <div class="course-card-top">
-                <span class="course-category-badge badge-gold">${course.category}</span>
+                <span class="course-category-badge badge-gold">${category}</span>
                 <span class="course-access-badge ${accessClass}">${accessLabel}</span>
             </div>
             <h3>${course.title}</h3>
-            <p class="course-desc">${course.desc}</p>
+            <p class="course-desc">${desc}</p>
             
             <div class="course-stats-pills">
-                <span class="course-stat-pill"><i class="bi bi-collection"></i> ${course.stats.modules} Module</span>
-                <span class="course-stat-pill"><i class="bi bi-play-circle"></i> ${course.stats.videos} Video Bài Giảng</span>
-                <span class="course-stat-pill"><i class="bi bi-clock"></i> ${course.stats.duration}</span>
-                <span class="course-stat-pill"><i class="bi bi-file-earmark-text"></i> ${course.stats.materials} Tài Liệu</span>
+                <span class="course-stat-pill"><i class="bi bi-collection"></i> ${stats.modules} Module</span>
+                <span class="course-stat-pill"><i class="bi bi-play-circle"></i> ${stats.videos} Video Bài Giảng</span>
+                <span class="course-stat-pill"><i class="bi bi-clock"></i> ${stats.duration}</span>
+                <span class="course-stat-pill"><i class="bi bi-file-earmark-text"></i> ${stats.materials} Tài Liệu</span>
             </div>
 
             <div class="course-progress-mini">
                 <div class="p-bar-label">
                     <span>Tiến độ cá nhân</span>
-                    <strong>${course.progress}%</strong>
+                    <strong>${progress}%</strong>
                 </div>
                 <div class="p-bar-track">
-                    <div class="p-bar-fill" style="width: ${course.progress}%;"></div>
+                    <div class="p-bar-fill" style="width: ${progress}%;"></div>
                 </div>
             </div>
 
@@ -402,6 +448,7 @@ function renderStudentCoursesCatalog(filterDiv) {
 
 // LEVEL 2: DRILL-DOWN INTO MODULES OF SELECTED COURSE
 function openCourseModules(courseId) {
+    reloadCoursesCatalog();
     const course = coursesCatalog.find(c => c.id === courseId) || coursesCatalog[0];
     currentSelectedCourse = course;
 
@@ -418,19 +465,46 @@ function openCourseModules(courseId) {
         courseTitleEl.textContent = `Các Module Đào Tạo: ${course.title}`;
     }
 
+    const category = course.category || course.cat || 'Chuyên Đề';
+    const desc = course.desc || course.rawDesc || 'Lộ trình đào tạo chuẩn kỹ năng cho nhân sự Sales Queen Land.';
+    const instructor = course.instructor || 'Ban Đào Tạo Queen Land';
+    const progress = typeof course.progress === 'number' ? course.progress : 0;
+    const stats = course.stats || {
+        modules: (course.modules && course.modules.length) ? course.modules.length : 1,
+        videos: (course.modules && course.modules.length) ? course.modules.length : 2,
+        duration: '1 Giờ Học',
+        materials: 1
+    };
+
+    const modulesList = (course.modules && Array.isArray(course.modules) && course.modules.length > 0)
+        ? course.modules
+        : [
+            {
+                id: 1,
+                title: 'Tổng Quan & Định Hướng Kiến Thức Nền Tảng',
+                desc: desc,
+                status: 'in-progress',
+                statusText: 'Bắt Đầu Học',
+                meta: { videos: 1, duration: '45 Phút', docs: '1 Tài Liệu' },
+                buttonText: 'Vào Học Module 1',
+                buttonClass: 'btn-module primary',
+                lessonId: 1
+            }
+        ];
+
     // Render Banner
     if (banner) {
         banner.innerHTML = `
             <div>
-                <span class="badge-gold" style="font-size:0.75rem; padding:4px 12px; border-radius:20px; font-weight:700; display:inline-block; margin-bottom:8px;">${course.category}</span>
+                <span class="badge-gold" style="font-size:0.75rem; padding:4px 12px; border-radius:20px; font-weight:700; display:inline-block; margin-bottom:8px;">${category}</span>
                 <h2 style="margin-top:4px; font-family: var(--font-label); font-weight:800; color: #ffffff;">${course.title}</h2>
-                <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; line-height: 1.5; margin: 8px 0 16px;">${course.desc}</p>
+                <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; line-height: 1.5; margin: 8px 0 16px;">${desc}</p>
                 <div class="banner-meta-row" style="display:flex; flex-wrap:wrap; gap:16px; font-size:0.85rem; color: rgba(255,255,255,0.9);">
-                    <span><i class="bi bi-person-badge"></i> Giảng viên: <strong>${course.instructor}</strong></span>
-                    <span><i class="bi bi-collection"></i> <strong>${course.stats.modules} Module</strong></span>
-                    <span><i class="bi bi-play-circle"></i> <strong>${course.stats.videos} Video</strong></span>
-                    <span><i class="bi bi-clock"></i> <strong>${course.stats.duration}</strong></span>
-                    <span><i class="bi bi-graph-up-arrow"></i> Tiến độ: <strong>${course.progress}%</strong></span>
+                    <span><i class="bi bi-person-badge"></i> Giảng viên: <strong>${instructor}</strong></span>
+                    <span><i class="bi bi-collection"></i> <strong>${stats.modules} Module</strong></span>
+                    <span><i class="bi bi-play-circle"></i> <strong>${stats.videos} Video</strong></span>
+                    <span><i class="bi bi-clock"></i> <strong>${stats.duration}</strong></span>
+                    <span><i class="bi bi-graph-up-arrow"></i> Tiến độ: <strong>${progress}%</strong></span>
                 </div>
             </div>
             <div style="flex-shrink:0; text-align:right;">
@@ -443,7 +517,7 @@ function openCourseModules(courseId) {
 
     // Render Modules
     if (modulesGrid) {
-        modulesGrid.innerHTML = course.modules.map(mod => {
+        modulesGrid.innerHTML = modulesList.map(mod => {
             let statusBadgeClass = 'locked';
             let statusIcon = '<i class="bi bi-lock-fill"></i>';
             if (mod.status === 'completed') {
@@ -455,21 +529,23 @@ function openCourseModules(courseId) {
                 statusIcon = '<i class="bi bi-play-circle-fill"></i>';
             }
 
+            const meta = mod.meta || { videos: 1, duration: '30 Phút', docs: '1 Tài Liệu' };
+
             return `
             <div class="module-card card-premium ${mod.status}">
-                <div class="module-status-badge ${statusBadgeClass}">${statusIcon} ${mod.statusText}</div>
+                <div class="module-status-badge ${statusBadgeClass}">${statusIcon} ${mod.statusText || 'Bắt Đầu Học'}</div>
                 <div class="module-header">
                     <span class="module-number">MODULE 0${mod.id}</span>
                     <h3>${mod.title}</h3>
                 </div>
-                <p class="module-desc">${mod.desc}</p>
+                <p class="module-desc">${mod.desc || 'Bài giảng lý thuyết & thực hành kèm video hướng dẫn chi tiết.'}</p>
                 <div class="module-meta">
-                    <span><i class="bi bi-play-circle"></i> ${mod.meta.videos} Video</span>
-                    <span><i class="bi bi-clock"></i> ${mod.meta.duration}</span>
-                    <span><i class="bi bi-file-earmark-text"></i> ${mod.meta.docs}</span>
+                    <span><i class="bi bi-play-circle"></i> ${meta.videos} Video</span>
+                    <span><i class="bi bi-clock"></i> ${meta.duration}</span>
+                    <span><i class="bi bi-file-earmark-text"></i> ${meta.docs}</span>
                 </div>
-                <button class="${mod.buttonClass} animated-shine-btn" ${mod.status === 'locked' ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${mod.lessonId})">
-                    <span>${mod.buttonText}</span>
+                <button class="${mod.buttonClass || 'btn-module primary'} animated-shine-btn" ${mod.status === 'locked' ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${mod.lessonId || 1})">
+                    <span>${mod.buttonText || 'Vào Học Module'}</span>
                 </button>
             </div>
             `;
@@ -499,11 +575,19 @@ function backToCoursesList() {
 
 // ENTER CLASSROOM VIDEO FOR SPECIFIC COURSE & MODULE
 function enterCourseLesson(courseId, modNum, lessonNum) {
+    reloadCoursesCatalog();
     const course = coursesCatalog.find(c => c.id === courseId);
     if (course) {
         const topCourseTitle = document.getElementById('current-course-title');
         if (topCourseTitle) {
             topCourseTitle.textContent = `${course.title} - Module ${modNum}`;
+        }
+        const targetMod = course.modules?.find(m => m.id === modNum);
+        if (targetMod) {
+            const videoTitle = document.getElementById('video-lesson-title');
+            if (videoTitle) {
+                videoTitle.textContent = targetMod.title || `Module ${modNum}: Bài Học Video Đào Tạo`;
+            }
         }
     }
     selectLesson(modNum, lessonNum || 1);
@@ -513,6 +597,26 @@ function enterCourseLesson(courseId, modNum, lessonNum) {
 window.addEventListener('DOMContentLoaded', () => {
     initStudentDivisions();
     renderStudentCoursesCatalog('ALL');
+});
+
+// REAL-TIME CROSS-TAB SYNCHRONIZATION WITH ADMIN PORTAL
+window.addEventListener('storage', (e) => {
+    if (e.key === 'lms_courses_catalog' || e.key === 'lms_courses_list') {
+        reloadCoursesCatalog();
+        const currentDiv = document.getElementById('student-div-select')?.value || 'ALL';
+        renderStudentCoursesCatalog(currentDiv);
+    }
+    if (e.key === 'lms_divisions_list') {
+        initStudentDivisions();
+        populateRegisterDivisions();
+        const currentDiv = document.getElementById('student-div-select')?.value || 'ALL';
+        renderStudentCoursesCatalog(currentDiv);
+    }
+    if (e.key === 'lms_users_db' || e.key === 'lms_current_user' || e.key === 'lms_allow_self_reg') {
+        usersDatabase = JSON.parse(localStorage.getItem('lms_users_db') || 'null') || usersDatabase;
+        currentUser = JSON.parse(localStorage.getItem('lms_current_user') || 'null');
+        checkAuthGuard();
+    }
 });
 
 function initStudentDivisions() {
