@@ -93,7 +93,7 @@ function getStudentProgress(courseId) {
     let data = JSON.parse(localStorage.getItem(key) || 'null');
     if (!data) {
         data = {
-            completedLessons: ['m1_l1'], // Default: Lesson 1.1 started
+            completedLessons: [], // Starts clean, lesson 1.1 is unlocked by rule
             passedQuizzes: [],
             lastActive: { modNum: 1, lessonNum: 1, time: 0 },
             certificateEarned: false,
@@ -140,20 +140,22 @@ function isModuleUnlocked(course, modNum) {
     if (modNum === 1) return true;
     const prog = getStudentProgress(course.id);
     const prevModNum = modNum - 1;
-    if (prog.passedQuizzes.includes(`m${prevModNum}`)) return true;
+
+    // Strict Quiz Gate: Previous module must be passed (score >= 80)
+    const quizPassed = prog.passedQuizzes.includes(`m${prevModNum}`);
+    if (!quizPassed) return false;
+
+    // And all lessons in previous module must be completed
     const prevMod = (course.modules || []).find(m => m.id === prevModNum);
     if (prevMod) {
         const count = (prevMod.lessons && prevMod.lessons.length) ? prevMod.lessons.length : 2;
-        let allDone = true;
         for (let i = 1; i <= count; i++) {
             if (!prog.completedLessons.includes(`m${prevModNum}_l${i}`)) {
-                allDone = false;
-                break;
+                return false;
             }
         }
-        return allDone;
     }
-    return false;
+    return true;
 }
 
 // VIDEO WATCH PROGRESS % MEASUREMENT & COMPLETION ENFORCEMENT (ANTI-CHEAT)
@@ -1335,7 +1337,11 @@ function submitDynamicQuiz(event, courseId) {
 
     const quizzes = JSON.parse(localStorage.getItem('lms_quizzes') || '[]');
     const courseQuizzes = quizzes.filter(q => q.courseId === courseId);
-    const questions = courseQuizzes.length > 0 ? courseQuizzes : quizzes.slice(0, 3);
+    const fallbackQuizzes = [
+        { id: 'q1', courseId: 'c1', title: 'Quy trình tư vấn căn hộ chuẩn gồm bao nhiêu bước?', a: '3 bước', b: '5 bước cốt lõi', c: '7 bước', d: 'Không cố định', correct: 'B' },
+        { id: 'q2', courseId: 'c1', title: 'Khi khách hàng do dự về tiến độ bàn giao, tư vấn viên cần làm gì?', a: 'Giục khách cọc ngay', b: 'Cung cấp biên bản nghiệm thu & hình ảnh tiến độ thực tế', c: 'Giảm giá căn hộ', d: 'Chờ khách tự quyết định', correct: 'B' }
+    ];
+    const questions = courseQuizzes.length > 0 ? courseQuizzes : (quizzes.length > 0 ? quizzes.slice(0, 3) : fallbackQuizzes);
 
     let correctCount = 0;
     questions.forEach(q => {
