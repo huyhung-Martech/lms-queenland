@@ -1281,6 +1281,94 @@ button, input, select, textarea, optgroup {
     cursor: not-allowed;
 }
 
+/* MODULE LESSONS BREAKDOWN INSIDE MODULE CARD */
+.module-lessons-list {
+    margin: 12px 0 6px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: #f8fafc;
+    overflow: hidden;
+}
+
+.module-lessons-header {
+    padding: 6px 10px;
+    background: #f1f5f9;
+    border-bottom: 1px solid var(--border-light);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    letter-spacing: 0.02em;
+}
+
+.module-lesson-item {
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 0.76rem;
+    transition: background 0.15s ease;
+}
+.module-lesson-item:last-child {
+    border-bottom: none;
+}
+.module-lesson-item:hover {
+    background: #ffffff;
+}
+
+.lesson-main-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.lesson-title-text {
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.lesson-badges-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.btn-play-lesson {
+    background: var(--primary);
+    color: #ffffff;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s ease;
+}
+.btn-play-lesson:hover {
+    background: var(--primary-dark);
+    transform: scale(1.02);
+}
+
+.lms-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 /* LMS CLASSROOM PORTAL (STUDENT VIEW) */
 .lms-container {
     max-width: 1400px;
@@ -1435,13 +1523,17 @@ button, input, select, textarea, optgroup {
     border-radius: var(--radius-md);
     overflow: hidden;
     box-shadow: var(--shadow-md);
+    max-width: 960px;
+    margin: 0 auto 16px;
 }
 
 .video-wrapper {
     position: relative;
     width: 100%;
     aspect-ratio: 16/9;
+    max-height: 480px;
     background: #000;
+    overflow: hidden;
 }
 
 .video-wrapper video,

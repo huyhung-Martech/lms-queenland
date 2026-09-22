@@ -3,7 +3,7 @@
    ========================================================================== */
 
 // Switch view between Landing Page and LMS Portal
-function switchView(viewName) {
+function switchView(viewName, push = true) {
     if (viewName === 'portal' && !currentUser) {
         alert('BẢO MẬT NỘI BỘ:\nBạn cần Đăng Nhập bằng Mã Nhân Viên để vào phòng học video bài giảng!');
         openAuthModal('login');
@@ -21,6 +21,12 @@ function switchView(viewName) {
         btnLanding.classList.add('active');
         btnPortal.classList.remove('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (push) {
+            try {
+                history.pushState({ view: 'catalog' }, '', '#catalog');
+            } catch (e) {}
+        }
     } else if (viewName === 'portal') {
         portalView.classList.add('active');
         landingView.classList.remove('active');
@@ -32,6 +38,11 @@ function switchView(viewName) {
         const course = currentSelectedCourse || coursesCatalog[0];
         if (course) {
             playCourseLesson(course.id, 1, 1);
+            if (push) {
+                try {
+                    history.pushState({ view: 'portal', courseId: course.id, modNum: 1, lessonNum: 1 }, '', '#classroom');
+                } catch (e) {}
+            }
         }
     }
 }
@@ -437,7 +448,7 @@ function renderStudentCoursesCatalog(filterDiv) {
 }
 
 // LEVEL 2: DRILL-DOWN INTO MODULES OF SELECTED COURSE
-function openCourseModules(courseId) {
+function openCourseModules(courseId, push = true) {
     reloadCoursesCatalog();
     const course = coursesCatalog.find(c => c.id === courseId) || coursesCatalog[0];
     currentSelectedCourse = course;
@@ -475,7 +486,7 @@ function openCourseModules(courseId) {
                 desc: desc,
                 status: 'in-progress',
                 statusText: 'Bắt Đầu Học',
-                meta: { videos: 1, duration: '45 Phút', docs: '1 Tài Liệu' },
+                meta: { videos: 2, duration: '45 Phút', docs: '1 Tài Liệu' },
                 buttonText: 'Vào Học Module 1',
                 buttonClass: 'btn-module primary',
                 lessonId: 1
@@ -505,7 +516,7 @@ function openCourseModules(courseId) {
         `;
     }
 
-    // Render Modules
+    // Render Modules with detailed lessons list
     if (modulesGrid) {
         modulesGrid.innerHTML = modulesList.map(mod => {
             let statusBadgeClass = 'locked';
@@ -519,7 +530,48 @@ function openCourseModules(courseId) {
                 statusIcon = '<i class="bi bi-play-circle-fill"></i>';
             }
 
-            const meta = mod.meta || { videos: 1, duration: '30 Phút', docs: '1 Tài Liệu' };
+            const meta = mod.meta || { videos: 2, duration: '30 Phút', docs: '1 Tài Liệu' };
+
+            // Ensure lessons list exists
+            let lessons = mod.lessons;
+            if (!lessons || !Array.isArray(lessons) || lessons.length === 0) {
+                const count = (mod.meta && mod.meta.videos) ? parseInt(mod.meta.videos) : 2;
+                lessons = [];
+                for (let i = 1; i <= count; i++) {
+                    lessons.push({
+                        id: i,
+                        title: `Bài ${mod.id}.${i}: ${mod.title} - Phần ${i}`,
+                        duration: i === 1 ? '12:00' : (i === 2 ? '15:30' : '18:45'),
+                        youtubeUrl: mod.youtubeUrl || 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+                        status: (mod.status === 'completed') ? 'completed' : (i === 1 ? 'in-progress' : 'locked')
+                    });
+                }
+                mod.lessons = lessons;
+            }
+
+            // Render lessons items
+            const lessonsHtml = lessons.map(les => {
+                const isDone = les.status === 'completed' || mod.status === 'completed';
+                const isLocked = mod.status === 'locked';
+                const icon = isDone 
+                    ? '<i class="bi bi-check-circle-fill text-success"></i>' 
+                    : (isLocked ? '<i class="bi bi-lock-fill text-muted"></i>' : '<i class="bi bi-play-circle-fill text-primary"></i>');
+
+                return `
+                <div class="module-lesson-item">
+                    <div class="lesson-main-info">
+                        <span class="lesson-icon">${icon}</span>
+                        <span class="lesson-title-text" title="${les.title}"><strong>Bài ${mod.id}.${les.id}:</strong> ${les.title.replace(/^Bài \d+\.\d+:?\s*/, '')}</span>
+                    </div>
+                    <div class="lesson-badges-group">
+                        <span class="lesson-duration" style="font-size:0.7rem; color:#64748b;"><i class="bi bi-clock"></i> ${les.duration || '15:00'}</span>
+                        <button class="btn-play-lesson" ${isLocked ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${les.id})" title="Vào xem bài giảng này">
+                            <i class="bi bi-play-fill"></i> <span>Học bài này</span>
+                        </button>
+                    </div>
+                </div>
+                `;
+            }).join('');
 
             return `
             <div class="module-card card-premium ${mod.status}">
@@ -529,13 +581,22 @@ function openCourseModules(courseId) {
                     <h3>${mod.title}</h3>
                 </div>
                 <p class="module-desc">${mod.desc || 'Bài giảng lý thuyết & thực hành kèm video hướng dẫn chi tiết.'}</p>
+                
+                <div class="module-lessons-list">
+                    <div class="module-lessons-header">
+                        <span><i class="bi bi-collection-play"></i> DANH SÁCH BÀI GIẢNG VIDEO</span>
+                        <span>${lessons.length} Bài</span>
+                    </div>
+                    ${lessonsHtml}
+                </div>
+
                 <div class="module-meta">
                     <span><i class="bi bi-play-circle"></i> ${meta.videos} Video</span>
                     <span><i class="bi bi-clock"></i> ${meta.duration}</span>
                     <span><i class="bi bi-file-earmark-text"></i> ${meta.docs}</span>
                 </div>
                 <button class="${mod.buttonClass || 'btn-module primary'} animated-shine-btn" ${mod.status === 'locked' ? 'disabled' : ''} onclick="enterCourseLesson('${course.id}', ${mod.id}, ${mod.lessonId || 1})">
-                    <span>${mod.buttonText || 'Vào Học Module'}</span>
+                    <span>${mod.buttonText || 'Vào Học Module ' + mod.id} <i class="bi bi-arrow-right"></i></span>
                 </button>
             </div>
             `;
@@ -547,10 +608,27 @@ function openCourseModules(courseId) {
     if (curriculumEl) {
         curriculumEl.scrollIntoView({ behavior: 'smooth' });
     }
+
+    if (push) {
+        try {
+            history.pushState({ view: 'modules', courseId: course.id }, '', '#course-' + course.id);
+        } catch (e) {}
+    }
+}
+
+// BACK TO COURSE MODULES (FROM CLASSROOM PORTAL)
+function backToCourseModules(push = true) {
+    switchView('landing', false);
+    if (currentSelectedCourse) {
+        openCourseModules(currentSelectedCourse.id, push);
+    } else {
+        backToCoursesList(push);
+    }
 }
 
 // BACK TO LEVEL 1 (COURSES LIST)
-function backToCoursesList() {
+function backToCoursesList(push = true) {
+    switchView('landing', false);
     const coursesView = document.getElementById('curriculum-courses-view');
     const modulesView = document.getElementById('curriculum-modules-view');
 
@@ -561,12 +639,23 @@ function backToCoursesList() {
     if (curriculumEl) {
         curriculumEl.scrollIntoView({ behavior: 'smooth' });
     }
+
+    if (push) {
+        try {
+            history.pushState({ view: 'catalog' }, '', '#catalog');
+        } catch (e) {}
+    }
 }
 
 // ENTER CLASSROOM VIDEO FOR SPECIFIC COURSE & MODULE
-function enterCourseLesson(courseId, modNum, lessonNum) {
-    switchView('portal');
+function enterCourseLesson(courseId, modNum, lessonNum, push = true) {
+    switchView('portal', false);
     playCourseLesson(courseId, modNum, lessonNum || 1);
+    if (push) {
+        try {
+            history.pushState({ view: 'portal', courseId: courseId, modNum: modNum, lessonNum: lessonNum || 1 }, '', `#lesson-${modNum}-${lessonNum || 1}`);
+        } catch (e) {}
+    }
 }
 
 // PLAY SPECIFIC LESSON INSIDE CLASSROOM
@@ -1071,3 +1160,53 @@ function handleLogout() {
         alert('Đã đăng xuất! Toàn bộ nội dung bài học đã được khóa.');
     }
 }
+
+/* ==========================================================================
+   ROBUST BROWSER HISTORY & BACK BUTTON NAVIGATION (PREVENTS JUMPING TO ADMIN)
+   ========================================================================== */
+window.addEventListener('popstate', function(event) {
+    const state = event.state;
+    if (state) {
+        if (state.view === 'portal') {
+            switchView('portal', false);
+            if (state.courseId) {
+                playCourseLesson(state.courseId, state.modNum || 1, state.lessonNum || 1);
+            }
+        } else if (state.view === 'modules') {
+            switchView('landing', false);
+            if (state.courseId) {
+                openCourseModules(state.courseId, false);
+            } else {
+                backToCoursesList(false);
+            }
+        } else if (state.view === 'catalog') {
+            backToCoursesList(false);
+        }
+    } else {
+        const hash = window.location.hash || '';
+        if (hash.startsWith('#course-')) {
+            const cId = hash.replace('#course-', '');
+            openCourseModules(cId, false);
+        } else if (hash.startsWith('#lesson-')) {
+            if (currentSelectedCourse) {
+                openCourseModules(currentSelectedCourse.id, false);
+            } else {
+                backToCoursesList(false);
+            }
+        } else {
+            backToCoursesList(false);
+        }
+    }
+});
+
+// Set initial catalog state on first load so Back button stays inside student portal
+window.addEventListener('DOMContentLoaded', function() {
+    if (!window.location.hash || window.location.hash === '#catalog') {
+        try {
+            history.replaceState({ view: 'catalog' }, '', '#catalog');
+        } catch (e) {}
+    } else if (window.location.hash.startsWith('#course-')) {
+        const cId = window.location.hash.replace('#course-', '');
+        openCourseModules(cId, false);
+    }
+});

@@ -201,8 +201,15 @@
                 
                 <!-- TOP BAR: Course Title & Progress Bar -->
                 <div class="lms-topbar">
+                    <div class="lms-nav-actions">
+                        <button class="btn btn-secondary animated-shine-btn" onclick="backToCourseModules()" title="Quay lại danh sách module của khóa học này">
+                            <i class="bi bi-arrow-left"></i> <span>Quay Lại Module Khóa Học</span>
+                        </button>
+                        <button class="btn btn-secondary" onclick="backToCoursesList()" title="Quay lại danh mục tất cả khóa học">
+                            <i class="bi bi-grid-3x3-gap-fill"></i> <span>Danh Mục Khóa Học</span>
+                        </button>
+                    </div>
                     <div class="lms-title-group">
-                        <span class="back-link" onclick="switchView('landing')">← Quay lại Trang chủ</span>
                         <h2 id="current-course-title">Chương Trình Đào Tạo Chuyên Sâu - Module 2</h2>
                     </div>
                     <div class="lms-progress-wrapper">
