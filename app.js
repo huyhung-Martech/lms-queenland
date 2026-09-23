@@ -323,7 +323,12 @@ function goToNextLesson() {
                 switchTab('quiz');
             }
         } else {
-            checkCourseCompletion(currentSelectedCourse.id);
+            if (isCourseFullyCompleted(currentSelectedCourse.id)) {
+                checkCourseCompletion(currentSelectedCourse.id);
+            } else {
+                alert(`BẠN ĐÃ XEM XONG VIDEO BÀI GIẢNG CỦA MODULE NÀY!\n\nVui lòng chuyển sang tab "Bài Kiểm Tra" để làm bài đánh giá hoàn thành.`);
+                switchTab('quiz');
+            }
         }
     }
 }
@@ -413,14 +418,48 @@ function renderResumeLearningBanner() {
     `;
 }
 
-// CERTIFICATE GENERATOR & MODAL
-function checkCourseCompletion(courseId) {
+// STRICT COURSE COMPLETION ENGINE (100% OF ALL MODULES & ALL QUIZZES REQUIRED)
+function isCourseFullyCompleted(courseId) {
+    reloadCoursesCatalog();
+    const course = coursesCatalog.find(c => c.id === courseId) || coursesCatalog[0];
+    if (!course || !course.modules || course.modules.length === 0) return false;
+
     const prog = getStudentProgress(courseId);
-    const percent = calculateCourseProgressPercent(courseId);
-    if (percent >= 100 && !prog.certificateEarned) {
+
+    // Every module in the entire course must have all lessons completed AND quiz passed
+    for (const mod of course.modules) {
+        // 1. Must pass this module's quiz (score >= 80%)
+        if (!prog.passedQuizzes.includes(`m${mod.id}`)) {
+            return false;
+        }
+
+        // 2. Must complete all lessons in this module
+        const lessons = mod.lessons || [];
+        const count = lessons.length > 0 ? lessons.length : ((mod.meta && mod.meta.videos) ? parseInt(mod.meta.videos) : 2);
+        for (let i = 1; i <= count; i++) {
+            if (!prog.completedLessons.includes(`m${mod.id}_l${i}`)) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// CERTIFICATE GENERATOR & MODAL (TRIGGERED ONLY WHEN 100% OF ENTIRE COURSE IS COMPLETED)
+function checkCourseCompletion(courseId) {
+    reloadCoursesCatalog();
+    const course = coursesCatalog.find(c => c.id === courseId) || coursesCatalog[0];
+    if (!course) return;
+
+    const prog = getStudentProgress(courseId);
+    const isCompleted = isCourseFullyCompleted(courseId);
+
+    if (isCompleted && !prog.certificateEarned) {
         prog.certificateEarned = true;
         prog.earnedDate = new Date().toLocaleDateString('vi-VN');
         saveStudentProgress(courseId, prog);
+        alert(`CHÚC MỪNG BẠN ĐÃ TỐT NGHIỆP TOÀN BỘ KHÓA HỌC!\n\nBạn đã hoàn thành xuất sắc toàn bộ ${course.modules.length} Module bài học và vượt qua tất cả các bài kiểm tra của:\n"${course.title}"\n\nHội Đồng Đào Tạo Queen Land Academy trân trọng trao Chứng Chỉ Tốt Nghiệp Khóa Học cho bạn!`);
         showCertificateModal(courseId);
     }
 }
@@ -542,7 +581,11 @@ function submitQuiz(event) {
     if (nextMod) {
         alert(`CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI TEST MODULE ${currentActiveModNum}!\n\nModule ${nextModNum} (${nextMod.title}) đã được mở khóa. Bạn có thể bấm tiếp tục học!`);
     } else {
-        checkCourseCompletion(currentSelectedCourse.id);
+        if (isCourseFullyCompleted(currentSelectedCourse.id)) {
+            checkCourseCompletion(currentSelectedCourse.id);
+        } else {
+            alert(`CHÚC MỪNG BẠN ĐÃ HOÀN THÀNH BÀI TEST MODULE ${currentActiveModNum}!\n\nĐể nhận Chứng Chỉ Tốt Nghiệp Khóa Học, vui lòng hoàn thành tất cả các bài học và bài kiểm tra còn lại trong chương trình.`);
+        }
     }
 }
 
@@ -596,11 +639,11 @@ const defaultCoursesCatalog = [
             },
             {
                 id: 4,
-                title: 'Đồ Án Tốt Nghiệp & Cấp Chứng Nhận',
-                desc: 'Thực hiện bài kiểm tra tổng hợp cuối khóa để cấp chứng nhận đào tạo chính thức của Queen Land Academy.',
+                title: 'Bài Thu Hoạch Tổng Hợp & Đánh Giá Tốt Nghiệp Khóa Học',
+                desc: 'Thực hiện bài thu hoạch thực tế và bài kiểm tra tổng hợp cuối khóa để hoàn tất điều kiện tốt nghiệp toàn khóa học.',
                 status: 'locked',
                 statusText: 'Chưa Mở Khóa',
-                meta: { videos: 3, duration: '120 Phút', docs: 'Cấp Chứng Nhận' },
+                meta: { videos: 3, duration: '120 Phút', docs: 'Bài Thu Hoạch Cuối Khóa' },
                 buttonText: 'Chưa Mở Khóa',
                 buttonClass: 'btn-module disabled',
                 lessonId: 4
@@ -743,6 +786,17 @@ function reloadCoursesCatalog() {
         if (stored) {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed) && parsed.length > 0) {
+                // Auto-migrate legacy titles to eliminate confusion
+                parsed.forEach(c => {
+                    (c.modules || []).forEach(m => {
+                        if (m.title && m.title.includes('Cấp Chứng Nhận')) {
+                            m.title = m.title.replace('Cấp Chứng Nhận', 'Đánh Giá Tốt Nghiệp Khóa Học');
+                        }
+                        if (m.meta && m.meta.docs === 'Cấp Chứng Nhận') {
+                            m.meta.docs = 'Bài Thu Hoạch Cuối Khóa';
+                        }
+                    });
+                });
                 coursesCatalog = parsed;
                 return;
             }
@@ -857,12 +911,15 @@ function renderStudentCoursesCatalog(filterDiv, searchKeyword) {
         };
         const desc = course.desc || course.rawDesc || 'Lộ trình đào tạo chuẩn kỹ năng cho nhân sự Sales Queen Land.';
         const progress = calculateCourseProgressPercent(course.id);
+        const prog = getStudentProgress(course.id);
+        const hasCert = prog.certificateEarned;
 
         return `
         <div class="course-program-card card-premium">
             <div class="course-card-top">
                 <span class="course-category-badge badge-gold">${category}</span>
                 <span class="course-access-badge ${accessClass}">${accessLabel}</span>
+                ${hasCert ? '<span class="status-badge success" style="margin-left:auto;"><i class="bi bi-award-fill" style="color:#d97706;"></i> Đã Nhận Chứng Chỉ</span>' : ''}
             </div>
             <h3>${course.title}</h3>
             <p class="course-desc">${desc}</p>
@@ -884,9 +941,16 @@ function renderStudentCoursesCatalog(filterDiv, searchKeyword) {
                 </div>
             </div>
 
-            <button class="btn-view-course-modules animated-shine-btn" onclick="openCourseModules('${course.id}')">
-                <span>Xem Các Module Bài Học <i class="bi bi-arrow-right"></i></span>
-            </button>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+                <button class="btn-view-course-modules animated-shine-btn" style="flex:1;" onclick="openCourseModules('${course.id}')">
+                    <span>Xem Các Module Bài Học <i class="bi bi-arrow-right"></i></span>
+                </button>
+                ${hasCert ? `
+                    <button class="btn btn-secondary animated-shine-btn" style="background:#fef3c7; color:#92400e; border-color:#fde68a; font-weight:800; padding:8px 12px; font-size:0.75rem;" onclick="event.stopPropagation(); showCertificateModal('${course.id}')" title="Xem chứng chỉ tốt nghiệp khóa học">
+                        <i class="bi bi-award-fill"></i> Chứng Chỉ
+                    </button>
+                ` : ''}
+            </div>
         </div>
         `;
     }).join('');
@@ -940,6 +1004,8 @@ function openCourseModules(courseId, push = true) {
 
     // Render Banner
     if (banner) {
+        const prog = getStudentProgress(course.id);
+        const hasCert = prog.certificateEarned;
         banner.innerHTML = `
             <div>
                 <span class="badge-gold" style="font-size:0.75rem; padding:4px 12px; border-radius:20px; font-weight:700; display:inline-block; margin-bottom:8px;">${category}</span>
@@ -951,12 +1017,20 @@ function openCourseModules(courseId, push = true) {
                     <span><i class="bi bi-play-circle"></i> <strong>${stats.videos} Video</strong></span>
                     <span><i class="bi bi-clock"></i> <strong>${stats.duration}</strong></span>
                     <span><i class="bi bi-graph-up-arrow"></i> Tiến độ: <strong>${progress}%</strong></span>
+                    ${hasCert ? '<span style="color:#FFD5AE; font-weight:800;"><i class="bi bi-award-fill"></i> Đã Tốt Nghiệp Khóa Học</span>' : ''}
                 </div>
             </div>
-            <div style="flex-shrink:0; text-align:right;">
+            <div style="flex-shrink:0; text-align:right; display:flex; flex-direction:column; gap:8px;">
                 <button class="btn animated-shine-btn" style="background:#ffffff; color:#2F2D74; font-weight:800; padding:12px 24px; border:none; border-radius:8px; cursor:pointer;" onclick="enterCourseLesson('${course.id}', 1, 1)">
                     <span>Vào Học Ngay <i class="bi bi-arrow-right"></i></span>
                 </button>
+                ${hasCert ? `
+                    <button class="btn animated-shine-btn" style="background:#FFD5AE; color:#2F2D74; font-weight:800; padding:10px 18px; border:none; border-radius:8px; cursor:pointer;" onclick="showCertificateModal('${course.id}')">
+                        <i class="bi bi-award-fill" style="color:#d97706;"></i> <span>Xem Chứng Chỉ Tốt Nghiệp</span>
+                    </button>
+                ` : `
+                    <span style="font-size:0.72rem; color:rgba(255,255,255,0.75);"><i class="bi bi-info-circle"></i> Cấp chứng chỉ sau khi hoàn thành toàn bộ khóa</span>
+                `}
             </div>
         `;
     }
@@ -1494,9 +1568,13 @@ function submitDynamicQuiz(event, courseId) {
             const nextModNum = currentActiveModNum + 1;
             const nextMod = (currentSelectedCourse.modules || []).find(m => m.id === nextModNum);
             if (nextMod) {
-                alert(`CHÚC MỪNG BẠN ĐÃ ĐẠT ${score}/100 ĐIỂM!\n\nModule ${nextModNum} (${nextMod.title}) đã được mở khóa. Bạn có thể tiếp tục lộ trình học tập!`);
+                alert(`CHÚC MỪNG BẠN ĐÃ ĐẠT ${score}/100 ĐIỂM BÀI KIỂM TRA MODULE ${currentActiveModNum}!\n\nModule ${nextModNum} (${nextMod.title}) đã được mở khóa. Bạn có thể tiếp tục lộ trình học tập!`);
             } else {
-                checkCourseCompletion(currentSelectedCourse.id);
+                if (isCourseFullyCompleted(currentSelectedCourse.id)) {
+                    checkCourseCompletion(currentSelectedCourse.id);
+                } else {
+                    alert(`CHÚC MỪNG BẠN ĐÃ VƯỢT QUA BÀI KIỂM TRA MODULE ${currentActiveModNum} VỚI ${score}/100 ĐIỂM!\n\nĐể nhận Chứng Chỉ Tốt Nghiệp Khóa Học, vui lòng kiểm tra và hoàn thành toàn bộ các bài học video còn thiếu trong chương trình.`);
+                }
             }
         }
     }

@@ -1016,7 +1016,7 @@
                     { id: 1, title: 'Tổng Quan & Định Hướng Kiến Thức Nền Tảng', desc: 'Giới thiệu tổng quan hệ thống dự án căn hộ cao cấp.', status: 'completed', statusText: 'Đã Hoàn Thành', meta: { videos: 4, duration: '45 Phút', docs: '2 Tài Liệu' }, buttonText: 'Xem Lại Module 1', buttonClass: 'btn-module', lessonId: 1 },
                     { id: 2, title: 'Quy Trình & Kỹ Thuật Thực Hành Chuyên Sâu', desc: 'Hướng dẫn từng bước thao tác thực tế qua bài giảng video chi tiết.', status: 'in-progress', statusText: 'Đang Học (Bài 2/3)', meta: { videos: 6, duration: '90 Phút', docs: '1 Bài Quiz' }, buttonText: 'Tiếp Tục Học Ngay', buttonClass: 'btn-module primary', lessonId: 2 },
                     { id: 3, title: 'Tối Ưu Hóa & Đánh Giá Năng Lực Sales', desc: 'Phân tích chuyên sâu các case study thực tế.', status: 'locked', statusText: 'Chưa Mở Khóa', meta: { videos: 5, duration: '60 Phút', docs: '1 Bài Test' }, buttonText: 'Chưa Mở Khóa', buttonClass: 'btn-module disabled', lessonId: 3 },
-                    { id: 4, title: 'Đồ Án Tốt Nghiệp & Cấp Chứng Nhận', desc: 'Thực hiện bài kiểm tra tổng hợp cuối khóa.', status: 'locked', statusText: 'Chưa Mở Khóa', meta: { videos: 3, duration: '120 Phút', docs: 'Cấp Chứng Nhận' }, buttonText: 'Chưa Mở Khóa', buttonClass: 'btn-module disabled', lessonId: 4 }
+                    { id: 4, title: 'Bài Thu Hoạch Tổng Hợp & Đánh Giá Tốt Nghiệp Khóa Học', desc: 'Thực hiện bài thu hoạch và bài kiểm tra tổng hợp cuối khóa.', status: 'locked', statusText: 'Chưa Mở Khóa', meta: { videos: 3, duration: '120 Phút', docs: 'Bài Thu Hoạch Cuối Khóa' }, buttonText: 'Chưa Mở Khóa', buttonClass: 'btn-module disabled', lessonId: 4 }
                 ]
             },
             {
@@ -1075,6 +1075,18 @@
         let coursesState = JSON.parse(localStorage.getItem('lms_courses_catalog') || 'null');
         if (!coursesState || !Array.isArray(coursesState) || coursesState.length === 0) {
             coursesState = defaultCoursesSeed;
+            localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesState));
+        } else {
+            coursesState.forEach(c => {
+                (c.modules || []).forEach(m => {
+                    if (m.title && m.title.includes('Cấp Chứng Nhận')) {
+                        m.title = m.title.replace('Cấp Chứng Nhận', 'Đánh Giá Tốt Nghiệp Khóa Học');
+                    }
+                    if (m.meta && m.meta.docs === 'Cấp Chứng Nhận') {
+                        m.meta.docs = 'Bài Thu Hoạch Cuối Khóa';
+                    }
+                });
+            });
             localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesState));
         }
         localStorage.setItem('lms_courses_list', JSON.stringify(coursesState));
