@@ -50,6 +50,9 @@
                         </div>
                     </div>
                 </div>
+                <button id="btn-change-password" class="btn btn-secondary" onclick="openChangePasswordModal()" style="display:none; padding:7px 12px; font-size:0.75rem; border-color:#cbd5e1; background:#ffffff;">
+                    <i class="bi bi-key-fill text-primary"></i> Đổi Mật Khẩu
+                </button>
                 <button class="auth-btn animated-shine-btn" onclick="openAuthModal('login')">
                     <i class="bi bi-box-arrow-in-right"></i> Đăng Nhập
                 </button>
@@ -156,11 +159,20 @@
                         <p>Chọn Chương Trình Học phù hợp với Khối Kinh Doanh của bạn để xem chi tiết các Module bài giảng video.</p>
                     </div>
 
-                    <!-- BỘ LỌC KHÓA HỌC: CÓ NÚT TẤT CẢ KHÓA HỌC ĐỂ QUAY LẠI BẤT KỲ LÚC NÀO -->
+                    <!-- BỘ LỌC KHÓA HỌC: CÓ NÚT TẤT CẢ KHÓA HỌC & Ô TÌM KIẾM NHANH -->
                     <div class="course-filter-bar">
-                        <span class="filter-bar-title"><i class="bi bi-funnel-fill text-primary"></i> Lọc Khóa Học:</span>
-                        <div class="filter-tabs-group" id="course-filter-tabs">
-                            <!-- RENDER DYNAMICALLY BY app.js -->
+                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                            <span class="filter-bar-title"><i class="bi bi-funnel-fill text-primary"></i> Lọc Khóa Học:</span>
+                            <div class="filter-tabs-group" id="course-filter-tabs">
+                                <!-- RENDER DYNAMICALLY BY app.js -->
+                            </div>
+                        </div>
+                        <div class="course-search-box">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" id="course-search-input" class="course-search-input" placeholder="Tìm kiếm khóa học theo tên, chuyên đề..." oninput="handleCourseSearch(this.value)">
+                            <button class="clear-search-btn" id="btn-clear-course-search" onclick="clearCourseSearch()" style="display:none;" title="Xóa tìm kiếm">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -432,22 +444,25 @@
                                         </div>
                                     </div>
 
+                                    <!-- FORM ĐẶT CÂU HỎI MỚI CHO HỌC VIÊN -->
+                                    <div class="discussion-ask-box">
+                                        <form id="discussion-form" onsubmit="handleSendDiscussion(event)">
+                                            <label style="font-size:0.78rem; font-weight:800; color:#1e1b4b; display:block; margin-bottom:6px;">
+                                                <i class="bi bi-chat-left-dots-fill text-primary"></i> Đặt câu hỏi thắc mắc cho Ban Giảng Viên:
+                                            </label>
+                                            <textarea id="discussion-input" class="discussion-textarea" placeholder="Nhập câu hỏi hoặc băn khoăn của bạn về bài giảng này..." required></textarea>
+                                            <div class="discussion-actions">
+                                                <span style="font-size:0.72rem; color:#64748b;">Câu hỏi sẽ được lưu vào hệ thống và ban đào tạo phản hồi.</span>
+                                                <button type="submit" class="btn btn-primary animated-shine-btn" style="padding:6px 14px; font-size:0.75rem;">
+                                                    <i class="bi bi-send-fill"></i> Gửi Câu Hỏi
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+
                                     <h4>Hỏi Đáp & Thảo Luận Bài Học</h4>
-                                    <div class="comments-list">
-                                        <div class="comment-card">
-                                            <div class="c-avatar">A</div>
-                                            <div class="c-body">
-                                                <strong>Nguyễn Văn An <span class="c-time">• 2 giờ trước</span></strong>
-                                                <p>Cho mình hỏi ở phút 05:20 thao tác chọn tài nguyên có cần chú ý quyền admin không ạ?</p>
-                                            </div>
-                                        </div>
-                                        <div class="comment-card reply">
-                                            <div class="c-avatar teacher" style="background:#2F2D74;"><i class="bi bi-patch-check-fill" style="color:var(--accent);"></i> GV</div>
-                                            <div class="c-body">
-                                                <strong>Giảng Viên Ban Đào Tạo <span class="c-time">• 1 giờ trước</span></strong>
-                                                <p>Chào An, tại phút 05:20 hệ thống chỉ yêu cầu quyền User tiêu chuẩn, bạn không cần dùng quyền Admin nhé!</p>
-                                            </div>
-                                        </div>
+                                    <div class="comments-list" id="lesson-comments-list">
+                                        <!-- DYNAMICALLY POPULATED BY app.js -->
                                     </div>
                                 </div>
                             </div>
@@ -524,6 +539,36 @@
                 <button type="submit" class="btn" style="width:100%; padding:10px; font-size:0.85rem; background:#10b981; color:#fff;">Khởi Tạo Tài Khoản Mới</button>
             </form>
 
+        </div>
+    </div>
+
+    <!-- CHANGE PASSWORD MODAL -->
+    <div id="changePasswordModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+        <div style="background:#ffffff; width:92%; max-width:440px; border-radius:14px; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.3); border:1px solid #e2e8f0;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
+                <h3 style="font-size:1rem; font-weight:800; color:#2F2D74; margin:0; display:flex; align-items:center; gap:8px;">
+                    <i class="bi bi-key-fill text-primary"></i> Đổi Mật Khẩu Tài Khoản
+                </h3>
+                <button onclick="closeChangePasswordModal()" style="border:none; background:transparent; font-size:1.3rem; cursor:pointer; color:#64748b;">✕</button>
+            </div>
+            <form id="change-pass-form" onsubmit="handleChangePassword(event)">
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Mật Khẩu Hiện Tại:</label>
+                    <input type="password" id="current-password-input" placeholder="Nhập mật khẩu hiện tại" required style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.82rem;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Mật Khẩu Mới:</label>
+                    <input type="password" id="new-password-input" placeholder="Tối thiểu 6 ký tự" minlength="6" required style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.82rem;">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="font-size:0.78rem; font-weight:700; display:block; margin-bottom:4px;">Xác Nhận Mật Khẩu Mới:</label>
+                    <input type="password" id="confirm-new-password-input" placeholder="Nhập lại mật khẩu mới" minlength="6" required style="width:100%; padding:8px 12px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.82rem;">
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:8px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeChangePasswordModal()" style="padding:8px 16px;">Hủy Bỏ</button>
+                    <button type="submit" class="btn btn-primary animated-shine-btn" style="padding:8px 18px;">Lưu Mật Khẩu</button>
+                </div>
+            </form>
         </div>
     </div>
 

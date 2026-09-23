@@ -760,8 +760,25 @@ function reloadCoursesCatalog() {
 // Initial load
 reloadCoursesCatalog();
 
+// SEARCH & FILTER STATE FOR COURSES
+let currentCourseSearchKeyword = '';
+
+function handleCourseSearch(val) {
+    currentCourseSearchKeyword = (val || '').trim().toLowerCase();
+    const clearBtn = document.getElementById('btn-clear-course-search');
+    if (clearBtn) clearBtn.style.display = currentCourseSearchKeyword ? 'flex' : 'none';
+    const activeDiv = document.getElementById('student-div-select')?.value || 'ALL';
+    renderStudentCoursesCatalog(activeDiv, currentCourseSearchKeyword);
+}
+
+function clearCourseSearch() {
+    const input = document.getElementById('course-search-input');
+    if (input) input.value = '';
+    handleCourseSearch('');
+}
+
 // RENDER LEVEL 1: CHƯƠNG TRÌNH HỌC (COURSES CATALOG)
-function renderStudentCoursesCatalog(filterDiv) {
+function renderStudentCoursesCatalog(filterDiv, searchKeyword) {
     const container = document.getElementById('student-courses-catalog-grid');
     if (!container) return;
 
@@ -772,6 +789,7 @@ function renderStudentCoursesCatalog(filterDiv) {
     reloadCoursesCatalog();
 
     const targetDiv = filterDiv || (document.getElementById('student-div-select')?.value) || 'ALL';
+    const kw = (typeof searchKeyword === 'string' ? searchKeyword : currentCourseSearchKeyword).toLowerCase();
 
     // Get current divisions for readable labels
     const divisions = JSON.parse(localStorage.getItem('lms_divisions_list') || 'null') || [
@@ -780,24 +798,46 @@ function renderStudentCoursesCatalog(filterDiv) {
         { id: 'DIV3', name: 'Khối Kinh Doanh 3 - Miền Nam' }
     ];
 
-    // Filter courses: match student's division or PUBLIC courses or ALL
+    // Filter courses: match student's division or PUBLIC courses or ALL, AND search keyword
     const filteredCourses = coursesCatalog.filter(c => {
-        if (!targetDiv || targetDiv === 'ALL') return true;
-        if (!c.access || c.access === 'PUBLIC') return true;
-        return c.access === targetDiv;
+        let divMatch = false;
+        if (!targetDiv || targetDiv === 'ALL') divMatch = true;
+        else if (!c.access || c.access === 'PUBLIC') divMatch = true;
+        else divMatch = (c.access === targetDiv);
+
+        if (!divMatch) return false;
+
+        if (kw) {
+            const titleMatch = (c.title || '').toLowerCase().includes(kw);
+            const descMatch = (c.desc || c.rawDesc || '').toLowerCase().includes(kw);
+            const catMatch = (c.category || c.cat || '').toLowerCase().includes(kw);
+            return titleMatch || descMatch || catMatch;
+        }
+        return true;
     });
 
     // Sync tabs
     renderCourseFilterTabs(targetDiv);
 
     if (filteredCourses.length === 0) {
-        container.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
-                <h4 style="font-size: 1rem; color: #1e293b; margin-bottom: 8px;">Chưa có khóa học nào dành riêng cho khối này</h4>
-                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">Bạn có thể bấm nút bên dưới để xem toàn bộ danh mục khóa học của công ty.</p>
-                <button class="btn btn-primary" onclick="filterStudentCoursesByDiv('ALL')">Xem Tất Cả Khóa Học</button>
-            </div>
-        `;
+        if (kw) {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                    <div style="font-size: 2rem; color: #94a3b8; margin-bottom: 8px;"><i class="bi bi-search"></i></div>
+                    <h4 style="font-size: 1rem; color: #1e293b; margin-bottom: 8px;">Không tìm thấy khóa học nào khớp với từ khóa "${kw}"</h4>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">Vui lòng thử tìm kiếm bằng từ khóa khác hoặc xóa bộ lọc tìm kiếm.</p>
+                    <button class="btn btn-secondary" onclick="clearCourseSearch()"><i class="bi bi-x-circle"></i> Xóa Tìm Kiếm</button>
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                    <h4 style="font-size: 1rem; color: #1e293b; margin-bottom: 8px;">Chưa có khóa học nào dành riêng cho khối này</h4>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">Bạn có thể bấm nút bên dưới để xem toàn bộ danh mục khóa học của công ty.</p>
+                    <button class="btn btn-primary" onclick="filterStudentCoursesByDiv('ALL')">Xem Tất Cả Khóa Học</button>
+                </div>
+            `;
+        }
         return;
     }
 
@@ -1031,6 +1071,7 @@ function openCourseModules(courseId, push = true) {
 
 // BACK TO COURSE MODULES (FROM CLASSROOM PORTAL)
 function backToCourseModules(push = true) {
+    stopQuizTimer();
     switchView('landing', false);
     if (currentSelectedCourse) {
         openCourseModules(currentSelectedCourse.id, push);
@@ -1041,6 +1082,7 @@ function backToCourseModules(push = true) {
 
 // BACK TO LEVEL 1 (COURSES LIST)
 function backToCoursesList(push = true) {
+    stopQuizTimer();
     switchView('landing', false);
     const coursesView = document.getElementById('curriculum-courses-view');
     const modulesView = document.getElementById('curriculum-modules-view');
@@ -1192,6 +1234,9 @@ function playCourseLesson(courseId, modNum, lessonNum) {
 
     // Render Quiz Tab for this course
     renderClassroomQuizTab(course.id);
+
+    // Render Interactive Discussion Forum for this lesson
+    renderLessonDiscussions(course.id, targetMod.id, targetLesson.id);
 }
 
 // RENDER DYNAMIC SIDEBAR ACCORDIONS IN CLASSROOM WITH SEQUENTIAL LOCKING
@@ -1280,6 +1325,53 @@ function renderClassroomSidebar(course, activeModNum, activeLessonNum) {
     }).join('');
 }
 
+// QUIZ COUNTDOWN TIMER STATE & FUNCTIONS
+let quizTimerInterval = null;
+let quizTimeSeconds = 600; // 10 minutes = 600 seconds
+
+function startQuizTimer(courseId) {
+    stopQuizTimer();
+    quizTimeSeconds = 600;
+    updateQuizTimerDisplay();
+    quizTimerInterval = setInterval(() => {
+        quizTimeSeconds--;
+        updateQuizTimerDisplay();
+        if (quizTimeSeconds <= 0) {
+            stopQuizTimer();
+            alert('HẾT THỜI GIAN LÀM BÀI (10 PHÚT)!\n\nHệ thống sẽ tự động tổng hợp câu trả lời và nộp bài kiểm tra trắc nghiệm của bạn.');
+            autoSubmitQuiz(courseId);
+        }
+    }, 1000);
+}
+
+function stopQuizTimer() {
+    if (quizTimerInterval) {
+        clearInterval(quizTimerInterval);
+        quizTimerInterval = null;
+    }
+}
+
+function updateQuizTimerDisplay() {
+    const badge = document.getElementById('quiz-timer-badge');
+    const display = document.getElementById('quiz-timer-display');
+    if (!display) return;
+    const mins = Math.floor(Math.max(0, quizTimeSeconds) / 60);
+    const secs = Math.max(0, quizTimeSeconds) % 60;
+    display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    if (badge) {
+        if (quizTimeSeconds <= 120 && quizTimeSeconds > 0) {
+            badge.classList.add('urgent');
+        } else {
+            badge.classList.remove('urgent');
+        }
+    }
+}
+
+function autoSubmitQuiz(courseId) {
+    const fakeEvent = { preventDefault: () => {} };
+    submitDynamicQuiz(fakeEvent, courseId);
+}
+
 // RENDER DYNAMIC QUIZ TAB IN CLASSROOM
 function renderClassroomQuizTab(courseId) {
     const quizPane = document.getElementById('tab-quiz');
@@ -1297,9 +1389,14 @@ function renderClassroomQuizTab(courseId) {
     const questionsToRender = courseQuizzes.length > 0 ? courseQuizzes : quizzes.slice(0, 3);
 
     quizPane.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:14px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
             <h4 style="margin:0; font-size:1rem; font-weight:800; color:var(--primary);">Bài Kiểm Tra Trắc Nghiệm Đánh Giá Module</h4>
-            <span style="font-size:0.75rem; background:#e0e7ff; color:#2F2D74; padding:3px 10px; border-radius:20px; font-weight:800;">${questionsToRender.length} Câu Hỏi</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div class="quiz-timer-badge" id="quiz-timer-badge" title="Thời gian làm bài tối đa 10 phút">
+                    <i class="bi bi-clock-history"></i> <span id="quiz-timer-display">10:00</span>
+                </div>
+                <span style="font-size:0.75rem; background:#e0e7ff; color:#2F2D74; padding:3px 10px; border-radius:20px; font-weight:800;">${questionsToRender.length} Câu Hỏi</span>
+            </div>
         </div>
         <form id="quiz-form" onsubmit="submitDynamicQuiz(event, '${courseId}')">
             ${questionsToRender.map((q, idx) => `
@@ -1327,11 +1424,25 @@ function renderClassroomQuizTab(courseId) {
         </form>
         <div id="quiz-result" class="quiz-result-box" style="display:none; margin-top:14px;"></div>
     `;
+
+    // Start 10-minute timer for this quiz session
+    startQuizTimer(courseId);
 }
 
 // SUBMIT DYNAMIC QUIZ & SCORE CALCULATION
 function submitDynamicQuiz(event, courseId) {
-    event.preventDefault();
+    if (event && event.preventDefault) event.preventDefault();
+    stopQuizTimer();
+
+    const timerBadge = document.getElementById('quiz-timer-badge');
+    if (timerBadge) {
+        timerBadge.classList.remove('urgent');
+        timerBadge.innerHTML = '<i class="bi bi-check-circle-fill"></i> Đã Nộp';
+        timerBadge.style.background = '#dcfce7';
+        timerBadge.style.color = '#15803d';
+        timerBadge.style.borderColor = '#86efac';
+    }
+
     const resultBox = document.getElementById('quiz-result');
     if (!resultBox) return;
 
@@ -1389,6 +1500,133 @@ function submitDynamicQuiz(event, courseId) {
             }
         }
     }
+}
+
+/* ==========================================================================
+   INTERACTIVE DISCUSSION FORUM & INSTRUCTOR Q&A LOGIC
+   ========================================================================== */
+function getLessonDiscussions(courseId, modId, lessonId) {
+    const key = `lms_disc_${courseId}_${modId}_${lessonId}`;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed)) return parsed;
+        } catch (e) {}
+    }
+
+    // High quality realistic default questions for interactive experience
+    return [
+        {
+            id: 'disc-seed-1',
+            authorName: 'Lê Hoàng Cường',
+            empId: 'NV-20411',
+            role: 'student',
+            date: '10:30 Hôm nay',
+            content: 'Thưa giảng viên, đối với khách hàng mua trả góp 70%, thủ tục thẩm định thu nhập có cần sao kê 6 tháng hay 12 tháng gần nhất ạ?',
+            replies: [
+                {
+                    authorName: 'ThS. Nguyễn Thành Trung',
+                    role: 'instructor',
+                    date: '11:15 Hôm nay',
+                    content: 'Chào Cường, theo chính sách đối tác ngân hàng liên kết dự án năm 2026, khách hàng chỉ cần cung cấp sao kê 6 tháng lương chuyển khoản gần nhất là đã đủ điều kiện xét duyệt hạn mức nhanh trong 24h em nhé!'
+                }
+            ]
+        }
+    ];
+}
+
+function renderLessonDiscussions(courseId, modId, lessonId) {
+    const listEl = document.getElementById('lesson-comments-list');
+    if (!listEl) return;
+
+    const discussions = getLessonDiscussions(courseId, modId, lessonId);
+    if (!discussions || discussions.length === 0) {
+        listEl.innerHTML = `
+            <div style="text-align:center; padding:24px; color:#64748b; font-size:0.8rem; background:#f8fafc; border-radius:8px; border:1px dashed #cbd5e1;">
+                <i class="bi bi-chat-square-dots" style="font-size:1.5rem; display:block; margin-bottom:6px; color:#94a3b8;"></i>
+                Chưa có câu hỏi nào cho bài học này. Hãy gửi câu hỏi đầu tiên cho ban giảng viên ở biểu mẫu phía trên!
+            </div>
+        `;
+        return;
+    }
+
+    listEl.innerHTML = discussions.map(item => `
+        <div class="comment-item" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:0 1px 2px rgba(0,0,0,0.03);">
+            <div class="comment-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:32px; height:32px; border-radius:50%; background:#e0e7ff; color:#2F2D74; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.75rem;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div>
+                        <span style="font-size:0.82rem; font-weight:800; color:#1e293b;">${item.authorName}</span>
+                        <span style="font-size:0.7rem; color:#64748b; margin-left:4px;">(${item.empId || 'Học Viên'})</span>
+                    </div>
+                </div>
+                <span style="font-size:0.72rem; color:#94a3b8;"><i class="bi bi-clock"></i> ${item.date}</span>
+            </div>
+            <div class="comment-body" style="font-size:0.82rem; color:#334155; line-height:1.45; padding-left:40px; margin-bottom:8px;">
+                ${item.content}
+            </div>
+            ${(item.replies && item.replies.length > 0) ? `
+                <div class="comment-replies" style="margin-left:40px; border-left:2px solid #cbd5e1; padding-left:12px; margin-top:8px;">
+                    ${item.replies.map(rep => `
+                        <div style="background:#f8fafc; border-radius:8px; padding:10px 12px; margin-top:6px; border:1px solid #e2e8f0;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                                <strong style="font-size:0.78rem; color:#0C5A3E; display:flex; align-items:center; gap:4px;">
+                                    <i class="bi bi-patch-check-fill"></i> ${rep.authorName} <span style="font-size:0.68rem; background:#dcfce7; color:#15803d; padding:1px 6px; border-radius:10px; font-weight:800;">Giảng Viên</span>
+                                </strong>
+                                <span style="font-size:0.7rem; color:#94a3b8;">${rep.date}</span>
+                            </div>
+                            <div style="font-size:0.78rem; color:#334155; line-height:1.4;">
+                                ${rep.content}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : `
+                <div style="margin-left:40px; margin-top:4px;">
+                    <span class="pending-badge"><i class="bi bi-hourglass-split"></i> Đang chờ ban giảng viên giải đáp</span>
+                </div>
+            `}
+        </div>
+    `).join('');
+}
+
+function handleSendDiscussion(event) {
+    event.preventDefault();
+    if (!currentUser) {
+        alert('Vui lòng đăng nhập tài khoản học viên để gửi câu hỏi thảo luận!');
+        openAuthModal('login');
+        return;
+    }
+    const input = document.getElementById('discussion-input');
+    if (!input) return;
+    const text = input.value.trim();
+    if (!text) return;
+
+    if (!currentSelectedCourse) return;
+    const courseId = currentSelectedCourse.id;
+    const modId = currentActiveModNum || 1;
+    const lessonId = currentActiveLessonNum || 1;
+
+    const discussions = getLessonDiscussions(courseId, modId, lessonId);
+    const newComment = {
+        id: 'disc-' + Date.now(),
+        authorName: currentUser.name,
+        empId: currentUser.empId,
+        role: 'student',
+        date: 'Vừa xong',
+        content: text,
+        replies: []
+    };
+    discussions.unshift(newComment);
+    const key = `lms_disc_${courseId}_${modId}_${lessonId}`;
+    localStorage.setItem(key, JSON.stringify(discussions));
+
+    input.value = '';
+    renderLessonDiscussions(courseId, modId, lessonId);
+    alert('ĐÃ GỬI CÂU HỎI THÀNH CÔNG!\n\nCâu hỏi của bạn đã được lưu vào hệ thống và chuyển đến ban giảng viên phụ trách khóa học.');
 }
 
 // DYNAMIC STUDENT DIVISION FILTERING & FILTER TABS
@@ -1499,6 +1737,7 @@ function checkAuthGuard() {
     const authBtn = document.querySelector('.auth-btn');
     const btnGuardReg = document.getElementById('btn-guard-reg');
     const regTabBtn = document.getElementById('auth-tab-reg-btn');
+    const btnChangePass = document.getElementById('btn-change-password');
     const allowSelfReg = localStorage.getItem('lms_allow_self_reg') !== 'false';
 
     // Toggle self-registration buttons
@@ -1509,6 +1748,7 @@ function checkAuthGuard() {
         // GUEST MODE: HIDE 100% OF LESSONS & SHOW LOCK SCREEN
         if (lockedScreen) lockedScreen.style.display = 'block';
         if (curriculumSec) curriculumSec.style.display = 'none';
+        if (btnChangePass) btnChangePass.style.display = 'none';
 
         if (userNameEl) userNameEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">Chưa Đăng Nhập</span>`;
         if (userDivSelect) userDivSelect.disabled = true;
@@ -1523,6 +1763,7 @@ function checkAuthGuard() {
         // LOGGED IN MODE: UNLOCK CONTENT
         if (lockedScreen) lockedScreen.style.display = 'none';
         if (curriculumSec) curriculumSec.style.display = 'block';
+        if (btnChangePass) btnChangePass.style.display = 'inline-flex';
 
         if (userNameEl) userNameEl.innerHTML = `${currentUser.name} <span class="emp-code">(${currentUser.empId})</span>`;
         if (userDivSelect) {
@@ -1635,12 +1876,77 @@ function handleRegister(event) {
 
 function handleLogout() {
     if (confirm('Bạn có chắc chắn muốn đăng xuất tài khoản hiện tại?')) {
+        stopQuizTimer();
         currentUser = null;
         localStorage.removeItem('lms_current_user');
         switchView('landing');
         checkAuthGuard();
         alert('Đã đăng xuất! Toàn bộ nội dung bài học đã được khóa.');
     }
+}
+
+/* ==========================================================================
+   CHANGE PASSWORD MODAL HANDLERS
+   ========================================================================== */
+function openChangePasswordModal() {
+    if (!currentUser) {
+        alert('Vui lòng đăng nhập tài khoản học viên trước khi đổi mật khẩu!');
+        openAuthModal('login');
+        return;
+    }
+    const modal = document.getElementById('changePasswordModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        const curInput = document.getElementById('current-password-input');
+        const newInput = document.getElementById('new-password-input');
+        const confirmInput = document.getElementById('confirm-new-password-input');
+        if (curInput) curInput.value = '';
+        if (newInput) newInput.value = '';
+        if (confirmInput) confirmInput.value = '';
+    }
+}
+
+function closeChangePasswordModal() {
+    const modal = document.getElementById('changePasswordModal');
+    if (modal) modal.style.display = 'none';
+}
+
+function handleChangePassword(event) {
+    event.preventDefault();
+    if (!currentUser) return;
+
+    const currentPass = document.getElementById('current-password-input')?.value;
+    const newPass = document.getElementById('new-password-input')?.value;
+    const confirmPass = document.getElementById('confirm-new-password-input')?.value;
+
+    if (currentUser.pass !== currentPass) {
+        alert('Mật khẩu hiện tại không chính xác! Vui lòng kiểm tra lại.');
+        return;
+    }
+    if (!newPass || newPass.length < 6) {
+        alert('Mật khẩu mới phải có tối thiểu 6 ký tự!');
+        return;
+    }
+    if (newPass !== confirmPass) {
+        alert('Mật khẩu mới và xác nhận mật khẩu không trùng khớp!');
+        return;
+    }
+
+    // Update currentUser object & localStorage
+    currentUser.pass = newPass;
+    localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
+
+    // Update usersDatabase list & localStorage
+    const idx = usersDatabase.findIndex(u => u.empId.toLowerCase() === currentUser.empId.toLowerCase());
+    if (idx !== -1) {
+        usersDatabase[idx].pass = newPass;
+    } else {
+        usersDatabase.push(currentUser);
+    }
+    localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
+
+    closeChangePasswordModal();
+    alert('ĐỔI MẬT KHẨU THÀNH CÔNG!\n\nMật khẩu mới của bạn đã được cập nhật an toàn vào hệ thống.');
 }
 
 /* ==========================================================================
