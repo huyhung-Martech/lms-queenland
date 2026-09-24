@@ -1878,21 +1878,17 @@ button, input, select, textarea, optgroup {
     overflow: hidden; /* STRICT VIEWPORT CROP: Hides everything shifted outside! */
 }
 
-/* Top Security & Academy Brand Mask: 100% SOLID OPAQUE (NO BLEED-THROUGH!) */
+/* Top Security & Academy Brand Mask: Header Bar Placed Outside Video (No Video Cropping!) */
 .video-player-top-brand {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 56px;
-    background: #0b1120 !important; /* 100% SOLID DEEP NAVY - COMPLETELY COVERS ANY YOUTUBE TITLE */
-    border-bottom: 1px solid rgba(255, 213, 174, 0.25);
+    position: relative;
+    height: 44px;
+    background: #0f172a !important;
+    border-bottom: 1px solid rgba(197, 168, 128, 0.25);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 16px;
-    z-index: 25;
-    pointer-events: auto;
+    z-index: 5;
 }
 .top-brand-left {
     display: flex;
@@ -1918,55 +1914,16 @@ button, input, select, textarea, optgroup {
     text-overflow: ellipsis;
 }
 
-/* Bottom Enterprise Security Strip: 100% SOLID OPAQUE (MASKS YOUTUBE LOGO, WATERMARK & MORE VIDEOS) */
-.video-player-bottom-strip {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 46px;
-    background: #0b1120 !important; /* 100% SOLID DEEP NAVY - MASKS BOTTOM YOUTUBE WATERMARK */
-    border-top: 1px solid rgba(197, 168, 128, 0.2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 16px;
-    z-index: 25;
-    pointer-events: none;
-}
-.bottom-strip-left .video-security-pill {
-    background: rgba(15, 118, 110, 0.6);
-    color: #99f6e4;
-    border: 1px solid rgba(153, 246, 228, 0.3);
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 12px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-}
-.bottom-strip-right .video-brand-watermark {
-    color: var(--accent);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    opacity: 0.9;
-}
-
-/* Video Mount Point: CROPS YOUTUBE TOP TITLE & BOTTOM LOGO WATERMARK OFF-SCREEN */
+/* Video Mount Point: Clean 100% Uncropped View */
 .player-mount-point {
     position: absolute;
-    top: -20px;
+    top: -36px;
     left: 0;
     width: 100%;
-    height: calc(100% + 40px);
+    height: calc(100% + 72px);
     z-index: 1;
     overflow: hidden;
-    pointer-events: none; /* Prevents direct clicking on YouTube interface */
+    pointer-events: none;
 }
 .player-mount-point iframe,
 .player-mount-point video {
@@ -1981,13 +1938,10 @@ button, input, select, textarea, optgroup {
     pointer-events: none;
 }
 
-/* Central Interaction Overlay */
+/* Central Interaction Overlay: Covers entire uncropped video canvas */
 .video-center-click-overlay {
     position: absolute;
-    top: 56px;
-    bottom: 46px;
-    left: 0;
-    right: 0;
+    inset: 0;
     z-index: 15;
     cursor: pointer;
     display: flex;
@@ -2015,6 +1969,101 @@ button, input, select, textarea, optgroup {
 .center-play-indicator.show {
     opacity: 1;
     transform: scale(1);
+}
+
+/* ==========================================================================
+   ENTERPRISE FULLSCREEN VIDEO PLAYER (BALANCED, CENTERED & INTUITIVE)
+   ========================================================================== */
+#lms-video-container:fullscreen,
+#lms-video-container:-webkit-full-screen,
+#lms-video-container.is-fullscreen {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    z-index: 99999 !important;
+}
+
+#lms-video-container:fullscreen .video-player-top-brand,
+#lms-video-container:-webkit-full-screen .video-player-top-brand,
+#lms-video-container.is-fullscreen .video-player-top-brand {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: linear-gradient(180deg, rgba(11, 17, 32, 0.92) 0%, transparent 100%) !important;
+    border-bottom: none !important;
+    height: 60px !important;
+    padding: 0 32px !important;
+    z-index: 50 !important;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+#lms-video-container:fullscreen .video-wrapper,
+#lms-video-container:-webkit-full-screen .video-wrapper,
+#lms-video-container.is-fullscreen .video-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100vh !important;
+    aspect-ratio: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    background: #000000 !important;
+}
+
+#lms-video-container:fullscreen .player-mount-point,
+#lms-video-container:-webkit-full-screen .player-mount-point,
+#lms-video-container.is-fullscreen .player-mount-point {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#lms-video-container:fullscreen iframe,
+#lms-video-container:fullscreen video,
+#lms-video-container:-webkit-full-screen iframe,
+#lms-video-container:-webkit-full-screen video,
+#lms-video-container.is-fullscreen iframe,
+#lms-video-container.is-fullscreen video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+}
+
+#lms-video-container:fullscreen .lms-custom-player-bar,
+#lms-video-container:-webkit-full-screen .lms-custom-player-bar,
+#lms-video-container.is-fullscreen .lms-custom-player-bar {
+    position: absolute !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: linear-gradient(180deg, transparent 0%, rgba(11, 17, 32, 0.96) 100%) !important;
+    border-top: none !important;
+    padding: 20px 32px 24px !important;
+    z-index: 50 !important;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+#lms-video-container:fullscreen .video-controls-bar,
+#lms-video-container:-webkit-full-screen .video-controls-bar,
+#lms-video-container.is-fullscreen .video-controls-bar {
+    display: none !important;
 }
 
 /* CUSTOM LMS ENTERPRISE PLAYBACK CONTROL BAR */
@@ -3192,11 +3241,8 @@ button, input, select, textarea, optgroup {
     .ctrl-left-group { flex-wrap: wrap; gap: 6px; }
     .video-timer-counter, .video-watch-progress-badge { font-size: 0.7rem; padding: 2px 6px; }
     .top-brand-right { display: none; }
-    .video-player-top-brand { height: 42px; padding: 6px 10px; }
-    .video-player-bottom-strip { height: 36px; padding: 4px 10px; }
-    .bottom-strip-left .video-security-pill { font-size: 0.65rem; padding: 2px 6px; }
-    .bottom-strip-right .video-brand-watermark { font-size: 0.68rem; }
-    .video-center-click-overlay { top: 42px; bottom: 36px; }
+    .video-player-top-brand { height: 38px; padding: 4px 10px; font-size: 0.75rem; }
+    .video-center-click-overlay { inset: 0; }
     .tabs-header { overflow-x: auto; }
     .tab-btn { padding: 10px 12px; font-size: 0.78rem; white-space: nowrap; }
 
@@ -3209,4 +3255,130 @@ button, input, select, textarea, optgroup {
     .config-inputs { flex-direction: column; align-items: flex-start; width: 100%; }
     .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; margin: 16px; }
     .workspace-content { padding: 0 16px 20px; }
+}
+
+/* ==========================================================================
+   LUXURY ANIMATED SYSTEM NOTIFICATION MODAL (PARKLAND THEME)
+   ========================================================================== */
+.custom-alert-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: alertBackdropFade 0.25s ease forwards;
+}
+
+@keyframes alertBackdropFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.custom-alert-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 480px;
+    border-radius: 1.5rem;
+    padding: 32px 28px 26px;
+    box-shadow: 0 25px 60px -15px rgba(26, 34, 56, 0.35), 0 0 0 1px rgba(197, 168, 128, 0.35);
+    text-align: center;
+    position: relative;
+    animation: alertZoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes alertZoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.alert-icon-ring {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    position: relative;
+    box-shadow: 0 0 0 8px rgba(197, 168, 128, 0.15);
+    animation: alertPulseRing 2s infinite;
+}
+
+@keyframes alertPulseRing {
+    0% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0.35); }
+    70% { box-shadow: 0 0 0 14px rgba(197, 168, 128, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(197, 168, 128, 0); }
+}
+
+/* Success theme */
+.alert-icon-ring.success {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #b45309;
+    border: 2px solid #f59e0b;
+}
+
+/* Warning theme */
+.alert-icon-ring.warning {
+    background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+    color: #c2410c;
+    border: 2px solid #f97316;
+}
+
+/* Error theme */
+.alert-icon-ring.error {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    color: #b91c1c;
+    border: 2px solid #ef4444;
+}
+
+/* Info theme */
+.alert-icon-ring.info {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    color: #1d4ed8;
+    border: 2px solid #3b82f6;
+}
+
+.alert-modal-title {
+    font-family: var(--font-sans);
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1.35;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+}
+
+.alert-modal-message {
+    font-size: 0.88rem;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    white-space: pre-line;
+    word-break: break-word;
+}
+
+.alert-modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.alert-confirm-btn {
+    min-width: 170px;
+    padding: 12px 28px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    border-radius: 0.75rem;
 }

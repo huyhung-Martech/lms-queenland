@@ -375,21 +375,21 @@
                         
                         <!-- VIDEO PLAYER BOX -->
                         <div class="video-container" id="lms-video-container">
-                            <div class="video-wrapper" id="lms-video-wrapper">
-                                <!-- Top Security & Academy Brand Mask: Hides external YouTube branding/title/avatar -->
-                                <div class="video-player-top-brand" id="video-top-brand-overlay">
-                                    <div class="top-brand-left">
-                                        <i class="bi bi-mortarboard-fill brand-icon"></i>
-                                        <span class="brand-academy-name">Queen Land Academy</span>
-                                        <span class="brand-sep">|</span>
-                                        <span id="video-overlay-lesson-name">Bài 1.1: Tổng Quan & Định Hướng Kiến Thức Nền Tảng</span>
-                                    </div>
-                                    <div class="top-brand-right">
-                                        <span class="badge-gold"><i class="bi bi-shield-lock-fill"></i> Video Bảo Mật Nội Bộ</span>
-                                    </div>
+                            <!-- Integrated Top Header Bar: Placed outside video frame so it never cuts into video footage -->
+                            <div class="video-player-top-brand" id="video-top-brand-overlay">
+                                <div class="top-brand-left">
+                                    <i class="bi bi-mortarboard-fill brand-icon"></i>
+                                    <span class="brand-academy-name">Queen Land Academy</span>
+                                    <span class="brand-sep">|</span>
+                                    <span id="video-overlay-lesson-name">Bài 1.1: Tổng Quan & Định Hướng Kiến Thức Nền Tảng</span>
                                 </div>
+                                <div class="top-brand-right">
+                                    <span class="badge-gold"><i class="bi bi-shield-lock-fill"></i> Video Bảo Mật Nội Bộ</span>
+                                </div>
+                            </div>
 
-                                <!-- Video Player Mount Point: YouTube IFrame or HTML5 Video -->
+                            <div class="video-wrapper" id="lms-video-wrapper">
+                                <!-- Video Player Mount Point: YouTube IFrame or HTML5 Video (100% uncropped view) -->
                                 <div id="player-mount-point" class="player-mount-point">
                                     <div id="yt-player-embed"></div>
                                 </div>
@@ -398,16 +398,6 @@
                                 <div class="video-center-click-overlay" id="video-click-overlay" onclick="togglePlayPause()" title="Bấm để Phát / Tạm dừng video">
                                     <div class="center-play-indicator" id="center-play-indicator">
                                         <i class="bi bi-play-fill"></i>
-                                    </div>
-                                </div>
-
-                                <!-- Bottom Enterprise Security Strip: Masks external YouTube Logo, Watermark, and More Videos -->
-                                <div class="video-player-bottom-strip" id="video-bottom-strip-overlay">
-                                    <div class="bottom-strip-left">
-                                        <span class="video-security-pill"><i class="bi bi-shield-fill-check"></i> Bản Quyền Đào Tạo Nội Bộ</span>
-                                    </div>
-                                    <div class="bottom-strip-right">
-                                        <span class="video-brand-watermark"><i class="bi bi-patch-check-fill"></i> Queen Land LMS Enterprise</span>
                                     </div>
                                 </div>
                             </div>
@@ -704,6 +694,22 @@
 
     <!-- CERTIFICATE MODAL CONTAINER -->
     <div id="certificate-modal-container" style="display:none;"></div>
+
+    <!-- LUXURY ANIMATED SYSTEM NOTIFICATION MODAL (PARKLAND THEME) -->
+    <div id="lms-custom-alert-modal" class="custom-alert-overlay" style="display:none;" onclick="if(event.target===this) closeCustomAlert()">
+        <div class="custom-alert-card">
+            <div class="alert-icon-ring success" id="alert-icon-ring">
+                <i class="bi bi-award-fill" id="alert-main-icon"></i>
+            </div>
+            <h3 id="alert-modal-title" class="alert-modal-title">Thông Báo Hệ Thống</h3>
+            <div id="alert-modal-message" class="alert-modal-message">Nội dung thông báo</div>
+            <div class="alert-modal-actions">
+                <button class="btn btn-primary animated-shine-btn alert-confirm-btn" id="alert-modal-ok-btn" onclick="closeCustomAlert()">
+                    <span>Đồng Ý</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
 </body>

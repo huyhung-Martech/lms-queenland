@@ -2,6 +2,77 @@
    UniAcademy LMS - Interactive Application Logic
    ========================================================================== */
 
+// ==========================================================================
+// LUXURY ANIMATED SYSTEM NOTIFICATION MODAL (PARKLAND THEME)
+// ==========================================================================
+let currentAlertCallback = null;
+
+function showCustomAlert(title, message, type = 'info', onConfirm = null) {
+    const modal = document.getElementById('lms-custom-alert-modal');
+    if (!modal) return;
+
+    const titleEl = document.getElementById('alert-modal-title');
+    const msgEl = document.getElementById('alert-modal-message');
+    const ringEl = document.getElementById('alert-icon-ring');
+    const iconEl = document.getElementById('alert-main-icon');
+
+    currentAlertCallback = onConfirm;
+
+    if (titleEl) titleEl.textContent = title;
+    if (msgEl) msgEl.textContent = message;
+
+    if (ringEl && iconEl) {
+        ringEl.className = 'alert-icon-ring ' + type;
+        if (type === 'success') {
+            iconEl.className = 'bi bi-award-fill';
+        } else if (type === 'warning') {
+            iconEl.className = 'bi bi-shield-exclamation';
+        } else if (type === 'error') {
+            iconEl.className = 'bi bi-x-circle-fill';
+        } else {
+            iconEl.className = 'bi bi-info-circle-fill';
+        }
+    }
+
+    modal.style.display = 'flex';
+}
+
+function closeCustomAlert() {
+    const modal = document.getElementById('lms-custom-alert-modal');
+    if (modal) modal.style.display = 'none';
+    if (typeof currentAlertCallback === 'function') {
+        const cb = currentAlertCallback;
+        currentAlertCallback = null;
+        cb();
+    }
+}
+
+// OVERRIDE WINDOW.ALERT TO TRANSFORM ALL BROWSER ALERTS INTO LUXURY ANIMATED POPUPS
+window.alert = function(msg) {
+    if (!msg) return;
+    const str = String(msg);
+    const parts = str.split('\n');
+    let title = 'Thông Báo Hệ Thống';
+    let content = str;
+    let type = 'info';
+
+    if (parts.length > 1 && parts[0].trim().length > 0 && parts[0].trim().length < 60) {
+        title = parts[0].replace(/:$/, '').trim();
+        content = parts.slice(1).join('\n').trim();
+    }
+
+    const upper = str.toUpperCase();
+    if (upper.includes('CHÚC MỪNG') || upper.includes('CHUC MUNG') || upper.includes('THÀNH CÔNG') || upper.includes('THANH CONG')) {
+        type = 'success';
+    } else if (upper.includes('CẢNH BÁO') || upper.includes('CANH BAO') || upper.includes('KHÓA') || upper.includes('KHOA') || upper.includes('BẮT BUỘC') || upper.includes('BAT BUOC')) {
+        type = 'warning';
+    } else if (upper.includes('THẤT BẠI') || upper.includes('THAT BAI') || upper.includes('SAI') || upper.includes('LỖI') || upper.includes('LOI')) {
+        type = 'error';
+    }
+
+    showCustomAlert(title, content, type);
+};
+
 // Switch view between Landing Page and LMS Portal
 function switchView(viewName, push = true) {
     if (viewName === 'portal' && !currentUser) {
@@ -253,18 +324,55 @@ function setSpeed(rate) {
     });
 }
 
-// Fullscreen Toggle
+// Fullscreen Toggle (Balanced & Centered Full Viewport)
 function togglePlayerFullscreen() {
     const container = document.getElementById('lms-video-container');
     if (!container) return;
-    if (!document.fullscreenElement) {
-        if (container.requestFullscreen) container.requestFullscreen();
-        else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
+    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement || container.classList.contains('is-fullscreen'));
+    if (!isFS) {
+        if (container.requestFullscreen) {
+            container.requestFullscreen();
+        } else if (container.webkitRequestFullscreen) {
+            container.webkitRequestFullscreen();
+        } else {
+            container.classList.add('is-fullscreen');
+            handleFullscreenUIChange();
+        }
     } else {
-        if (document.exitFullscreen) document.exitFullscreen();
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else {
+            container.classList.remove('is-fullscreen');
+            handleFullscreenUIChange();
+        }
     }
 }
+
+// Fullscreen State Listener for UI syncing
+function handleFullscreenUIChange() {
+    const container = document.getElementById('lms-video-container');
+    const fsBtn = document.getElementById('btn-player-fullscreen');
+    if (!container) return;
+    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement || container.classList.contains('is-fullscreen'));
+    if (isFS) {
+        container.classList.add('is-fullscreen');
+        if (fsBtn) {
+            fsBtn.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+            fsBtn.title = 'Thu nhỏ màn hình (Esc)';
+        }
+    } else {
+        container.classList.remove('is-fullscreen');
+        if (fsBtn) {
+            fsBtn.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+            fsBtn.title = 'Toàn màn hình';
+        }
+    }
+}
+
+document.addEventListener('fullscreenchange', handleFullscreenUIChange);
+document.addEventListener('webkitfullscreenchange', handleFullscreenUIChange);
 
 // Seek Player Helper
 function seekPlayerTo(seconds) {
