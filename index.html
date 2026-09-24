@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="style.css">
+    <!-- YouTube IFrame Player API for Custom LMS Player Controls & Anti-Cheat -->
+    <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 <body>
     <!-- Header Navigation (Parkland Style) -->
@@ -327,20 +329,98 @@
                     <div class="lms-content-area">
                         
                         <!-- VIDEO PLAYER BOX -->
-                        <div class="video-container">
-                            <div class="video-wrapper">
-                                <!-- Simulated HTML5 Video Player -->
-                                <video id="lms-video" poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80" controls>
-                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
-                                    Trình duyệt của bạn không hỗ trợ thẻ video.
-                                </video>
+                        <div class="video-container" id="lms-video-container">
+                            <div class="video-wrapper" id="lms-video-wrapper">
+                                <!-- Top Security & Academy Brand Mask: Hides external YouTube branding/title/avatar -->
+                                <div class="video-player-top-brand" id="video-top-brand-overlay">
+                                    <div class="top-brand-left">
+                                        <i class="bi bi-mortarboard-fill brand-icon"></i>
+                                        <span class="brand-academy-name">Queen Land Academy</span>
+                                        <span class="brand-sep">|</span>
+                                        <span id="video-overlay-lesson-name">Bài 1.1: Tổng Quan & Định Hướng Kiến Thức Nền Tảng</span>
+                                    </div>
+                                    <div class="top-brand-right">
+                                        <span class="badge-gold"><i class="bi bi-shield-lock-fill"></i> Video Bảo Mật Nội Bộ</span>
+                                    </div>
+                                </div>
+
+                                <!-- Video Player Mount Point: YouTube IFrame or HTML5 Video -->
+                                <div id="player-mount-point" class="player-mount-point">
+                                    <div id="yt-player-embed"></div>
+                                </div>
+
+                                <!-- Central Interaction Overlay: Blocks direct YouTube clicks & provides smooth Play/Pause -->
+                                <div class="video-center-click-overlay" id="video-click-overlay" onclick="togglePlayPause()" title="Bấm để Phát / Tạm dừng video">
+                                    <div class="center-play-indicator" id="center-play-indicator">
+                                        <i class="bi bi-play-fill"></i>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <!-- Custom Player Speed & Navigation Bar -->
+                            <!-- CUSTOM LMS ENTERPRISE PLAYBACK CONTROL BAR -->
+                            <div class="lms-custom-player-bar">
+                                <!-- Row 1: Anti-Scrubbing Interactive Progress Bar -->
+                                <div class="anti-scrub-progress-container" id="anti-scrub-progress-container" onclick="handleScrubClick(event)" title="Thanh tiến độ học tập (Chống tua trước)">
+                                    <div class="anti-scrub-track">
+                                        <!-- Buffer: Highest point watched so far (free to seek back anywhere within this buffer) -->
+                                        <div class="anti-scrub-buffer" id="player-buffer-bar" style="width: 0%;"></div>
+                                        <!-- Current Playback Position -->
+                                        <div class="anti-scrub-current" id="player-current-bar" style="width: 0%;"></div>
+                                        <!-- 80% Requirement Gate Marker -->
+                                        <div class="anti-scrub-gate-marker" style="left: 80%;" title="Mốc hoàn thành tối thiểu 80% thời lượng">
+                                            <span class="gate-label"><i class="bi bi-flag-fill"></i> 80%</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Row 2: Playback Controls & Live Counters -->
+                                <div class="lms-player-controls-row">
+                                    <div class="ctrl-left-group">
+                                        <button class="player-icon-btn" id="btn-player-play-pause" onclick="togglePlayPause()" title="Phát / Tạm dừng">
+                                            <i class="bi bi-play-fill"></i>
+                                        </button>
+                                        <button class="player-icon-btn" id="btn-player-mute" onclick="toggleMute()" title="Bật / Tắt âm thanh">
+                                            <i class="bi bi-volume-up-fill"></i>
+                                        </button>
+
+                                        <!-- Bộ Đếm Thời Gian Thực Của Video -->
+                                        <div class="video-timer-counter" title="Thời gian phát: Đã xem / Tổng thời lượng video">
+                                            <i class="bi bi-stopwatch"></i>
+                                            <strong id="lms-current-time">00:00</strong>
+                                            <span class="time-sep">/</span>
+                                            <span id="lms-duration-time">--:--</span>
+                                        </div>
+
+                                        <!-- Bộ Đếm Tiến Độ Học Tập & Mục Tiêu Bắt Buộc 80% -->
+                                        <div class="video-watch-progress-badge" id="video-watch-progress-badge" title="Học viên cần xem thực tế tối thiểu 80% thời lượng video để được tính hoàn thành bài học">
+                                            <i class="bi bi-clock-history"></i>
+                                            <span>Đã học:</span>
+                                            <strong id="lms-watched-pct-display">0%</strong>
+                                            <span class="req-target">/ 80%</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="ctrl-right-group">
+                                        <div class="speed-controls">
+                                            <span class="speed-label"><i class="bi bi-lightning-charge-fill" style="color:#FFD5AE;"></i> Tốc độ:</span>
+                                            <button class="speed-btn" data-speed="1.0" onclick="setSpeed(1.0)">1.0x</button>
+                                            <button class="speed-btn active" data-speed="1.25" onclick="setSpeed(1.25)">1.25x</button>
+                                            <button class="speed-btn" data-speed="1.5" onclick="setSpeed(1.5)">1.5x</button>
+                                            <button class="speed-btn" data-speed="2.0" onclick="setSpeed(2.0)">2.0x</button>
+                                        </div>
+
+                                        <button class="player-icon-btn" id="btn-player-fullscreen" onclick="togglePlayerFullscreen()" title="Toàn màn hình">
+                                            <i class="bi bi-arrows-fullscreen"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bottom Lesson Information & Navigation Bar -->
                             <div class="video-controls-bar">
                                 <div class="video-title-info">
-                                    <span class="playing-tag">ĐANG PHÁT BÀI 2.2</span>
-                                    <h3 id="video-lesson-title">Hướng dẫn Video thực hành từng bước</h3>
+                                    <span class="playing-tag" id="current-playing-mod-lesson-tag">ĐANG PHÁT BÀI 1.1</span>
+                                    <h3 id="video-lesson-title">Bài 1.1: Tổng Quan & Định Hướng Kiến Thức Nền Tảng</h3>
                                 </div>
 
                                 <div class="video-nav-group">
@@ -352,18 +432,13 @@
                                     </button>
                                 </div>
 
-                                <div class="speed-controls">
-                                    <span class="speed-label">Tốc độ phát:</span>
-                                    <button class="speed-btn" onclick="setSpeed(1.0)">1.0x</button>
-                                    <button class="speed-btn active" onclick="setSpeed(1.25)">1.25x</button>
-                                    <button class="speed-btn" onclick="setSpeed(1.5)">1.5x</button>
-                                    <button class="speed-btn" onclick="setSpeed(2.0)">2.0x</button>
-                                </div>
-
-                                <button class="btn btn-complete animated-shine-btn" id="btn-mark-complete" onclick="markLessonComplete()">
-                                    <span><i class="bi bi-check2-circle"></i> Đánh dấu đã xem xong</span>
+                                <button class="btn btn-complete locked animated-shine-btn" id="btn-mark-complete" onclick="markLessonComplete()" disabled title="Cần xem tối thiểu 80% thời lượng bài giảng để mở khóa hoàn thành">
+                                    <span><i class="bi bi-lock-fill"></i> Đang học (<span id="btn-watch-progress">0%</span>/80%)</span>
                                 </button>
                             </div>
+
+                            <!-- Floating Anti-Scrub Toast Notification -->
+                            <div id="lms-player-toast" class="lms-player-toast" style="display:none;"></div>
                         </div>
 
                         <!-- TABBED CONTENT AREA BELOW VIDEO -->

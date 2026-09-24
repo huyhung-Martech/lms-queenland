@@ -65,19 +65,198 @@ function selectLesson(modNum, lessonNum) {
     }
 }
 
-// Custom Player Speed Control
+// ==========================================================================
+// UNIFIED ENTERPRISE VIDEO PLAYER ENGINE (YOUTUBE & HTML5 WITH ANTI-CHEAT)
+// ==========================================================================
+let isYTReady = false;
+let pendingVideoInit = null;
+let currentYTPlayer = null;
+let currentVideoType = 'none'; // 'youtube' | 'html5'
+let currentPlaybackRate = 1.25;
+let videoDuration = 0;
+let maxWatchedSeconds = 0;
+let playerTickerInterval = null;
+let isPlayerMuted = false;
+let toastTimeout = null;
+
+// YouTube IFrame API Ready Callback
+window.onYouTubeIframeAPIReady = function() {
+    isYTReady = true;
+    if (pendingVideoInit) {
+        pendingVideoInit();
+        pendingVideoInit = null;
+    }
+};
+
+// Check if YT script was already loaded
+if (window.YT && window.YT.Player) {
+    isYTReady = true;
+}
+
+// Utility: Format seconds to MM:SS
+function formatClockTime(sec) {
+    if (!sec || isNaN(sec) || sec < 0) return '00:00';
+    const s = Math.floor(sec);
+    const m = Math.floor(s / 60);
+    const remainS = s % 60;
+    return `${String(m).padStart(2, '0')}:${String(remainS).padStart(2, '0')}`;
+}
+
+// Show Toast Message on Player
+function showToast(msg) {
+    const toast = document.getElementById('lms-player-toast');
+    if (!toast) return;
+    toast.innerHTML = msg;
+    toast.style.display = 'flex';
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+        toast.style.display = 'none';
+    }, 4000);
+}
+
+// Anti-Scrub Warning Alert
+function showAntiScrubAlert() {
+    showToast('<i class="bi bi-shield-exclamation" style="color:#f59e0b; font-size:1.1rem;"></i> <span><strong>Chế độ chống tua:</strong> Bạn chỉ có thể xem lại đoạn đã học. Vui lòng học tuần tự để đảm bảo chất lượng đào tạo!</span>');
+}
+
+// Center play icon flash animation
+function flashCenterIndicator(type) {
+    const indicator = document.getElementById('center-play-indicator');
+    if (!indicator) return;
+    indicator.innerHTML = type === 'pause' ? '<i class="bi bi-pause-fill"></i>' : '<i class="bi bi-play-fill"></i>';
+    indicator.classList.add('show');
+    setTimeout(() => {
+        if (type === 'play') {
+            indicator.classList.remove('show');
+        }
+    }, 650);
+}
+
+// Toggle Play / Pause
+function togglePlayPause() {
+    const playBtn = document.getElementById('btn-player-play-pause');
+
+    if (currentVideoType === 'youtube' && currentYTPlayer) {
+        const state = typeof currentYTPlayer.getPlayerState === 'function' ? currentYTPlayer.getPlayerState() : -1;
+        if (state === 1) { // Playing
+            currentYTPlayer.pauseVideo();
+            if (playBtn) playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+            flashCenterIndicator('pause');
+        } else {
+            currentYTPlayer.playVideo();
+            if (playBtn) playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+            flashCenterIndicator('play');
+        }
+    } else {
+        const video = document.getElementById('lms-video');
+        if (video) {
+            if (video.paused) {
+                video.play().catch(() => {});
+                if (playBtn) playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+                flashCenterIndicator('play');
+            } else {
+                video.pause();
+                if (playBtn) playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+                flashCenterIndicator('pause');
+            }
+        }
+    }
+}
+
+// Toggle Mute / Unmute
+function toggleMute() {
+    const muteBtn = document.getElementById('btn-player-mute');
+    isPlayerMuted = !isPlayerMuted;
+
+    if (currentVideoType === 'youtube' && currentYTPlayer) {
+        if (isPlayerMuted) {
+            if (typeof currentYTPlayer.mute === 'function') currentYTPlayer.mute();
+            if (muteBtn) muteBtn.innerHTML = '<i class="bi bi-volume-mute-fill"></i>';
+        } else {
+            if (typeof currentYTPlayer.unMute === 'function') currentYTPlayer.unMute();
+            if (muteBtn) muteBtn.innerHTML = '<i class="bi bi-volume-up-fill"></i>';
+        }
+    } else {
+        const video = document.getElementById('lms-video');
+        if (video) {
+            video.muted = isPlayerMuted;
+            if (muteBtn) muteBtn.innerHTML = isPlayerMuted ? '<i class="bi bi-volume-mute-fill"></i>' : '<i class="bi bi-volume-up-fill"></i>';
+        }
+    }
+}
+
+// Custom Player Speed Control (Supports both YouTube & HTML5 Video)
 function setSpeed(rate) {
+    currentPlaybackRate = rate;
+
+    if (currentVideoType === 'youtube' && currentYTPlayer && typeof currentYTPlayer.setPlaybackRate === 'function') {
+        try {
+            currentYTPlayer.setPlaybackRate(rate);
+        } catch (e) {
+            console.warn('YT setPlaybackRate:', e);
+        }
+    }
+
     const video = document.getElementById('lms-video');
     if (video) {
         video.playbackRate = rate;
     }
 
     document.querySelectorAll('.speed-btn').forEach(btn => {
-        btn.classList.remove('active');
-        if (parseFloat(btn.textContent) === rate) {
-            btn.classList.add('active');
-        }
+        const bSpeed = parseFloat(btn.dataset.speed || btn.textContent);
+        btn.classList.toggle('active', bSpeed === rate);
     });
+}
+
+// Fullscreen Toggle
+function togglePlayerFullscreen() {
+    const container = document.getElementById('lms-video-container');
+    if (!container) return;
+    if (!document.fullscreenElement) {
+        if (container.requestFullscreen) container.requestFullscreen();
+        else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
+    } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    }
+}
+
+// Seek Player Helper
+function seekPlayerTo(seconds) {
+    if (currentVideoType === 'youtube' && currentYTPlayer && typeof currentYTPlayer.seekTo === 'function') {
+        currentYTPlayer.seekTo(seconds, true);
+        currentYTPlayer.playVideo();
+    } else {
+        const video = document.getElementById('lms-video');
+        if (video) {
+            video.currentTime = seconds;
+            video.play().catch(() => {});
+        }
+    }
+}
+
+// Anti-Scrub Progress Bar Click Handler
+function handleScrubClick(e) {
+    if (!videoDuration || videoDuration <= 0) return;
+    const container = document.getElementById('anti-scrub-progress-container');
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, clickX / rect.width));
+    const targetTime = ratio * videoDuration;
+
+    if (!currentSelectedCourse) return;
+    const prog = getStudentProgress(currentSelectedCourse.id);
+    const lessonKey = `m${currentActiveModNum}_l${currentActiveLessonNum}`;
+    const isDone = prog.completedLessons.includes(lessonKey);
+
+    // Anti-scrub: If not completed, cannot seek past maxWatchedSeconds + 2
+    if (!isDone && targetTime > maxWatchedSeconds + 2) {
+        showAntiScrubAlert();
+        return;
+    }
+
+    seekPlayerTo(targetTime);
 }
 
 /* ==========================================================================
@@ -218,39 +397,123 @@ function dismissAutoAdvance(proceed) {
     }
 }
 
-function attachVideoListeners(video, courseId, modNum, lessonNum) {
-    if (!video) return;
-    const minPercentRequired = parseInt(localStorage.getItem('lms_min_watch_percent') || '80');
+// START PLAYER TICKER: LIVE COUNTERS, ANTI-CHEAT ENFORCEMENT & ELIGIBILITY
+function startPlayerTicker(courseId, modNum, lessonNum) {
+    if (playerTickerInterval) {
+        clearInterval(playerTickerInterval);
+        playerTickerInterval = null;
+    }
 
-    video.addEventListener('timeupdate', () => {
-        if (!video.duration || video.duration <= 0) return;
-        const watchedPercent = Math.round((video.currentTime / video.duration) * 100);
+    const minPercent = parseInt(localStorage.getItem('lms_min_watch_percent') || '80');
+    const lessonKey = `m${modNum}_l${lessonNum}`;
 
-        const btn = document.getElementById('btn-mark-complete');
-        const prog = getStudentProgress(courseId);
-        const lessonKey = `m${modNum}_l${lessonNum}`;
-        const isDone = prog.completedLessons.includes(lessonKey);
+    playerTickerInterval = setInterval(() => {
+        let curTime = 0;
+        let dur = 0;
 
-        if (!isDone && watchedPercent >= minPercentRequired && btn) {
-            btn.innerHTML = '<span><i class="bi bi-check2-circle"></i> Đủ điều kiện hoàn thành (Bấm để xác nhận)</span>';
-            btn.style.background = '#059669';
+        if (currentVideoType === 'youtube' && currentYTPlayer) {
+            if (typeof currentYTPlayer.getCurrentTime === 'function') {
+                curTime = currentYTPlayer.getCurrentTime() || 0;
+            }
+            if (typeof currentYTPlayer.getDuration === 'function') {
+                dur = currentYTPlayer.getDuration() || 0;
+            }
+        } else {
+            const video = document.getElementById('lms-video');
+            if (video) {
+                curTime = video.currentTime || 0;
+                dur = video.duration || 0;
+            }
         }
-    });
 
-    video.addEventListener('ended', () => {
-        markLessonComplete(true);
-        showAutoAdvanceToast();
-    });
+        if (dur > 0) {
+            videoDuration = dur;
+        }
+
+        if (!currentSelectedCourse) return;
+        const prog = getStudentProgress(courseId);
+        const isLessonDone = prog.completedLessons.includes(lessonKey);
+
+        // Anti-Cheat: If user somehow scrubbed forward beyond what they watched + 3s
+        if (!isLessonDone && curTime > maxWatchedSeconds + 3) {
+            seekPlayerTo(maxWatchedSeconds);
+            showAntiScrubAlert();
+            curTime = maxWatchedSeconds;
+        } else if (curTime > maxWatchedSeconds) {
+            maxWatchedSeconds = curTime;
+        }
+
+        // Calculate progress percentages
+        const playPercent = videoDuration > 0 ? Math.min(100, Math.round((curTime / videoDuration) * 100)) : 0;
+        const watchPercent = videoDuration > 0 ? Math.min(100, Math.round((maxWatchedSeconds / videoDuration) * 100)) : (isLessonDone ? 100 : 0);
+
+        // Update live time counters
+        const curTimeEl = document.getElementById('lms-current-time');
+        const durTimeEl = document.getElementById('lms-duration-time');
+        if (curTimeEl) curTimeEl.textContent = formatClockTime(curTime);
+        if (durTimeEl) durTimeEl.textContent = formatClockTime(videoDuration);
+
+        // Update custom scrubber bars
+        const curBar = document.getElementById('player-current-bar');
+        const bufBar = document.getElementById('player-buffer-bar');
+        if (curBar) curBar.style.width = `${playPercent}%`;
+        if (bufBar) bufBar.style.width = `${isLessonDone ? 100 : watchPercent}%`;
+
+        // Update watch requirement badges & button states
+        const watchDisplay = document.getElementById('lms-watched-pct-display');
+        const btnWatchProg = document.getElementById('btn-watch-progress');
+        if (watchDisplay) watchDisplay.textContent = `${isLessonDone ? 100 : watchPercent}%`;
+        if (btnWatchProg) btnWatchProg.textContent = `${isLessonDone ? 100 : watchPercent}%`;
+
+        const reqBadge = document.getElementById('video-watch-progress-badge');
+        const btnComplete = document.getElementById('btn-mark-complete');
+
+        if (isLessonDone) {
+            if (reqBadge) {
+                reqBadge.className = 'video-watch-progress-badge completed';
+                reqBadge.innerHTML = '<i class="bi bi-check-circle-fill" style="color:#86efac;"></i> Đã hoàn thành bài học';
+            }
+            if (btnComplete) {
+                btnComplete.className = 'btn btn-complete finished';
+                btnComplete.disabled = false;
+                btnComplete.title = 'Bài học này đã được bạn hoàn thành xuất sắc';
+                btnComplete.innerHTML = '<span><i class="bi bi-check2-all"></i> Đã Hoàn Thành</span>';
+            }
+        } else if (watchPercent >= minPercent) {
+            if (reqBadge) {
+                reqBadge.className = 'video-watch-progress-badge ready';
+                reqBadge.innerHTML = `<i class="bi bi-check-circle-fill" style="color:#86efac;"></i> Đủ điều kiện: <strong>${watchPercent}%</strong> / ${minPercent}%`;
+            }
+            if (btnComplete) {
+                btnComplete.className = 'btn btn-complete ready animated-shine-btn';
+                btnComplete.disabled = false;
+                btnComplete.title = 'Bạn đã xem đủ thời lượng bắt buộc. Bấm để xác nhận hoàn thành bài học!';
+                btnComplete.innerHTML = '<span><i class="bi bi-check2-circle"></i> Đủ điều kiện hoàn thành (Bấm xác nhận)</span>';
+            }
+        } else {
+            if (reqBadge) {
+                reqBadge.className = 'video-watch-progress-badge';
+                reqBadge.innerHTML = `<i class="bi bi-clock-history"></i> Đã học: <strong>${watchPercent}%</strong> <span class="req-target">/ ${minPercent}%</span>`;
+            }
+            if (btnComplete) {
+                btnComplete.className = 'btn btn-complete locked';
+                btnComplete.disabled = true;
+                btnComplete.title = `Cần xem tối thiểu ${minPercent}% thời lượng bài giảng để mở khóa hoàn thành`;
+                btnComplete.innerHTML = `<span><i class="bi bi-lock-fill"></i> Đang học (${watchPercent}%/${minPercent}%)</span>`;
+            }
+        }
+    }, 250);
 }
 
 function markLessonComplete(isAuto = false) {
     if (!currentSelectedCourse) return;
-    const video = document.getElementById('lms-video');
     const minPercentRequired = parseInt(localStorage.getItem('lms_min_watch_percent') || '80');
     
-    let watchedPercent = 100;
-    if (video && video.duration > 0) {
-        watchedPercent = Math.round((video.currentTime / video.duration) * 100);
+    let watchedPercent = 0;
+    if (videoDuration > 0) {
+        watchedPercent = Math.round((maxWatchedSeconds / videoDuration) * 100);
+    } else {
+        watchedPercent = maxWatchedSeconds > 0 ? 100 : 0;
     }
 
     const prog = getStudentProgress(currentSelectedCourse.id);
@@ -267,13 +530,15 @@ function markLessonComplete(isAuto = false) {
         prog.completedLessons.push(lessonKey);
         prog.lastActive = { modNum: currentActiveModNum, lessonNum: currentActiveLessonNum, time: 0 };
         saveStudentProgress(currentSelectedCourse.id, prog);
+        maxWatchedSeconds = 999999; // Allow free review once completed
     }
 
     // Update UI button
     const btn = document.getElementById('btn-mark-complete');
     if (btn) {
+        btn.className = 'btn btn-complete finished';
+        btn.disabled = false;
         btn.innerHTML = '<span><i class="bi bi-check2-all"></i> Đã Hoàn Thành</span>';
-        btn.style.background = '#059669';
     }
 
     // Update Progress Bar
@@ -367,13 +632,18 @@ function toggleSidebarFocus() {
     }
 }
 
-// INTERACTIVE TIMESTAMP SEEK
+// INTERACTIVE TIMESTAMP SEEK (ANTI-SCRUB PROTECTED)
 function seekToTimestamp(seconds) {
-    const video = document.getElementById('lms-video');
-    if (video) {
-        video.currentTime = seconds;
-        video.play().catch(() => {});
+    if (!currentSelectedCourse) return;
+    const prog = getStudentProgress(currentSelectedCourse.id);
+    const lessonKey = `m${currentActiveModNum}_l${currentActiveLessonNum}`;
+    const isDone = prog.completedLessons.includes(lessonKey);
+
+    if (!isDone && seconds > maxWatchedSeconds + 2) {
+        showAntiScrubAlert();
+        return;
     }
+    seekPlayerTo(seconds);
 }
 
 // RESUME LEARNING BANNER
@@ -1278,29 +1548,9 @@ function playCourseLesson(courseId, modNum, lessonNum) {
         btnPrev.disabled = (modNum === 1 && lessonNum === 1);
     }
 
-    // Embed Video: YouTube iframe or MP4
-    const videoWrapper = document.querySelector('.video-wrapper');
-    if (videoWrapper && targetLesson) {
-        clearAutoAdvanceToast();
-        const url = targetLesson.youtubeUrl || '';
-        const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-        if (ytMatch && ytMatch[1]) {
-            videoWrapper.innerHTML = `
-                <iframe id="lms-youtube-iframe" src="https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1" title="${targetLesson.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute; top:0; left:0; width:100%; height:100%; border-radius:12px;"></iframe>
-            `;
-        } else {
-            videoWrapper.innerHTML = `
-                <video id="lms-video" poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80" controls style="width:100%; height:100%; border-radius:12px;">
-                    <source src="${url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'}" type="video/mp4">
-                    Trình duyệt của bạn không hỗ trợ thẻ video.
-                </video>
-            `;
-            const video = document.getElementById('lms-video');
-            if (video) {
-                attachVideoListeners(video, course.id, targetMod.id, targetLesson.id);
-                video.play().catch(() => {});
-            }
-        }
+    // Embed Video: Unified Player Engine (YouTube IFrame API / HTML5 Video)
+    if (targetLesson) {
+        setupUnifiedVideoPlayer(targetLesson.youtubeUrl, targetLesson.title, course.id, targetMod.id, targetLesson.id);
     }
 
     // Render dynamic sidebar
@@ -1311,6 +1561,125 @@ function playCourseLesson(courseId, modNum, lessonNum) {
 
     // Render Interactive Discussion Forum for this lesson
     renderLessonDiscussions(course.id, targetMod.id, targetLesson.id);
+}
+
+// SETUP UNIFIED VIDEO PLAYER (YOUTUBE IFRAME API & HTML5 VIDEO WITH ANTI-CHEAT)
+function setupUnifiedVideoPlayer(url, title, courseId, modNum, lessonNum) {
+    clearAutoAdvanceToast();
+    if (playerTickerInterval) {
+        clearInterval(playerTickerInterval);
+        playerTickerInterval = null;
+    }
+
+    if (currentYTPlayer && typeof currentYTPlayer.destroy === 'function') {
+        try {
+            currentYTPlayer.destroy();
+        } catch (e) {
+            console.warn('Destroying previous YT player:', e);
+        }
+        currentYTPlayer = null;
+    }
+
+    videoDuration = 0;
+    const prog = getStudentProgress(courseId);
+    const lessonKey = `m${modNum}_l${lessonNum}`;
+    const isDone = prog.completedLessons.includes(lessonKey);
+    maxWatchedSeconds = isDone ? 999999 : 0;
+
+    // Update overlay title & tags
+    const overlayTitle = document.getElementById('video-overlay-lesson-name');
+    if (overlayTitle) overlayTitle.textContent = title || `Bài ${modNum}.${lessonNum}`;
+
+    const playingTag = document.getElementById('current-playing-mod-lesson-tag');
+    if (playingTag) playingTag.textContent = `ĐANG PHÁT BÀI ${modNum}.${lessonNum}`;
+
+    const videoTitle = document.getElementById('video-lesson-title');
+    if (videoTitle) videoTitle.textContent = title || `Bài ${modNum}.${lessonNum}`;
+
+    // Reset progress scrubber UI
+    const curBar = document.getElementById('player-current-bar');
+    const bufBar = document.getElementById('player-buffer-bar');
+    if (curBar) curBar.style.width = '0%';
+    if (bufBar) bufBar.style.width = isDone ? '100%' : '0%';
+
+    const playBtn = document.getElementById('btn-player-play-pause');
+    if (playBtn) playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+
+    const mountPoint = document.getElementById('player-mount-point');
+    if (!mountPoint) return;
+
+    const ytMatch = (url || '').match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+
+    if (ytMatch && ytMatch[1]) {
+        currentVideoType = 'youtube';
+        mountPoint.innerHTML = '<div id="yt-player-embed" style="width:100%; height:100%;"></div>';
+
+        const initPlayer = () => {
+            currentYTPlayer = new YT.Player('yt-player-embed', {
+                videoId: ytMatch[1],
+                width: '100%',
+                height: '100%',
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,        // HIDES NATIVE YOUTUBE CONTROLS (SCRUBBER, TIME, LOGO)
+                    disablekb: 1,       // DISABLES KEYBOARD SEEKING
+                    modestbranding: 1,  // MINIMIZES BRANDING
+                    rel: 0,             // NO EXTERNAL RELATED VIDEOS
+                    showinfo: 0,
+                    iv_load_policy: 3,  // NO ANNOTATIONS
+                    fs: 0,              // HIDE DEFAULT FULLSCREEN
+                    playsinline: 1,
+                    enablejsapi: 1,
+                    origin: window.location.origin
+                },
+                events: {
+                    onReady: (event) => {
+                        try {
+                            event.target.setPlaybackRate(currentPlaybackRate);
+                        } catch (e) {}
+                        if (playBtn) playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+                        startPlayerTicker(courseId, modNum, lessonNum);
+                    },
+                    onStateChange: (event) => {
+                        if (event.data === 1) { // Playing
+                            if (playBtn) playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+                        } else if (event.data === 2) { // Paused
+                            if (playBtn) playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+                        } else if (event.data === 0) { // Ended
+                            if (playBtn) playBtn.innerHTML = '<i class="bi bi-play-fill"></i>';
+                            markLessonComplete(true);
+                            showAutoAdvanceToast();
+                        }
+                    }
+                }
+            });
+        };
+
+        if (isYTReady && window.YT && window.YT.Player) {
+            initPlayer();
+        } else {
+            pendingVideoInit = initPlayer;
+        }
+    } else {
+        currentVideoType = 'html5';
+        mountPoint.innerHTML = `
+            <video id="lms-video" poster="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80" style="width:100%; height:100%; object-fit:cover;">
+                <source src="${url || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'}" type="video/mp4">
+                Trình duyệt của bạn không hỗ trợ thẻ video.
+            </video>
+        `;
+        const video = document.getElementById('lms-video');
+        if (video) {
+            video.playbackRate = currentPlaybackRate;
+            video.play().catch(() => {});
+            if (playBtn) playBtn.innerHTML = '<i class="bi bi-pause-fill"></i>';
+            video.addEventListener('ended', () => {
+                markLessonComplete(true);
+                showAutoAdvanceToast();
+            });
+            startPlayerTicker(courseId, modNum, lessonNum);
+        }
+    }
 }
 
 // RENDER DYNAMIC SIDEBAR ACCORDIONS IN CLASSROOM WITH SEQUENTIAL LOCKING
@@ -1428,16 +1797,25 @@ function stopQuizTimer() {
 function updateQuizTimerDisplay() {
     const badge = document.getElementById('quiz-timer-badge');
     const display = document.getElementById('quiz-timer-display');
+    const progBar = document.getElementById('quiz-timer-progress-bar');
+    const stickyHeader = document.getElementById('quiz-sticky-header');
+
     if (!display) return;
     const mins = Math.floor(Math.max(0, quizTimeSeconds) / 60);
     const secs = Math.max(0, quizTimeSeconds) % 60;
     display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-    if (badge) {
-        if (quizTimeSeconds <= 120 && quizTimeSeconds > 0) {
-            badge.classList.add('urgent');
-        } else {
-            badge.classList.remove('urgent');
-        }
+
+    if (progBar) {
+        const pct = Math.max(0, Math.min(100, (quizTimeSeconds / 600) * 100));
+        progBar.style.width = `${pct}%`;
+    }
+
+    if (quizTimeSeconds <= 120 && quizTimeSeconds > 0) {
+        if (badge) badge.classList.add('urgent');
+        if (stickyHeader) stickyHeader.classList.add('urgent');
+    } else {
+        if (badge) badge.classList.remove('urgent');
+        if (stickyHeader) stickyHeader.classList.remove('urgent');
     }
 }
 
@@ -1463,15 +1841,26 @@ function renderClassroomQuizTab(courseId) {
     const questionsToRender = courseQuizzes.length > 0 ? courseQuizzes : quizzes.slice(0, 3);
 
     quizPane.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:14px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
-            <h4 style="margin:0; font-size:1rem; font-weight:800; color:var(--primary);">Bài Kiểm Tra Trắc Nghiệm Đánh Giá Module</h4>
-            <div style="display:flex; align-items:center; gap:8px;">
-                <div class="quiz-timer-badge" id="quiz-timer-badge" title="Thời gian làm bài tối đa 10 phút">
-                    <i class="bi bi-clock-history"></i> <span id="quiz-timer-display">10:00</span>
-                </div>
-                <span style="font-size:0.75rem; background:#e0e7ff; color:#2F2D74; padding:3px 10px; border-radius:20px; font-weight:800;">${questionsToRender.length} Câu Hỏi</span>
+        <!-- Sticky Countdown Timer Header for Quiz -->
+        <div class="quiz-sticky-timer-bar" id="quiz-sticky-header">
+            <div class="quiz-timer-info">
+                <i class="bi bi-alarm-fill" style="color:#b91c1c; font-size:1.15rem;"></i>
+                <span>THỜI GIAN LÀM BÀI CÒN LẠI:</span>
+                <strong id="quiz-timer-display" class="quiz-timer-clock">10:00</strong>
+            </div>
+            <div class="quiz-timer-meta">
+                <span class="quiz-timer-badge" id="quiz-timer-badge" style="background:#e0e7ff; color:#2F2D74; border-color:#c7d2fe;">
+                    <i class="bi bi-patch-question-fill"></i> ${questionsToRender.length} Câu Hỏi
+                </span>
+                <span style="font-size:0.75rem; background:#dcfce7; color:#15803d; padding:4px 10px; border-radius:20px; font-weight:800; border:1px solid #86efac;">
+                    <i class="bi bi-check2-all"></i> Đạt: >= 80%
+                </span>
             </div>
         </div>
+        <div class="quiz-timer-progress-track">
+            <div id="quiz-timer-progress-bar" class="quiz-timer-progress-fill" style="width: 100%;"></div>
+        </div>
+
         <form id="quiz-form" onsubmit="submitDynamicQuiz(event, '${courseId}')">
             ${questionsToRender.map((q, idx) => `
                 <div class="quiz-question" style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px;">
