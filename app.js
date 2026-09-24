@@ -694,15 +694,14 @@ function seekToTimestamp(seconds) {
     seekPlayerTo(seconds);
 }
 
-// RESUME LEARNING BANNER
+// RESUME LEARNING BANNER & HERO SPOTLIGHT SYNC
 function renderResumeLearningBanner() {
     const container = document.getElementById('resume-learning-container');
-    if (!container) return;
 
     reloadCoursesCatalog();
     const activeCourse = currentSelectedCourse || coursesCatalog[0];
     if (!activeCourse) {
-        container.style.display = 'none';
+        if (container) container.style.display = 'none';
         return;
     }
 
@@ -710,14 +709,31 @@ function renderResumeLearningBanner() {
     const lastActive = prog.lastActive || { modNum: 1, lessonNum: 1 };
     const percent = calculateCourseProgressPercent(activeCourse.id);
 
+    const mod = (activeCourse.modules || []).find(m => m.id === lastActive.modNum) || (activeCourse.modules || [])[0];
+    const les = (mod && mod.lessons) ? (mod.lessons.find(l => l.id === lastActive.lessonNum) || mod.lessons[0]) : null;
+    const lessonTitle = les ? les.title : `Module ${lastActive.modNum}`;
+
+    // Synchronize Bento 2.0 Hero Spotlight Card
+    const heroSpotlightTitle = document.getElementById('hero-spotlight-title');
+    const heroSpotlightLesson = document.getElementById('hero-spotlight-lesson');
+    const heroSpotlightBar = document.getElementById('hero-spotlight-bar');
+    const heroSpotlightPercent = document.getElementById('hero-spotlight-percent');
+    const heroSpotlightTile = document.getElementById('hero-spotlight-tile');
+
+    if (heroSpotlightTitle) heroSpotlightTitle.textContent = activeCourse.title;
+    if (heroSpotlightLesson) heroSpotlightLesson.innerHTML = `<i class="bi bi-play-btn-fill"></i> <span>${lessonTitle}</span>`;
+    if (heroSpotlightBar) heroSpotlightBar.style.width = `${percent}%`;
+    if (heroSpotlightPercent) heroSpotlightPercent.textContent = `${percent}%`;
+    if (heroSpotlightTile) {
+        heroSpotlightTile.onclick = () => enterCourseLesson(activeCourse.id, lastActive.modNum, lastActive.lessonNum);
+    }
+
+    if (!container) return;
+
     if (percent === 0 && (!prog.completedLessons || prog.completedLessons.length === 0)) {
         container.style.display = 'none';
         return;
     }
-
-    const mod = (activeCourse.modules || []).find(m => m.id === lastActive.modNum) || (activeCourse.modules || [])[0];
-    const les = (mod && mod.lessons) ? (mod.lessons.find(l => l.id === lastActive.lessonNum) || mod.lessons[0]) : null;
-    const lessonTitle = les ? les.title : `Module ${lastActive.modNum}`;
 
     container.style.display = 'block';
     container.innerHTML = `
@@ -1188,7 +1204,7 @@ function renderStudentCoursesCatalog(filterDiv, searchKeyword) {
         return;
     }
 
-    container.innerHTML = filteredCourses.map(course => {
+    container.innerHTML = filteredCourses.map((course, idx) => {
         const category = course.category || course.cat || 'Chuyên Đề';
         const stats = course.stats || {
             modules: (course.modules && course.modules.length) ? course.modules.length : 1,
@@ -1201,41 +1217,96 @@ function renderStudentCoursesCatalog(filterDiv, searchKeyword) {
         const prog = getStudentProgress(course.id);
         const hasCert = prog.certificateEarned;
 
+        // BENTO 2.0 ARCHITECTURE: Course #1 is the Featured Lead Flagship Card
+        if (idx === 0) {
+            return `
+            <div class="course-program-card featured-lead-card">
+                <div class="featured-lead-left">
+                    <div class="featured-flag-row">
+                        <span class="featured-pill"><i class="bi bi-star-fill"></i> KHÓA HỌC TRỌNG ĐIỂM</span>
+                        <span class="course-category-badge badge-gold">${category}</span>
+                        ${hasCert ? '<span class="status-badge success"><i class="bi bi-award-fill" style="color:#d97706;"></i> Đã Nhận Chứng Chỉ</span>' : ''}
+                    </div>
+                    <h3>${course.title}</h3>
+                    <p class="featured-desc">${desc}</p>
+                    <div class="featured-curriculum-tags">
+                        <span class="curriculum-chip"><i class="bi bi-patch-check-fill"></i> Chuẩn Hóa Pháp Lý</span>
+                        <span class="curriculum-chip"><i class="bi bi-shield-check"></i> Quy Trình Đặt Cọc</span>
+                        <span class="curriculum-chip"><i class="bi bi-award-fill"></i> Cấp Chứng Chỉ Số</span>
+                    </div>
+                </div>
+                <div class="featured-lead-right">
+                    <div class="course-stats-pills" style="margin-bottom:0;">
+                        <span class="course-stat-pill"><i class="bi bi-collection"></i> ${stats.modules} Module</span>
+                        <span class="course-stat-pill"><i class="bi bi-play-circle"></i> ${stats.videos} Video</span>
+                        <span class="course-stat-pill"><i class="bi bi-clock"></i> ${stats.duration}</span>
+                        <span class="course-stat-pill"><i class="bi bi-file-earmark-text"></i> ${stats.materials} Tài Liệu</span>
+                    </div>
+
+                    <div class="course-progress-mini">
+                        <div class="p-bar-label">
+                            <span>Tiến độ cá nhân</span>
+                            <strong>${progress}%</strong>
+                        </div>
+                        <div class="p-bar-track">
+                            <div class="p-bar-fill" style="width: ${progress}%;"></div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-primary animated-shine-btn" style="flex:1; padding:10px 16px;" onclick="openCourseModules('${course.id}')">
+                            <span>Vào Học Khóa Trọng Điểm <i class="bi bi-arrow-right"></i></span>
+                        </button>
+                        ${hasCert ? `
+                            <button class="btn btn-secondary animated-shine-btn" style="background:#fef3c7; color:#92400e; border-color:#fde68a; font-weight:800; padding:8px 12px; font-size:0.75rem;" onclick="event.stopPropagation(); showCertificateModal('${course.id}')" title="Xem chứng chỉ tốt nghiệp khóa học">
+                                <i class="bi bi-award-fill"></i> Chứng Chỉ
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+            `;
+        }
+
+        // Subsequent courses render as sleek companion bento cards
         return `
-        <div class="course-program-card card-premium">
-            <div class="course-card-top">
-                <span class="course-category-badge badge-gold">${category}</span>
-                ${hasCert ? '<span class="status-badge success" style="margin-left:auto;"><i class="bi bi-award-fill" style="color:#d97706;"></i> Đã Nhận Chứng Chỉ</span>' : ''}
+        <div class="course-program-card secondary-bento-card">
+            <div>
+                <div class="course-card-top">
+                    <span class="course-category-badge badge-gold">${category}</span>
+                    ${hasCert ? '<span class="status-badge success" style="margin-left:auto;"><i class="bi bi-award-fill" style="color:#d97706;"></i> Đã Nhận Chứng Chỉ</span>' : ''}
+                </div>
+                <h3 style="margin-top:8px;">${course.title}</h3>
+                <p class="course-desc">${desc}</p>
             </div>
-            <h3>${course.title}</h3>
-            <p class="course-desc">${desc}</p>
             
-            <div class="course-stats-pills">
-                <span class="course-stat-pill"><i class="bi bi-collection"></i> ${stats.modules} Module</span>
-                <span class="course-stat-pill"><i class="bi bi-play-circle"></i> ${stats.videos} Video</span>
-                <span class="course-stat-pill"><i class="bi bi-clock"></i> ${stats.duration}</span>
-                <span class="course-stat-pill"><i class="bi bi-file-earmark-text"></i> ${stats.materials} Tài Liệu</span>
-            </div>
-
-            <div class="course-progress-mini">
-                <div class="p-bar-label">
-                    <span>Tiến độ học tập</span>
-                    <strong>${progress}%</strong>
+            <div>
+                <div class="course-stats-pills">
+                    <span class="course-stat-pill"><i class="bi bi-collection"></i> ${stats.modules} Module</span>
+                    <span class="course-stat-pill"><i class="bi bi-play-circle"></i> ${stats.videos} Video</span>
+                    <span class="course-stat-pill"><i class="bi bi-clock"></i> ${stats.duration}</span>
                 </div>
-                <div class="p-bar-track">
-                    <div class="p-bar-fill" style="width: ${progress}%;"></div>
-                </div>
-            </div>
 
-            <div style="display:flex; gap:8px; margin-top:12px;">
-                <button class="btn-view-course-modules animated-shine-btn" style="flex:1;" onclick="openCourseModules('${course.id}')">
-                    <span>Xem Các Module Bài Học <i class="bi bi-arrow-right"></i></span>
-                </button>
-                ${hasCert ? `
-                    <button class="btn btn-secondary animated-shine-btn" style="background:#fef3c7; color:#92400e; border-color:#fde68a; font-weight:800; padding:8px 12px; font-size:0.75rem;" onclick="event.stopPropagation(); showCertificateModal('${course.id}')" title="Xem chứng chỉ tốt nghiệp khóa học">
-                        <i class="bi bi-award-fill"></i> Chứng Chỉ
+                <div class="course-progress-mini">
+                    <div class="p-bar-label">
+                        <span>Tiến độ học tập</span>
+                        <strong>${progress}%</strong>
+                    </div>
+                    <div class="p-bar-track">
+                        <div class="p-bar-fill" style="width: ${progress}%;"></div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-top:12px;">
+                    <button class="btn-view-course-modules animated-shine-btn" style="flex:1;" onclick="openCourseModules('${course.id}')">
+                        <span>Xem Chi Tiết Khóa Học <i class="bi bi-arrow-right"></i></span>
                     </button>
-                ` : ''}
+                    ${hasCert ? `
+                        <button class="btn btn-secondary animated-shine-btn" style="background:#fef3c7; color:#92400e; border-color:#fde68a; font-weight:800; padding:8px 12px; font-size:0.75rem;" onclick="event.stopPropagation(); showCertificateModal('${course.id}')" title="Xem chứng chỉ tốt nghiệp khóa học">
+                            <i class="bi bi-award-fill"></i> Chứng Chỉ
+                        </button>
+                    ` : ''}
+                </div>
             </div>
         </div>
         `;

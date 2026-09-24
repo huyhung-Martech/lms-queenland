@@ -61,57 +61,110 @@
 
         <!-- ==================== VIEW 1: LANDING PAGE ==================== -->
         <section id="view-landing" class="view-section active">
-            <!-- Hero Section (Parkland Luxury Style) -->
-            <div class="hero">
-                <div class="hero-content">
-                    <span class="badge-pill">
-                        <i class="bi bi-patch-check-fill" style="color:var(--accent);"></i> Đào Tạo Doanh Nghiệp Queen Land
-                    </span>
-                    <h1 class="hero-title">Hệ Thống Đào Tạo Nội Bộ Bất Động Sản Chuyên Nghiệp</h1>
-                    <p class="hero-desc">Tự học linh hoạt theo lộ trình các Module chuyên sâu. Tích hợp video HD, tóm tắt quy trình dự án, kiểm tra đánh giá tự động và cấp chứng nhận nội bộ Queen Land.</p>
-                    
-                    <div class="hero-stats-grid">
-                        <div class="stat-card">
-                            <span class="stat-num">05</span>
-                            <span class="stat-label">Module Chuyên Sâu</span>
+            <!-- Bento Hero Grid & Executive Hub (Design Taste Frontend Bento 2.0) -->
+            <div class="hero-bento-grid">
+                <!-- TILE 1: Master Editorial Hero (Asymmetric Left) -->
+                <div class="bento-tile bento-tile-main">
+                    <div class="bento-tile-content">
+                        <div class="bento-badge-row">
+                            <span class="badge-pill">
+                                <i class="bi bi-shield-check" style="color:var(--accent);"></i> QUEEN LAND ACADEMY • LMS PLATFORM
+                            </span>
+                            <span class="bento-live-indicator">
+                                <span class="live-dot"></span> Đào Tạo Trực Tuyến 24/7
+                            </span>
                         </div>
-                        <div class="stat-card">
-                            <span class="stat-num">24+</span>
-                            <span class="stat-label">Video Giảng Bài HD</span>
+                        
+                        <h1 class="hero-bento-title">
+                            Chuẩn Hóa Tri Thức,<br>
+                            <span class="text-accent-gradient">Bứt Phá Giao Dịch Bất Động Sản</span>
+                        </h1>
+                        
+                        <p class="hero-bento-desc">
+                            Giáo trình huấn luyện thực chiến chuyển giao năng lực tư vấn chuyên sâu, pháp lý dự án và chiến lược chốt deal dành riêng cho hệ thống kinh doanh Queen Land.
+                        </p>
+
+                        <!-- EXECUTIVE METRICS RIBBON (Thay thế 4 ô rời rạc bằng dải ribbon tích hợp) -->
+                        <div class="bento-metrics-ribbon">
+                            <div class="metric-ribbon-item">
+                                <span class="metric-num">05</span>
+                                <span class="metric-lbl">Chương Trình</span>
+                            </div>
+                            <div class="metric-ribbon-divider"></div>
+                            <div class="metric-ribbon-item">
+                                <span class="metric-num">24+</span>
+                                <span class="metric-lbl">Video Độc Quyền</span>
+                            </div>
+                            <div class="metric-ribbon-divider"></div>
+                            <div class="metric-ribbon-item">
+                                <span class="metric-num">100%</span>
+                                <span class="metric-lbl">Khảo Thí Tự Động</span>
+                            </div>
+                            <div class="metric-ribbon-divider"></div>
+                            <div class="metric-ribbon-item">
+                                <span class="metric-num">PDF</span>
+                                <span class="metric-lbl">Chứng Chỉ Số</span>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <span class="stat-num">100%</span>
-                            <span class="stat-label">Tự Động Đánh Giá</span>
+
+                        <div class="hero-bento-actions">
+                            <button class="btn btn-primary animated-shine-btn" onclick="switchView('portal')">
+                                <i class="bi bi-play-circle-fill"></i> Trải Nghiệm Lớp Học Demo
+                            </button>
+                            <a href="#curriculum" class="btn bento-outline-btn">
+                                <i class="bi bi-collection"></i> Khám Phá Lộ Trình Đào Tạo
+                            </a>
                         </div>
-                        <div class="stat-card">
-                            <span class="stat-num">PDF</span>
-                            <span class="stat-label">Cấp Chứng Chỉ</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT BENTO SUBGRID: Spotlight Card + Enterprise Features -->
+                <div class="bento-subgrid-right">
+                    <!-- TILE 2: Live Study Spotlight Card -->
+                    <div class="bento-tile bento-tile-spotlight" id="hero-spotlight-tile" onclick="switchView('portal')">
+                        <div class="spotlight-header">
+                            <span class="spotlight-tag">
+                                <i class="bi bi-compass-fill"></i> TIÊU ĐIỂM HỌC TẬP
+                            </span>
+                            <span class="spotlight-status-badge">Đang Mở Lớp</span>
+                        </div>
+                        <div class="spotlight-body">
+                            <div class="spotlight-course-title" id="hero-spotlight-title">Quy Trình Bán Hàng & Pháp Lý Dự Án Cao Cấp</div>
+                            <div class="spotlight-lesson-target" id="hero-spotlight-lesson">
+                                <i class="bi bi-play-btn-fill"></i> <span>Bài 2.2: Quy Trình Đặt Cọc & Hoàn Thiện Hợp Đồng</span>
+                            </div>
+                            <div class="spotlight-progress-wrap">
+                                <div class="spotlight-progress-info">
+                                    <span>Tiến độ cá nhân:</span>
+                                    <strong id="hero-spotlight-percent">0%</strong>
+                                </div>
+                                <div class="spotlight-progress-track">
+                                    <div class="spotlight-progress-bar" id="hero-spotlight-bar" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <button class="spotlight-action-btn">
+                                <span>Vào Phòng Học Bài Này Ngay</span>
+                                <i class="bi bi-arrow-right"></i>
+                            </button>
                         </div>
                     </div>
 
-                    <div class="hero-actions">
-                        <button class="btn btn-primary animated-shine-btn" onclick="switchView('portal')">
-                            <i class="bi bi-play-circle-fill"></i> Trải Nghiệm Lớp Học Ngay
-                        </button>
-                        <a href="#curriculum" class="btn btn-secondary" style="background:#ffffff; color:var(--primary); border:1px solid #cbd5e1; font-weight:800; border-radius:0.75rem; padding:0.625rem 1.25rem;">
-                            <i class="bi bi-journal-text"></i> Xem Chương Trình Học
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="hero-preview-card">
-                    <div class="preview-header">
-                        <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-                        <span class="preview-title">Xem Trước Giao Diện Học LMS</span>
-                    </div>
-                    <div class="preview-screen" onclick="switchView('portal')">
-                        <div class="play-overlay">
-                            <div class="play-icon">
-                                <i class="bi bi-play-fill text-white"></i>
+                    <!-- TILES 3 & 4: Dual Accreditation & Security Bento Feature Row -->
+                    <div class="bento-features-row">
+                        <div class="bento-tile bento-tile-feature">
+                            <div class="feature-icon-box">
+                                <i class="bi bi-shield-lock-fill"></i>
                             </div>
-                            <span>Bấm để vào phòng học demo</span>
+                            <h4>Bảo Mật Tiến Độ</h4>
+                            <p>Khóa tua nhanh, ghi nhận chính xác 80% thời lượng bài học.</p>
                         </div>
-                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&auto=format&fit=crop&q=80" alt="LMS Preview" class="preview-img">
+                        <div class="bento-tile bento-tile-feature">
+                            <div class="feature-icon-box gold">
+                                <i class="bi bi-award-fill"></i>
+                            </div>
+                            <h4>Chứng Chỉ Điện Tử</h4>
+                            <p>Tự động xuất file PDF kèm mã tra cứu số hóa Queen Land.</p>
+                        </div>
                     </div>
                 </div>
             </div>
