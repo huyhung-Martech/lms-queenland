@@ -2464,4 +2464,25 @@ window.addEventListener('DOMContentLoaded', function() {
         const cId = window.location.hash.replace('#course-', '');
         openCourseModules(cId, false);
     }
+    initSessionStudyTimer();
 });
+
+// GLOBAL SESSION STUDY TIMER (COUNTS UP SECONDS OF ACTIVE LEARNING IN CLASSROOM)
+let sessionStudySeconds = 0;
+let sessionStudyInterval = null;
+
+function initSessionStudyTimer() {
+    if (sessionStudyInterval) return;
+    sessionStudyInterval = setInterval(() => {
+        const portal = document.getElementById('view-portal');
+        if (portal && portal.classList.contains('active')) {
+            sessionStudySeconds++;
+            const timerEl = document.getElementById('session-study-timer');
+            if (timerEl) {
+                const m = Math.floor(sessionStudySeconds / 60);
+                const s = sessionStudySeconds % 60;
+                timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }
+        }
+    }, 1000);
+}
