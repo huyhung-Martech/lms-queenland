@@ -574,43 +574,18 @@ button, input, select, textarea, optgroup {
     margin-left: 3px;
 }
 
-.user-div-tag {
+.user-dept-label {
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-size: 0.7rem;
-    color: #64748b;
-    font-weight: 700;
-}
-
-.user-div-tag .div-label {
-    font-family: var(--font-label);
+    gap: 4px;
     font-size: 0.68rem;
     color: #64748b;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    white-space: nowrap;
-}
-
-.user-div-tag select {
-    font-family: var(--font-sans);
-    font-size: 0.74rem;
     font-weight: 700;
-    background-color: #f8fafc;
-    color: #1e293b;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 3px 20px 3px 7px;
-    cursor: pointer;
-    outline: none;
-    transition: all 0.15s ease;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%232F2D74' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 6px center;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.user-dept-label i {
+    color: var(--primary);
 }
 
 .user-div-tag select:hover,
@@ -890,18 +865,31 @@ button, input, select, textarea, optgroup {
     font-weight: 500;
 }
 
-/* BỘ LỌC CHƯƠNG TRÌNH HỌC (PARKLAND PILL TABS) */
-.course-filter-bar {
+/* THANH TÌM KIẾM KHÓA HỌC TINH GỌN (BỎ LỌC KHỐI RƯỜM RÀ) */
+.course-filter-bar.clean-search-bar {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 24px;
-    flex-wrap: wrap;
     background: #ffffff;
-    padding: 10px 16px;
+    padding: 12px 20px;
     border-radius: 1rem;
     border: 1px solid var(--border-light);
     box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.catalog-summary-info .catalog-count-badge {
+    font-size: 0.82rem;
+    font-weight: 800;
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #f1f5f9;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
 }
 
 .filter-bar-title {

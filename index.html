@@ -43,13 +43,7 @@
                     </div>
                     <div class="user-details">
                         <span class="user-name" id="student-user-name">Nguyễn Văn An <span class="emp-code">(NV-10892)</span></span>
-                        <div class="user-div-tag">
-                            <span class="div-label">Khối KD:</span>
-                            <select id="student-div-select" onchange="filterStudentCoursesByDiv(this.value)">
-                                <option value="ALL">Tất Cả Khóa Học</option>
-                                <!-- DYNAMIC DIVISIONS DROPDOWN -->
-                            </select>
-                        </div>
+                        <span class="user-dept-label"><i class="bi bi-mortarboard-fill"></i> Học Viên Queen Land</span>
                     </div>
                 </div>
                 <button id="btn-change-password" class="btn btn-secondary" onclick="openChangePasswordModal()" style="display:none; padding:7px 12px; font-size:0.75rem; border-color:#cbd5e1; background:#ffffff;">
@@ -122,21 +116,13 @@
                 </div>
             </div>
 
-            <!-- Infinite Kinetic Marquee (Parkland Style) -->
-            <div class="marquee-container" style="max-width: 1400px; margin: 20px auto 0;">
-                <div class="marquee-track">
-                    <span>QUEEN LAND ACADEMY • HỆ THỐNG ĐÀO TẠO BẤT ĐỘNG SẢN CHUYÊN NGHIỆP • CHUẨN HÓA QUY TRÌNH TƯ VẤN • DỰ ÁN ĐÔ THỊ & BIỂN • CHỨNG CHỈ NỘI BỘ • </span>
-                    <span aria-hidden="true">QUEEN LAND ACADEMY • HỆ THỐNG ĐÀO TẠO BẤT ĐỘNG SẢN CHUYÊN NGHIỆP • CHUẨN HÓA QUY TRÌNH TƯ VẤN • DỰ ÁN ĐÔ THỊ & BIỂN • CHỨNG CHỈ NỘI BỘ • </span>
-                </div>
-            </div>
-
             <!-- AUTH GUARD: GATED CONTENT LOCK SCREEN (SHOWN WHEN LOGGED OUT) -->
             <div id="auth-guard-locked-screen" style="display:none; max-width:850px; margin:30px auto; background:#ffffff; border:1px solid #e2e8f0; border-radius:16px; padding:36px 24px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.04);">
                 <div style="width:52px; height:52px; background:#fef3c7; color:#b45309; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
                     <i class="bi bi-shield-lock-fill text-2xl"></i>
                 </div>
                 <h2 style="font-family:var(--font-sans); font-size:1.35rem; font-weight:800; color:#0f172a; margin-bottom:8px;">Nội Dung Đào Tạo Bảo Mật Nội Bộ</h2>
-                <p style="font-size:0.85rem; color:#64748b; max-width:560px; margin:0 auto 20px; line-height:1.5;">Toàn bộ video bài giảng, tài liệu dự án và bài kiểm tra thuộc giáo trình nội bộ của Khối Kinh Doanh. Vui lòng đăng nhập bằng Mã Nhân Viên để truy cập khóa học.</p>
+                <p style="font-size:0.85rem; color:#64748b; max-width:560px; margin:0 auto 20px; line-height:1.5;">Toàn bộ video bài giảng, tài liệu dự án và bài kiểm tra thuộc giáo trình đào tạo nội bộ. Vui lòng đăng nhập bằng Mã Nhân Viên để truy cập khóa học.</p>
                 <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
                     <button class="btn btn-primary animated-shine-btn" style="padding:10px 24px; font-size:0.85rem;" onclick="openAuthModal('login')">
                         <i class="bi bi-key-fill"></i> Đăng Nhập Bằng Mã Nhân Viên
@@ -158,20 +144,17 @@
                     <div class="section-header">
                         <span class="section-tag">CHƯƠNG TRÌNH HỌC</span>
                         <h2>Lộ Trình Đào Tạo Bất Động Sản Chuyên Sâu</h2>
-                        <p>Chọn Chương Trình Học phù hợp với Khối Kinh Doanh của bạn để xem chi tiết các Module bài giảng video.</p>
+                        <p>Hệ thống giáo trình đào tạo chuẩn hóa kiến thức dự án & kỹ năng tư vấn chuyên sâu dành cho toàn bộ nhân sự Queen Land.</p>
                     </div>
 
-                    <!-- BỘ LỌC KHÓA HỌC: CÓ NÚT TẤT CẢ KHÓA HỌC & Ô TÌM KIẾM NHANH -->
-                    <div class="course-filter-bar">
-                        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                            <span class="filter-bar-title"><i class="bi bi-funnel-fill text-primary"></i> Lọc Khóa Học:</span>
-                            <div class="filter-tabs-group" id="course-filter-tabs">
-                                <!-- RENDER DYNAMICALLY BY app.js -->
-                            </div>
+                    <!-- THANH TÌM KIẾM KHÓA HỌC TINH GỌN (BỎ LỌC KHỐI RƯỜM RÀ) -->
+                    <div class="course-filter-bar clean-search-bar">
+                        <div class="catalog-summary-info">
+                            <span class="catalog-count-badge" id="catalog-count-badge"><i class="bi bi-collection-play-fill"></i> Toàn Bộ Khóa Học Đào Tạo</span>
                         </div>
                         <div class="course-search-box">
                             <i class="bi bi-search search-icon"></i>
-                            <input type="text" id="course-search-input" class="course-search-input" placeholder="Tìm kiếm khóa học theo tên, chuyên đề..." oninput="handleCourseSearch(this.value)">
+                            <input type="text" id="course-search-input" class="course-search-input" placeholder="Tìm nhanh khóa học theo tên, chuyên đề dự án..." oninput="handleCourseSearch(this.value)">
                             <button class="clear-search-btn" id="btn-clear-course-search" onclick="clearCourseSearch()" style="display:none;" title="Xóa tìm kiếm">
                                 <i class="bi bi-x-circle-fill"></i>
                             </button>

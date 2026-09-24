@@ -1160,66 +1160,35 @@ function renderStudentCoursesCatalog(filterDiv, searchKeyword) {
     // Always fetch freshest data
     reloadCoursesCatalog();
 
-    const targetDiv = filterDiv || (document.getElementById('student-div-select')?.value) || 'ALL';
-    const kw = (typeof searchKeyword === 'string' ? searchKeyword : currentCourseSearchKeyword).toLowerCase();
+    const kw = (typeof searchKeyword === 'string' ? searchKeyword : (typeof filterDiv === 'string' && filterDiv !== 'ALL' && !filterDiv.startsWith('DIV') ? filterDiv : currentCourseSearchKeyword)).toLowerCase();
 
-    // Get current divisions for readable labels
-    const divisions = JSON.parse(localStorage.getItem('lms_divisions_list') || 'null') || [
-        { id: 'DIV1', name: 'Khối Kinh Doanh 1' },
-        { id: 'DIV2', name: 'Khối Kinh Doanh 2' },
-        { id: 'DIV3', name: 'Khối Kinh Doanh 3 - Miền Nam' }
-    ];
-
-    // Filter courses: match student's division or PUBLIC courses or ALL, AND search keyword
+    // Filter courses simply by search keyword (all courses accessible to all learners)
     const filteredCourses = coursesCatalog.filter(c => {
-        let divMatch = false;
-        if (!targetDiv || targetDiv === 'ALL') divMatch = true;
-        else if (!c.access || c.access === 'PUBLIC') divMatch = true;
-        else divMatch = (c.access === targetDiv);
-
-        if (!divMatch) return false;
-
-        if (kw) {
-            const titleMatch = (c.title || '').toLowerCase().includes(kw);
-            const descMatch = (c.desc || c.rawDesc || '').toLowerCase().includes(kw);
-            const catMatch = (c.category || c.cat || '').toLowerCase().includes(kw);
-            return titleMatch || descMatch || catMatch;
-        }
-        return true;
+        if (!kw) return true;
+        const titleMatch = (c.title || '').toLowerCase().includes(kw);
+        const descMatch = (c.desc || c.rawDesc || '').toLowerCase().includes(kw);
+        const catMatch = (c.category || c.cat || '').toLowerCase().includes(kw);
+        return titleMatch || descMatch || catMatch;
     });
 
-    // Sync tabs
-    renderCourseFilterTabs(targetDiv);
+    const countBadge = document.getElementById('catalog-count-badge');
+    if (countBadge) {
+        countBadge.innerHTML = `<i class="bi bi-collection-play-fill"></i> ${filteredCourses.length} Khóa Học Đào Tạo`;
+    }
 
     if (filteredCourses.length === 0) {
-        if (kw) {
-            container.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
-                    <div style="font-size: 2rem; color: #94a3b8; margin-bottom: 8px;"><i class="bi bi-search"></i></div>
-                    <h4 style="font-size: 1rem; color: #1e293b; margin-bottom: 8px;">Không tìm thấy khóa học nào khớp với từ khóa "${kw}"</h4>
-                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">Vui lòng thử tìm kiếm bằng từ khóa khác hoặc xóa bộ lọc tìm kiếm.</p>
-                    <button class="btn btn-secondary" onclick="clearCourseSearch()"><i class="bi bi-x-circle"></i> Xóa Tìm Kiếm</button>
-                </div>
-            `;
-        } else {
-            container.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
-                    <h4 style="font-size: 1rem; color: #1e293b; margin-bottom: 8px;">Chưa có khóa học nào dành riêng cho khối này</h4>
-                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">Bạn có thể bấm nút bên dưới để xem toàn bộ danh mục khóa học của công ty.</p>
-                    <button class="btn btn-primary" onclick="filterStudentCoursesByDiv('ALL')">Xem Tất Cả Khóa Học</button>
-                </div>
-            `;
-        }
+        container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; background: #ffffff; border-radius: 12px; border: 1px dashed #cbd5e1;">
+                <div style="font-size: 2rem; color: #94a3b8; margin-bottom: 8px;"><i class="bi bi-search"></i></div>
+                <h4 style="font-size: 1rem; color: #1e293b; margin-bottom: 8px;">Không tìm thấy khóa học nào khớp với từ khóa "${kw}"</h4>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">Vui lòng thử tìm kiếm bằng từ khóa khác hoặc xóa ô tìm kiếm.</p>
+                <button class="btn btn-secondary" onclick="clearCourseSearch()"><i class="bi bi-x-circle"></i> Xóa Tìm Kiếm</button>
+            </div>
+        `;
         return;
     }
 
     container.innerHTML = filteredCourses.map(course => {
-        const isPublic = !course.access || course.access === 'PUBLIC';
-        const matchedDiv = divisions.find(d => d.id === course.access);
-        const accessLabel = isPublic ? 'Dành Cho Toàn Bộ Sales' : (matchedDiv ? `Khóa Riêng ${matchedDiv.name}` : `Khóa Riêng ${course.access}`);
-        const accessClass = isPublic ? 'badge-forest' : 'div-badge';
-
-        // Robust fallbacks for properties
         const category = course.category || course.cat || 'Chuyên Đề';
         const stats = course.stats || {
             modules: (course.modules && course.modules.length) ? course.modules.length : 1,
@@ -1236,7 +1205,6 @@ function renderStudentCoursesCatalog(filterDiv, searchKeyword) {
         <div class="course-program-card card-premium">
             <div class="course-card-top">
                 <span class="course-category-badge badge-gold">${category}</span>
-                <span class="course-access-badge ${accessClass}">${accessLabel}</span>
                 ${hasCert ? '<span class="status-badge success" style="margin-left:auto;"><i class="bi bi-award-fill" style="color:#d97706;"></i> Đã Nhận Chứng Chỉ</span>' : ''}
             </div>
             <h3>${course.title}</h3>
@@ -1244,14 +1212,14 @@ function renderStudentCoursesCatalog(filterDiv, searchKeyword) {
             
             <div class="course-stats-pills">
                 <span class="course-stat-pill"><i class="bi bi-collection"></i> ${stats.modules} Module</span>
-                <span class="course-stat-pill"><i class="bi bi-play-circle"></i> ${stats.videos} Video Bài Giảng</span>
+                <span class="course-stat-pill"><i class="bi bi-play-circle"></i> ${stats.videos} Video</span>
                 <span class="course-stat-pill"><i class="bi bi-clock"></i> ${stats.duration}</span>
                 <span class="course-stat-pill"><i class="bi bi-file-earmark-text"></i> ${stats.materials} Tài Liệu</span>
             </div>
 
             <div class="course-progress-mini">
                 <div class="p-bar-label">
-                    <span>Tiến độ cá nhân</span>
+                    <span>Tiến độ học tập</span>
                     <strong>${progress}%</strong>
                 </div>
                 <div class="p-bar-track">
