@@ -106,20 +106,35 @@
                     </div>
 
                     <!-- Min Watch % Input -->
-                    <div class="toggle-chip">
+                    <div class="toggle-chip" title="Học viên phải xem tối thiểu bao nhiêu % video mới được tính hoàn thành bài học">
                         <span>Watch % Tối Thiểu:</span>
-                        <input type="number" id="min-video-percent" value="80" style="width:45px; padding:2px; font-weight:800; border-radius:4px; border:1px solid #cbd5e1; text-align:center;">
+                        <input type="number" id="min-video-percent" value="80" min="1" max="100" style="width:48px; padding:3px; font-weight:800; border-radius:4px; border:1px solid #cbd5e1; text-align:center;">
                         <span>%</span>
                     </div>
 
                     <!-- Min Quiz Score -->
-                    <div class="toggle-chip">
+                    <div class="toggle-chip" title="Điểm trắc nghiệm tối thiểu để vượt qua module">
                         <span>Điểm Quiz Đạt:</span>
-                        <input type="number" id="passing-score-input" value="80" style="width:45px; padding:2px; font-weight:800; border-radius:4px; border:1px solid #cbd5e1; text-align:center;">
+                        <input type="number" id="passing-score-input" value="80" min="10" max="100" step="5" style="width:48px; padding:3px; font-weight:800; border-radius:4px; border:1px solid #cbd5e1; text-align:center;">
                         <span>/100đ</span>
                     </div>
 
-                    <button class="btn btn-primary" style="padding:6px 12px; font-size:0.75rem;" onclick="saveSystemSettings()">Lưu Cài Đặt</button>
+                    <!-- Quiz Time Limit -->
+                    <div class="toggle-chip" title="Thời gian đếm ngược làm bài kiểm tra trắc nghiệm">
+                        <span>Thời Gian Quiz:</span>
+                        <input type="number" id="quiz-time-input" value="10" min="1" max="60" style="width:48px; padding:3px; font-weight:800; border-radius:4px; border:1px solid #cbd5e1; text-align:center;">
+                        <span>Phút</span>
+                    </div>
+
+                    <!-- Anti-Scrub Mode Toggle -->
+                    <div class="toggle-chip" title="Bật/Tắt chế độ cấm tua nhanh bài giảng video">
+                        <span>Chống Tua Video:</span>
+                        <button id="toggle-anti-scrub-btn" class="toggle-switch-btn on" onclick="toggleAntiScrubMode()">BẬT (Chống Tua)</button>
+                    </div>
+
+                    <button class="btn btn-primary animated-shine-btn" style="padding:6px 16px; font-size:0.75rem; font-weight:800;" onclick="saveSystemSettings()">
+                        <i class="bi bi-floppy-fill"></i> Lưu Cài Đặt
+                    </button>
                 </div>
             </div>
 
@@ -2568,10 +2583,71 @@
             }
         }
 
+        let isAntiScrubOn = true;
+        function toggleAntiScrubMode() {
+            isAntiScrubOn = !isAntiScrubOn;
+            const btn = document.getElementById('toggle-anti-scrub-btn');
+            if (isAntiScrubOn) {
+                btn.textContent = 'BẬT (Chống Tua)';
+                btn.className = 'toggle-switch-btn on';
+                showAdminToast('Đã BẬT Chế độ cấm tua video bài giảng!');
+            } else {
+                btn.textContent = 'TẮT (Cho Phép Tua)';
+                btn.className = 'toggle-switch-btn off';
+                showAdminToast('Đã TẮT Chế độ chống tua! Học viên có thể tua tự do.');
+            }
+        }
+
         function saveSystemSettings() {
-            const minWatch = document.getElementById('min-video-percent').value;
-            const minScore = document.getElementById('passing-score-input').value;
-            showAdminToast(`Đã lưu cài đặt: Watch tối thiểu ${minWatch}%, Điểm đạt Quiz ${minScore}/100đ!`);
+            const minWatch = parseInt(document.getElementById('min-video-percent').value) || 80;
+            const minScore = parseInt(document.getElementById('passing-score-input').value) || 80;
+            const quizTime = parseInt(document.getElementById('quiz-time-input').value) || 10;
+            const isAntiScrub = isAntiScrubOn;
+            const isDivMode = isDivModeOn;
+
+            localStorage.setItem('lms_min_watch_percent', minWatch.toString());
+            localStorage.setItem('lms_min_quiz_score', minScore.toString());
+            localStorage.setItem('lms_quiz_time_minutes', quizTime.toString());
+            localStorage.setItem('lms_anti_scrub_enabled', isAntiScrub ? 'true' : 'false');
+            localStorage.setItem('lms_division_mode_enabled', isDivMode ? 'true' : 'false');
+
+            // Dispatch event to sync immediately across tabs
+            try {
+                window.dispatchEvent(new Event('storage'));
+            } catch(e) {}
+
+            showAdminToast(`ĐÃ LƯU CÀI ĐẶT HỆ THỐNG THÀNH CÔNG!\n- Xem video tối thiểu: ${minWatch}%\n- Điểm đạt Quiz: ${minScore}/100đ\n- Thời gian làm Quiz: ${quizTime} phút\n- Chống tua: ${isAntiScrub ? 'BẬT' : 'TẮT'}\n(Giao diện học viên được cập nhật ngay lập tức)`);
+        }
+
+        function loadSystemSettings() {
+            const minWatch = localStorage.getItem('lms_min_watch_percent') || '80';
+            const minScore = localStorage.getItem('lms_min_quiz_score') || '80';
+            const quizTime = localStorage.getItem('lms_quiz_time_minutes') || '10';
+            const isAntiScrub = localStorage.getItem('lms_anti_scrub_enabled') !== 'false';
+            const isDivMode = localStorage.getItem('lms_division_mode_enabled') !== 'false';
+
+            const minWatchEl = document.getElementById('min-video-percent');
+            if (minWatchEl) minWatchEl.value = minWatch;
+
+            const minScoreEl = document.getElementById('passing-score-input');
+            if (minScoreEl) minScoreEl.value = minScore;
+
+            const quizTimeEl = document.getElementById('quiz-time-input');
+            if (quizTimeEl) quizTimeEl.value = quizTime;
+
+            isAntiScrubOn = isAntiScrub;
+            const antiScrubBtn = document.getElementById('toggle-anti-scrub-btn');
+            if (antiScrubBtn) {
+                antiScrubBtn.className = isAntiScrub ? 'toggle-switch-btn on' : 'toggle-switch-btn off';
+                antiScrubBtn.textContent = isAntiScrub ? 'BẬT (Chống Tua)' : 'TẮT (Cho Phép Tua)';
+            }
+
+            isDivModeOn = isDivMode;
+            const divBtn = document.getElementById('toggle-div-btn');
+            if (divBtn) {
+                divBtn.className = isDivMode ? 'toggle-switch-btn on' : 'toggle-switch-btn off';
+                divBtn.textContent = isDivMode ? 'BẬT (Gán Theo Khối)' : 'TẮT (Mở Công Khai Tự Do)';
+            }
         }
 
         function openSalesModal(name, empId, dept, course, watch) {
@@ -2617,6 +2693,7 @@
         });
 
         window.addEventListener('DOMContentLoaded', () => {
+            loadSystemSettings();
             const canvas = document.getElementById('salesDivisionChart');
             if (canvas) {
                 const ctx = canvas.getContext('2d');

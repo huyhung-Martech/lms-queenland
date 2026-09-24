@@ -1556,15 +1556,6 @@ button, input, select, textarea, optgroup {
 
 /* VIDEO PLAYER & TABS */
 .video-container {
-    background: #000000;
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-md);
-    max-width: 960px;
-    margin: 0 auto 16px;
-}
-
-.video-container {
     position: relative;
     border-radius: 12px;
     overflow: hidden;
@@ -1578,22 +1569,23 @@ button, input, select, textarea, optgroup {
     aspect-ratio: 16/9;
     max-height: 480px;
     background: #000;
-    overflow: hidden;
+    overflow: hidden; /* STRICT VIEWPORT CROP: Hides everything shifted outside! */
 }
 
-/* Top Security & Academy Brand Mask: Hides external YouTube title/channel banner */
+/* Top Security & Academy Brand Mask: 100% SOLID OPAQUE (NO BLEED-THROUGH!) */
 .video-player-top-brand {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 52px;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.8) 60%, rgba(15, 23, 42, 0) 100%);
+    height: 56px;
+    background: #0b1120 !important; /* 100% SOLID DEEP NAVY - COMPLETELY COVERS ANY YOUTUBE TITLE */
+    border-bottom: 1px solid rgba(255, 213, 174, 0.25);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 16px 16px 16px;
-    z-index: 10;
+    padding: 0 16px;
+    z-index: 25;
     pointer-events: auto;
 }
 .top-brand-left {
@@ -1603,7 +1595,6 @@ button, input, select, textarea, optgroup {
     color: #ffffff;
     font-size: 0.82rem;
     font-weight: 700;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
 .top-brand-left .brand-icon {
     color: var(--secondary-brand);
@@ -1621,14 +1612,55 @@ button, input, select, textarea, optgroup {
     text-overflow: ellipsis;
 }
 
-/* Video Mount Point (YouTube IFrame or HTML5 Video) */
+/* Bottom Enterprise Security Strip: 100% SOLID OPAQUE (MASKS YOUTUBE LOGO, WATERMARK & MORE VIDEOS) */
+.video-player-bottom-strip {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 46px;
+    background: #0b1120 !important; /* 100% SOLID DEEP NAVY - MASKS BOTTOM YOUTUBE WATERMARK */
+    border-top: 1px solid rgba(255, 213, 174, 0.18);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    z-index: 25;
+    pointer-events: none;
+}
+.bottom-strip-left .video-security-pill {
+    background: rgba(12, 90, 62, 0.6);
+    color: #86efac;
+    border: 1px solid rgba(134, 239, 172, 0.3);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.bottom-strip-right .video-brand-watermark {
+    color: #FFD5AE;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.9;
+}
+
+/* Video Mount Point: CROPS YOUTUBE TOP TITLE & BOTTOM LOGO WATERMARK OFF-SCREEN */
 .player-mount-point {
     position: absolute;
-    top: 0;
+    top: -20px;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% + 40px);
     z-index: 1;
+    overflow: hidden;
+    pointer-events: none; /* Prevents direct clicking on YouTube interface */
 }
 .player-mount-point iframe,
 .player-mount-point video {
@@ -1640,13 +1672,17 @@ button, input, select, textarea, optgroup {
     border: none !important;
     display: block;
     background: #000;
+    pointer-events: none;
 }
 
 /* Central Interaction Overlay */
 .video-center-click-overlay {
     position: absolute;
-    inset: 0;
-    z-index: 4;
+    top: 56px;
+    bottom: 46px;
+    left: 0;
+    right: 0;
+    z-index: 15;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -2753,6 +2789,10 @@ button, input, select, textarea, optgroup {
     .video-timer-counter, .video-watch-progress-badge { font-size: 0.7rem; padding: 2px 6px; }
     .top-brand-right { display: none; }
     .video-player-top-brand { height: 42px; padding: 6px 10px; }
+    .video-player-bottom-strip { height: 36px; padding: 4px 10px; }
+    .bottom-strip-left .video-security-pill { font-size: 0.65rem; padding: 2px 6px; }
+    .bottom-strip-right .video-brand-watermark { font-size: 0.68rem; }
+    .video-center-click-overlay { top: 42px; bottom: 36px; }
     .tabs-header { overflow-x: auto; }
     .tab-btn { padding: 10px 12px; font-size: 0.78rem; white-space: nowrap; }
 

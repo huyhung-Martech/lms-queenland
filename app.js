@@ -119,6 +119,51 @@ function showAntiScrubAlert() {
     showToast('<i class="bi bi-shield-exclamation" style="color:#f59e0b; font-size:1.1rem;"></i> <span><strong>Chế độ chống tua:</strong> Bạn chỉ có thể xem lại đoạn đã học. Vui lòng học tuần tự để đảm bảo chất lượng đào tạo!</span>');
 }
 
+// DYNAMIC SYSTEM CONFIGURATION ENGINE (SYNCED LIVE FROM ADMIN PANEL VIA LOCALSTORAGE)
+function applySystemConfig() {
+    const minWatch = parseInt(localStorage.getItem('lms_min_watch_percent') || '80');
+    const minScore = parseInt(localStorage.getItem('lms_min_quiz_score') || '80');
+    const quizMinutes = parseInt(localStorage.getItem('lms_quiz_time_minutes') || '10');
+    const isAntiScrub = localStorage.getItem('lms_anti_scrub_enabled') !== 'false';
+
+    // 1. Update Video Scrubber Gate Marker Position & Label
+    const gateMarker = document.querySelector('.anti-scrub-gate-marker');
+    if (gateMarker) {
+        gateMarker.style.left = `${minWatch}%`;
+        gateMarker.title = isAntiScrub ? `Mốc hoàn thành tối thiểu ${minWatch}% thời lượng video` : `Mốc tham khảo ${minWatch}% (Chống tua đang TẮT)`;
+        const gateLabel = gateMarker.querySelector('.gate-label');
+        if (gateLabel) {
+            gateLabel.innerHTML = `<i class="bi bi-flag-fill"></i> ${minWatch}%`;
+        }
+        gateMarker.style.opacity = isAntiScrub ? '1' : '0.65';
+    }
+
+    // 2. Update Video Watch Progress Target Badge in Custom Player Bar
+    const reqBadge = document.getElementById('video-watch-progress-badge');
+    if (reqBadge && !reqBadge.classList.contains('completed') && !reqBadge.classList.contains('ready')) {
+        reqBadge.title = `Học viên cần xem thực tế tối thiểu ${minWatch}% thời lượng video để được tính hoàn thành bài học`;
+        const reqTarget = reqBadge.querySelector('.req-target');
+        if (reqTarget) {
+            reqTarget.textContent = `/ ${minWatch}%`;
+        }
+    }
+
+    // 3. Update Complete Button Label (when in locked state)
+    const btnComplete = document.getElementById('btn-mark-complete');
+    if (btnComplete && btnComplete.classList.contains('locked')) {
+        btnComplete.title = `Cần xem tối thiểu ${minWatch}% thời lượng bài giảng để mở khóa hoàn thành`;
+        const curWatched = document.getElementById('btn-watch-progress');
+        const curPct = curWatched ? curWatched.textContent : '0%';
+        btnComplete.innerHTML = `<span><i class="bi bi-lock-fill"></i> Đang học (${curPct}/${minWatch}%)</span>`;
+    }
+
+    // 4. Update Quiz Header Countdown Display if not currently counting down
+    const quizClock = document.getElementById('quiz-timer-display');
+    if (quizClock && !quizTimerInterval) {
+        quizClock.textContent = `${String(quizMinutes).padStart(2, '0')}:00`;
+    }
+}
+
 // Center play icon flash animation
 function flashCenterIndicator(type) {
     const indicator = document.getElementById('center-play-indicator');
@@ -246,12 +291,13 @@ function handleScrubClick(e) {
     const targetTime = ratio * videoDuration;
 
     if (!currentSelectedCourse) return;
+    const isAntiScrub = localStorage.getItem('lms_anti_scrub_enabled') !== 'false';
     const prog = getStudentProgress(currentSelectedCourse.id);
     const lessonKey = `m${currentActiveModNum}_l${currentActiveLessonNum}`;
     const isDone = prog.completedLessons.includes(lessonKey);
 
-    // Anti-scrub: If not completed, cannot seek past maxWatchedSeconds + 2
-    if (!isDone && targetTime > maxWatchedSeconds + 2) {
+    // Anti-scrub: If anti-scrub is ON and lesson is not completed, cannot seek past maxWatchedSeconds + 2
+    if (isAntiScrub && !isDone && targetTime > maxWatchedSeconds + 2) {
         showAntiScrubAlert();
         return;
     }
@@ -434,8 +480,9 @@ function startPlayerTicker(courseId, modNum, lessonNum) {
         const prog = getStudentProgress(courseId);
         const isLessonDone = prog.completedLessons.includes(lessonKey);
 
+        const isAntiScrub = localStorage.getItem('lms_anti_scrub_enabled') !== 'false';
         // Anti-Cheat: If user somehow scrubbed forward beyond what they watched + 3s
-        if (!isLessonDone && curTime > maxWatchedSeconds + 3) {
+        if (isAntiScrub && !isLessonDone && curTime > maxWatchedSeconds + 3) {
             seekPlayerTo(maxWatchedSeconds);
             showAntiScrubAlert();
             curTime = maxWatchedSeconds;
@@ -635,11 +682,12 @@ function toggleSidebarFocus() {
 // INTERACTIVE TIMESTAMP SEEK (ANTI-SCRUB PROTECTED)
 function seekToTimestamp(seconds) {
     if (!currentSelectedCourse) return;
+    const isAntiScrub = localStorage.getItem('lms_anti_scrub_enabled') !== 'false';
     const prog = getStudentProgress(currentSelectedCourse.id);
     const lessonKey = `m${currentActiveModNum}_l${currentActiveLessonNum}`;
     const isDone = prog.completedLessons.includes(lessonKey);
 
-    if (!isDone && seconds > maxWatchedSeconds + 2) {
+    if (isAntiScrub && !isDone && seconds > maxWatchedSeconds + 2) {
         showAntiScrubAlert();
         return;
     }
@@ -1531,14 +1579,21 @@ function playCourseLesson(courseId, modNum, lessonNum) {
 
     // Update btn-mark-complete state
     const isDone = prog.completedLessons.includes(`m${targetMod.id}_l${targetLesson.id}`);
+    const minWatch = parseInt(localStorage.getItem('lms_min_watch_percent') || '80');
     const btnComplete = document.getElementById('btn-mark-complete');
     if (btnComplete) {
         if (isDone) {
+            btnComplete.className = 'btn btn-complete finished';
+            btnComplete.disabled = false;
+            btnComplete.title = 'Bài học này đã được bạn hoàn thành xuất sắc';
             btnComplete.innerHTML = '<span><i class="bi bi-check2-all"></i> Đã Hoàn Thành</span>';
             btnComplete.style.background = '#059669';
         } else {
-            btnComplete.innerHTML = '<span><i class="bi bi-check2-circle"></i> Đánh dấu đã xem xong</span>';
-            btnComplete.style.background = 'var(--success)';
+            btnComplete.className = 'btn btn-complete locked animated-shine-btn';
+            btnComplete.disabled = true;
+            btnComplete.title = `Cần xem tối thiểu ${minWatch}% thời lượng bài giảng để mở khóa hoàn thành`;
+            btnComplete.innerHTML = `<span><i class="bi bi-lock-fill"></i> Đang học (0%/${minWatch}%)</span>`;
+            btnComplete.style.background = '';
         }
     }
 
@@ -1561,6 +1616,9 @@ function playCourseLesson(courseId, modNum, lessonNum) {
 
     // Render Interactive Discussion Forum for this lesson
     renderLessonDiscussions(course.id, targetMod.id, targetLesson.id);
+
+    // Apply Real-time Admin Config (Gate Marker %, Watch Target %, Timer)
+    applySystemConfig();
 }
 
 // SETUP UNIFIED VIDEO PLAYER (YOUTUBE IFRAME API & HTML5 VIDEO WITH ANTI-CHEAT)
@@ -1770,18 +1828,21 @@ function renderClassroomSidebar(course, activeModNum, activeLessonNum) {
 
 // QUIZ COUNTDOWN TIMER STATE & FUNCTIONS
 let quizTimerInterval = null;
-let quizTimeSeconds = 600; // 10 minutes = 600 seconds
+let quizTimeSeconds = 600;
+let totalQuizSeconds = 600;
 
 function startQuizTimer(courseId) {
     stopQuizTimer();
-    quizTimeSeconds = 600;
+    const quizMinutes = parseInt(localStorage.getItem('lms_quiz_time_minutes') || '10');
+    totalQuizSeconds = quizMinutes * 60;
+    quizTimeSeconds = totalQuizSeconds;
     updateQuizTimerDisplay();
     quizTimerInterval = setInterval(() => {
         quizTimeSeconds--;
         updateQuizTimerDisplay();
         if (quizTimeSeconds <= 0) {
             stopQuizTimer();
-            alert('HẾT THỜI GIAN LÀM BÀI (10 PHÚT)!\n\nHệ thống sẽ tự động tổng hợp câu trả lời và nộp bài kiểm tra trắc nghiệm của bạn.');
+            alert(`HẾT THỜI GIAN LÀM BÀI (${quizMinutes} PHÚT)!\n\nHệ thống sẽ tự động tổng hợp câu trả lời và nộp bài kiểm tra trắc nghiệm của bạn.`);
             autoSubmitQuiz(courseId);
         }
     }, 1000);
@@ -1805,8 +1866,8 @@ function updateQuizTimerDisplay() {
     const secs = Math.max(0, quizTimeSeconds) % 60;
     display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 
-    if (progBar) {
-        const pct = Math.max(0, Math.min(100, (quizTimeSeconds / 600) * 100));
+    if (progBar && totalQuizSeconds > 0) {
+        const pct = Math.max(0, Math.min(100, (quizTimeSeconds / totalQuizSeconds) * 100));
         progBar.style.width = `${pct}%`;
     }
 
@@ -1839,6 +1900,8 @@ function renderClassroomQuizTab(courseId) {
 
     const courseQuizzes = quizzes.filter(q => q.courseId === courseId);
     const questionsToRender = courseQuizzes.length > 0 ? courseQuizzes : quizzes.slice(0, 3);
+    const minScore = parseInt(localStorage.getItem('lms_min_quiz_score') || '80');
+    const quizMinutes = parseInt(localStorage.getItem('lms_quiz_time_minutes') || '10');
 
     quizPane.innerHTML = `
         <!-- Sticky Countdown Timer Header for Quiz -->
@@ -1846,14 +1909,14 @@ function renderClassroomQuizTab(courseId) {
             <div class="quiz-timer-info">
                 <i class="bi bi-alarm-fill" style="color:#b91c1c; font-size:1.15rem;"></i>
                 <span>THỜI GIAN LÀM BÀI CÒN LẠI:</span>
-                <strong id="quiz-timer-display" class="quiz-timer-clock">10:00</strong>
+                <strong id="quiz-timer-display" class="quiz-timer-clock">${String(quizMinutes).padStart(2, '0')}:00</strong>
             </div>
             <div class="quiz-timer-meta">
                 <span class="quiz-timer-badge" id="quiz-timer-badge" style="background:#e0e7ff; color:#2F2D74; border-color:#c7d2fe;">
                     <i class="bi bi-patch-question-fill"></i> ${questionsToRender.length} Câu Hỏi
                 </span>
                 <span style="font-size:0.75rem; background:#dcfce7; color:#15803d; padding:4px 10px; border-radius:20px; font-weight:800; border:1px solid #86efac;">
-                    <i class="bi bi-check2-all"></i> Đạt: >= 80%
+                    <i class="bi bi-check2-all"></i> Đạt: >= ${minScore}%
                 </span>
             </div>
         </div>
@@ -1888,7 +1951,7 @@ function renderClassroomQuizTab(courseId) {
         <div id="quiz-result" class="quiz-result-box" style="display:none; margin-top:14px;"></div>
     `;
 
-    // Start 10-minute timer for this quiz session
+    // Start timer for this quiz session based on admin config
     startQuizTimer(courseId);
 }
 
@@ -1925,8 +1988,9 @@ function submitDynamicQuiz(event, courseId) {
         }
     });
 
+    const minScoreRequired = parseInt(localStorage.getItem('lms_min_quiz_score') || '80');
     const score = Math.round((correctCount / questions.length) * 100);
-    const isPass = score >= 80;
+    const isPass = score >= minScoreRequired;
 
     resultBox.style.display = 'block';
     resultBox.style.background = isPass ? '#ecfdf5' : '#fffbeb';
@@ -1936,11 +2000,11 @@ function submitDynamicQuiz(event, courseId) {
     resultBox.style.borderRadius = '10px';
     resultBox.innerHTML = `
         <div style="font-size:0.95rem; font-weight:800; margin-bottom:4px;">
-            ${isPass ? '✓ CHÚC MỪNG: BẠN ĐÃ ĐẠT ĐIỂM CHUẨN!' : '⚠ CHƯA ĐẠT ĐIỂM CHUẨN (TỐI THIỂU 80đ)'}
+            ${isPass ? '✓ CHÚC MỪNG: BẠN ĐÃ ĐẠT ĐIỂM CHUẨN!' : `⚠ CHƯA ĐẠT ĐIỂM CHUẨN (TỐI THIỂU ${minScoreRequired}đ)`}
         </div>
         <div style="font-size:0.85rem;">
             Kết quả: <strong>${score}/100 Điểm</strong> (${correctCount}/${questions.length} câu đúng).<br>
-            ${isPass ? '<span style="color:#0C5A3E; font-weight:700;">Hệ thống đã ghi nhận hoàn thành bài kiểm tra cho tài khoản của bạn.</span>' : 'Vui lòng xem lại video bài giảng và làm lại bài kiểm tra để đạt tối thiểu 80đ.'}
+            ${isPass ? '<span style="color:#0C5A3E; font-weight:700;">Hệ thống đã ghi nhận hoàn thành bài kiểm tra cho tài khoản của bạn.</span>' : `Vui lòng xem lại video bài giảng và làm lại bài kiểm tra để đạt tối thiểu ${minScoreRequired}đ.`}
         </div>
     `;
 
@@ -2465,6 +2529,7 @@ window.addEventListener('DOMContentLoaded', function() {
         openCourseModules(cId, false);
     }
     initSessionStudyTimer();
+    applySystemConfig();
 });
 
 // GLOBAL SESSION STUDY TIMER (COUNTS UP SECONDS OF ACTIVE LEARNING IN CLASSROOM)
@@ -2486,3 +2551,13 @@ function initSessionStudyTimer() {
         }
     }, 1000);
 }
+
+// REAL-TIME BI-DIRECTIONAL STORAGE SYNC: LIVE UPDATES WHEN ADMIN CHANGES SETTINGS
+window.addEventListener('storage', function(e) {
+    applySystemConfig();
+    if (!e || e.key === 'lms_courses_catalog' || e.key === 'lms_custom_courses') {
+        reloadCoursesCatalog();
+        renderCourseCards();
+    }
+});
+
