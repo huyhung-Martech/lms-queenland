@@ -413,7 +413,7 @@ function showAutoAdvanceToast() {
             <strong>Đã xem hết bài giảng!</strong><br>
             Tự động chuyển sang bài tiếp theo sau <span id="auto-advance-countdown-text">${secondsLeft}s</span>...
         </div>
-        <button class="btn btn-primary animated-shine-btn" style="padding:4px 10px; font-size:0.75rem; background:#FFD5AE; color:#2F2D74; font-weight:800; border:none; cursor:pointer;" onclick="dismissAutoAdvance(true)">
+        <button class="btn btn-primary animated-shine-btn" style="padding:4px 10px; font-size:0.75rem; background:var(--accent); color:var(--primary); font-weight:800; border:none; cursor:pointer;" onclick="dismissAutoAdvance(true)">
             Chuyển Ngay <i class="bi bi-chevron-right"></i>
         </button>
         <button class="btn" style="padding:4px 8px; font-size:0.75rem; background:rgba(255,255,255,0.15); color:#ffffff; border:none; cursor:pointer;" onclick="dismissAutoAdvance(false)">
@@ -729,7 +729,7 @@ function renderResumeLearningBanner() {
                 <div class="resume-title">${activeCourse.title}</div>
                 <div class="resume-desc">Đang dừng tại: <strong>${lessonTitle}</strong> • Đã hoàn thành <strong>${percent}%</strong></div>
             </div>
-            <button class="btn animated-shine-btn" style="background:#ffffff; color:#2F2D74; font-weight:800; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; flex-shrink:0;" onclick="enterCourseLesson('${activeCourse.id}', ${lastActive.modNum}, ${lastActive.lessonNum})">
+            <button class="btn animated-shine-btn" style="background:#ffffff; color:var(--primary); font-weight:800; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; flex-shrink:0;" onclick="enterCourseLesson('${activeCourse.id}', ${lastActive.modNum}, ${lastActive.lessonNum})">
                 <span>Tiếp Tục Học Ngay <i class="bi bi-play-circle-fill"></i></span>
             </button>
         </div>
@@ -808,14 +808,14 @@ function showCertificateModal(courseId) {
             <div class="certificate-title">CHỨNG NHẬN HOÀN THÀNH KHÓA HỌC</div>
             <div style="font-size:0.85rem; color:#475569; margin-bottom:16px;">Ban Đào Tạo & Phát Triển Nguồn Nhân Lực chứng nhận học viên:</div>
 
-            <h2 style="font-family:var(--font-label); font-size:1.6rem; color:#1e1b4b; font-weight:900; margin-bottom:4px;">${user.name}</h2>
+            <h2 style="font-family:var(--font-label); font-size:1.6rem; color:var(--primary); font-weight:900; margin-bottom:4px;">${user.name}</h2>
             <div style="font-size:0.82rem; font-weight:700; color:#047857; margin-bottom:12px;">MÃ NHÂN VIÊN: ${user.empId} • ${user.team} (${user.div})</div>
 
             <p style="font-size:0.85rem; color:#334155; line-height:1.5; max-width:480px; margin:0 auto 16px;">
                 Đã hoàn thành xuất sắc 100% thời lượng video bài giảng và vượt qua toàn bộ các bài kiểm tra đánh giá chất lượng của chương trình:
             </p>
 
-            <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:10px 16px; font-weight:800; color:#2F2D74; font-size:0.95rem; margin-bottom:16px;">
+            <div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:10px 16px; font-weight:800; color:var(--primary); font-size:0.95rem; margin-bottom:16px;">
                 ${course.title}
             </div>
 
@@ -1303,15 +1303,15 @@ function openCourseModules(courseId, push = true) {
                     <span><i class="bi bi-play-circle"></i> <strong>${stats.videos} Video</strong></span>
                     <span><i class="bi bi-clock"></i> <strong>${stats.duration}</strong></span>
                     <span><i class="bi bi-graph-up-arrow"></i> Tiến độ: <strong>${progress}%</strong></span>
-                    ${hasCert ? '<span style="color:#FFD5AE; font-weight:800;"><i class="bi bi-award-fill"></i> Đã Tốt Nghiệp Khóa Học</span>' : ''}
+                    ${hasCert ? '<span style="color:var(--accent); font-weight:800;"><i class="bi bi-award-fill"></i> Đã Tốt Nghiệp Khóa Học</span>' : ''}
                 </div>
             </div>
             <div style="flex-shrink:0; text-align:right; display:flex; flex-direction:column; gap:8px;">
-                <button class="btn animated-shine-btn" style="background:#ffffff; color:#2F2D74; font-weight:800; padding:12px 24px; border:none; border-radius:8px; cursor:pointer;" onclick="enterCourseLesson('${course.id}', 1, 1)">
+                <button class="btn animated-shine-btn" style="background:#ffffff; color:var(--primary); font-weight:800; padding:12px 24px; border:none; border-radius:8px; cursor:pointer;" onclick="enterCourseLesson('${course.id}', 1, 1)">
                     <span>Vào Học Ngay <i class="bi bi-arrow-right"></i></span>
                 </button>
                 ${hasCert ? `
-                    <button class="btn animated-shine-btn" style="background:#FFD5AE; color:#2F2D74; font-weight:800; padding:10px 18px; border:none; border-radius:8px; cursor:pointer;" onclick="showCertificateModal('${course.id}')">
+                    <button class="btn animated-shine-btn" style="background:var(--accent); color:var(--primary); font-weight:800; padding:10px 18px; border:none; border-radius:8px; cursor:pointer;" onclick="showCertificateModal('${course.id}')">
                         <i class="bi bi-award-fill" style="color:#d97706;"></i> <span>Xem Chứng Chỉ Tốt Nghiệp</span>
                     </button>
                 ` : `
@@ -1880,7 +1880,7 @@ function renderClassroomQuizTab(courseId) {
                 <strong id="quiz-timer-display" class="quiz-timer-clock">${String(quizMinutes).padStart(2, '0')}:00</strong>
             </div>
             <div class="quiz-timer-meta">
-                <span class="quiz-timer-badge" id="quiz-timer-badge" style="background:#e0e7ff; color:#2F2D74; border-color:#c7d2fe;">
+                <span class="quiz-timer-badge" id="quiz-timer-badge" style="background:#f1f5f9; color:var(--primary); border-color:#cbd5e1;">
                     <i class="bi bi-patch-question-fill"></i> ${questionsToRender.length} Câu Hỏi
                 </span>
                 <span style="font-size:0.75rem; background:#dcfce7; color:#15803d; padding:4px 10px; border-radius:20px; font-weight:800; border:1px solid #86efac;">
@@ -1972,7 +1972,7 @@ function submitDynamicQuiz(event, courseId) {
         </div>
         <div style="font-size:0.85rem;">
             Kết quả: <strong>${score}/100 Điểm</strong> (${correctCount}/${questions.length} câu đúng).<br>
-            ${isPass ? '<span style="color:#0C5A3E; font-weight:700;">Hệ thống đã ghi nhận hoàn thành bài kiểm tra cho tài khoản của bạn.</span>' : `Vui lòng xem lại video bài giảng và làm lại bài kiểm tra để đạt tối thiểu ${minScoreRequired}đ.`}
+            ${isPass ? '<span style="color:var(--secondary-brand); font-weight:700;">Hệ thống đã ghi nhận hoàn thành bài kiểm tra cho tài khoản của bạn.</span>' : `Vui lòng xem lại video bài giảng và làm lại bài kiểm tra để đạt tối thiểu ${minScoreRequired}đ.`}
         </div>
     `;
 
@@ -2054,7 +2054,7 @@ function renderLessonDiscussions(courseId, modId, lessonId) {
         <div class="comment-item" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:0 1px 2px rgba(0,0,0,0.03);">
             <div class="comment-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <div style="width:32px; height:32px; border-radius:50%; background:#e0e7ff; color:#2F2D74; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.75rem;">
+                    <div style="width:32px; height:32px; border-radius:50%; background:#f1f5f9; color:var(--primary); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.75rem;">
                         <i class="bi bi-person-fill"></i>
                     </div>
                     <div>
@@ -2072,7 +2072,7 @@ function renderLessonDiscussions(courseId, modId, lessonId) {
                     ${item.replies.map(rep => `
                         <div style="background:#f8fafc; border-radius:8px; padding:10px 12px; margin-top:6px; border:1px solid #e2e8f0;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                                <strong style="font-size:0.78rem; color:#0C5A3E; display:flex; align-items:center; gap:4px;">
+                                <strong style="font-size:0.78rem; color:var(--secondary-brand); display:flex; align-items:center; gap:4px;">
                                     <i class="bi bi-patch-check-fill"></i> ${rep.authorName} <span style="font-size:0.68rem; background:#dcfce7; color:#15803d; padding:1px 6px; border-radius:10px; font-weight:800;">Giảng Viên</span>
                                 </strong>
                                 <span style="font-size:0.7rem; color:#94a3b8;">${rep.date}</span>
@@ -2254,8 +2254,8 @@ function checkAuthGuard() {
         if (authBtn) {
             authBtn.textContent = 'Đăng Nhập';
             authBtn.style.background = '#ffffff';
-            authBtn.style.color = '#4f46e5';
-            authBtn.style.borderColor = '#4f46e5';
+            authBtn.style.color = 'var(--primary)';
+            authBtn.style.borderColor = 'var(--primary)';
             authBtn.onclick = () => openAuthModal('login');
         }
     } else {

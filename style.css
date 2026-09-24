@@ -4,32 +4,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* Brand Primary: Deep Indigo & Royal Navy */
-    --primary: #2F2D74;
-    --primary-dark: #1E1B4B;
-    --primary-hover: #1E1B4B;
-    --primary-light: rgba(47, 45, 116, 0.08);
-    --secondary: #1E1B4B;
+    /* Brand Primary: Oxford Navy & Deep Blue */
+    --primary: #1A2238;
+    --primary-dark: #121829;
+    --primary-hover: #121829;
+    --primary-light: rgba(26, 34, 56, 0.07);
+    --secondary: #121829;
 
-    /* Brand Accent: Warm Champagne Gold / Peach */
-    --accent: #FFD5AE;
-    --accent-light: rgba(255, 213, 174, 0.3);
-    --accent-border: rgba(255, 213, 174, 0.6);
+    /* Brand Accent: Warm Sand / Fine Champagne Gold */
+    --accent: #C5A880;
+    --accent-light: rgba(197, 168, 128, 0.2);
+    --accent-border: rgba(197, 168, 128, 0.45);
+    --accent-hover: #B89366;
 
-    /* Brand Secondary / Quality Assurance: Emerald Forest Green */
-    --secondary-brand: #0C5A3E;
-    --secondary-brand-light: #ecfdf5;
-    --success: #0C5A3E;
-    --success-light: #ecfdf5;
+    /* Brand Secondary / Quality Assurance: Deep Teal */
+    --secondary-brand: #0F766E;
+    --secondary-brand-light: #f0fdfa;
+    --success: #0F766E;
+    --success-light: #f0fdfa;
 
     /* Semantic Alerts */
-    --warning: #f59e0b;
-    --warning-light: #fffbeb;
-    --danger: #ef4444;
-    --danger-light: #fef2f2;
+    --warning: #d97706;
+    --warning-light: #fef3c7;
+    --danger: #dc2626;
+    --danger-light: #fee2e2;
 
     /* Surface & Borders */
-    --bg-light: #f8fafc;
+    --bg-light: #F8F9FB;
     --bg-card: #ffffff;
     --border-light: #e2e8f0;
     --border-subtle: #f1f5f9;
@@ -44,8 +45,8 @@
 
     /* Shadows */
     --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 16px -2px rgba(47, 45, 116, 0.08);
-    --shadow-lg: 0 12px 28px -4px rgba(47, 45, 116, 0.12);
+    --shadow-md: 0 4px 16px -2px rgba(26, 34, 56, 0.07);
+    --shadow-lg: 0 12px 28px -4px rgba(26, 34, 56, 0.12);
 
     /* Parkland Typography Fonts */
     --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -153,10 +154,10 @@ button, input, select, textarea, optgroup {
 .animated-shine-btn {
     position: relative;
     cursor: pointer;
-    border: 1px solid rgba(63, 61, 140, 0.8) !important;
-    background: radial-gradient(95% 60% at 50% 75%, #2F2D74 0%, #4F46E5 100%) !important;
+    border: 1px solid rgba(197, 168, 128, 0.45) !important;
+    background: linear-gradient(135deg, #1A2238 0%, #121829 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0px 4px 24px -8px #2F2D74, inset 0px 1px 8px -4px #FFFFFF !important;
+    box-shadow: 0px 4px 18px -4px rgba(26, 34, 56, 0.4), inset 0px 1px 1px 0px rgba(255, 255, 255, 0.12) !important;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
     overflow: hidden;
     display: inline-flex;
@@ -204,12 +205,11 @@ button, input, select, textarea, optgroup {
     padding: 2px;
     background: conic-gradient(
         from var(--glow-angle),
-        #0c5a3e,
-        #10b981,
-        #3b82f6,
-        #6366f1,
-        #2f2d74,
-        #0c5a3e
+        #C5A880,
+        #1A2238,
+        #0F766E,
+        #1A2238,
+        #C5A880
     );
     animation: glow-spin 4s linear infinite;
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -225,12 +225,11 @@ button, input, select, textarea, optgroup {
     border-radius: inherit;
     background: conic-gradient(
         from var(--glow-angle),
-        #0c5a3e,
-        #10b981,
-        #3b82f6,
-        #6366f1,
-        #2f2d74,
-        #0c5a3e
+        #C5A880,
+        #1A2238,
+        #0F766E,
+        #1A2238,
+        #C5A880
     );
     animation: glow-spin 4s linear infinite;
     filter: blur(12px);
@@ -479,10 +478,10 @@ button, input, select, textarea, optgroup {
 }
 
 .nav-btn.highlight-btn {
-    background: radial-gradient(95% 60% at 50% 75%, #2F2D74 0%, #4F46E5 100%);
+    background: linear-gradient(135deg, #1A2238 0%, #121829 100%);
     color: #ffffff !important;
-    border: 1px solid rgba(63, 61, 140, 0.8);
-    box-shadow: 0px 4px 16px -4px #2F2D74, inset 0px 1px 6px -3px #FFFFFF;
+    border: 1px solid rgba(197, 168, 128, 0.4);
+    box-shadow: 0px 4px 14px -4px rgba(26, 34, 56, 0.4), inset 0px 1px 1px 0px rgba(255, 255, 255, 0.15);
     border-radius: 0.65rem;
     height: 38px;
     padding: 0 16px;
@@ -631,7 +630,7 @@ button, input, select, textarea, optgroup {
 
 /* HERO BANNER - THE PARKLAND LUXURY STYLE */
 .hero {
-    background: linear-gradient(135deg, #1E1B4B 0%, #2F2D74 60%, #172554 100%);
+    background: linear-gradient(135deg, #111625 0%, #1A2238 60%, #1E293B 100%);
     color: #ffffff;
     padding: 44px 36px;
     display: grid;
@@ -641,8 +640,8 @@ button, input, select, textarea, optgroup {
     max-width: 1400px;
     margin: 20px auto 0;
     border-radius: 1.25rem;
-    box-shadow: 0 12px 36px -8px rgba(47, 45, 116, 0.3);
-    border: 1px solid rgba(255, 213, 174, 0.25);
+    box-shadow: 0 12px 36px -8px rgba(18, 24, 41, 0.45);
+    border: 1px solid rgba(197, 168, 128, 0.25);
     position: relative;
     overflow: hidden;
 }
@@ -654,7 +653,7 @@ button, input, select, textarea, optgroup {
     right: -15%;
     width: 550px;
     height: 550px;
-    background: radial-gradient(circle, rgba(255, 213, 174, 0.14) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(197, 168, 128, 0.12) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -662,9 +661,9 @@ button, input, select, textarea, optgroup {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(255, 213, 174, 0.18);
-    color: #FFD5AE;
-    border: 1px solid rgba(255, 213, 174, 0.45);
+    background: rgba(197, 168, 128, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(197, 168, 128, 0.35);
     padding: 4px 14px;
     border-radius: 9999px;
     font-size: 0.68rem;
@@ -712,14 +711,14 @@ button, input, select, textarea, optgroup {
 }
 .stat-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(255, 213, 174, 0.4);
+    border-color: rgba(197, 168, 128, 0.4);
 }
 
 .stat-num {
     font-family: var(--font-label);
     font-size: 1.35rem;
     font-weight: 900;
-    color: #FFD5AE;
+    color: var(--accent);
     display: block;
     line-height: 1.1;
 }
@@ -1073,7 +1072,7 @@ button, input, select, textarea, optgroup {
 }
 
 .course-progress-mini .p-bar-fill {
-    background: radial-gradient(95% 60% at 50% 75%, #2F2D74 0%, #4F46E5 100%);
+    background: linear-gradient(90deg, #C5A880 0%, #d4b58e 100%);
     height: 100%;
     border-radius: 9999px;
     transition: width 0.4s ease;
@@ -1082,14 +1081,14 @@ button, input, select, textarea, optgroup {
 .btn-view-course-modules {
     width: 100%;
     padding: 11px 16px;
-    background: radial-gradient(95% 60% at 50% 75%, #2F2D74 0%, #4F46E5 100%);
+    background: linear-gradient(135deg, #1A2238 0%, #121829 100%);
     color: #ffffff;
     font-size: 0.8rem;
     font-weight: 800;
     font-family: var(--font-sans);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border: 1px solid rgba(63, 61, 140, 0.8);
+    border: 1px solid rgba(197, 168, 128, 0.4);
     border-radius: 0.75rem;
     cursor: pointer;
     display: flex;
@@ -1097,7 +1096,7 @@ button, input, select, textarea, optgroup {
     justify-content: center;
     gap: 8px;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 14px -2px rgba(47, 45, 116, 0.3);
+    box-shadow: 0 4px 14px -2px rgba(26, 34, 56, 0.35);
     position: relative;
     overflow: hidden;
 }
@@ -1147,18 +1146,16 @@ button, input, select, textarea, optgroup {
 }
 
 .selected-course-banner {
-    background: linear-gradient(135deg, #1E1B4B 0%, #2F2D74 60%, #172554 100%);
+    background: linear-gradient(135deg, #111625 0%, #1A2238 60%, #1E293B 100%);
     color: #ffffff;
     border-radius: 1.25rem;
     padding: 24px 28px;
-    border: 1px solid rgba(255, 213, 174, 0.25);
-    box-shadow: 0 12px 36px -8px rgba(47, 45, 116, 0.25);
-
+    border: 1px solid rgba(197, 168, 128, 0.25);
+    box-shadow: 0 12px 36px -8px rgba(18, 24, 41, 0.35);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 20px;
-    box-shadow: 0 8px 24px rgba(30, 27, 75, 0.15);
 }
 
 .selected-course-banner h2 {
@@ -1592,7 +1589,7 @@ button, input, select, textarea, optgroup {
     color: rgba(255,255,255,0.4);
 }
 #video-overlay-lesson-name {
-    color: #FFD5AE;
+    color: var(--accent);
     font-weight: 600;
     max-width: 480px;
     white-space: nowrap;
@@ -1608,7 +1605,7 @@ button, input, select, textarea, optgroup {
     right: 0;
     height: 46px;
     background: #0b1120 !important; /* 100% SOLID DEEP NAVY - MASKS BOTTOM YOUTUBE WATERMARK */
-    border-top: 1px solid rgba(255, 213, 174, 0.18);
+    border-top: 1px solid rgba(197, 168, 128, 0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1617,9 +1614,9 @@ button, input, select, textarea, optgroup {
     pointer-events: none;
 }
 .bottom-strip-left .video-security-pill {
-    background: rgba(12, 90, 62, 0.6);
-    color: #86efac;
-    border: 1px solid rgba(134, 239, 172, 0.3);
+    background: rgba(15, 118, 110, 0.6);
+    color: #99f6e4;
+    border: 1px solid rgba(153, 246, 228, 0.3);
     font-size: 0.72rem;
     font-weight: 700;
     padding: 3px 10px;
@@ -1629,7 +1626,7 @@ button, input, select, textarea, optgroup {
     gap: 5px;
 }
 .bottom-strip-right .video-brand-watermark {
-    color: #FFD5AE;
+    color: var(--accent);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.4px;
@@ -1681,9 +1678,9 @@ button, input, select, textarea, optgroup {
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: rgba(47, 45, 116, 0.88);
-    border: 2px solid var(--secondary-brand);
-    color: #FFD5AE;
+    background: rgba(26, 34, 56, 0.92);
+    border: 2px solid var(--accent);
+    color: var(--accent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1727,7 +1724,7 @@ button, input, select, textarea, optgroup {
     top: 0;
     left: 0;
     height: 100%;
-    background: rgba(255, 213, 174, 0.4);
+    background: rgba(197, 168, 128, 0.35);
     border-radius: 3px;
     transition: width 0.2s linear;
 }
@@ -1736,9 +1733,9 @@ button, input, select, textarea, optgroup {
     top: 0;
     left: 0;
     height: 100%;
-    background: linear-gradient(90deg, #FFD5AE 0%, #f59e0b 100%);
+    background: linear-gradient(90deg, #C5A880 0%, #dfc39e 100%);
     border-radius: 3px;
-    box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 8px rgba(197, 168, 128, 0.5);
     transition: width 0.15s linear;
 }
 .anti-scrub-gate-marker {
@@ -1790,7 +1787,7 @@ button, input, select, textarea, optgroup {
 .player-icon-btn:hover {
     background: var(--primary);
     border-color: var(--secondary-brand);
-    color: #FFD5AE;
+    color: var(--accent);
 }
 .video-timer-counter {
     font-size: 0.8rem;
@@ -1816,9 +1813,9 @@ button, input, select, textarea, optgroup {
     font-weight: 700;
     padding: 4px 10px;
     border-radius: 16px;
-    background: rgba(254, 243, 199, 0.12);
-    border: 1px solid rgba(254, 243, 199, 0.25);
-    color: #FFD5AE;
+    background: rgba(197, 168, 128, 0.12);
+    border: 1px solid rgba(197, 168, 128, 0.25);
+    color: var(--accent);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -1839,8 +1836,8 @@ button, input, select, textarea, optgroup {
     bottom: 80px;
     left: 50%;
     transform: translateX(-50%);
-    background: #1e1b4b;
-    border: 1px solid #f59e0b;
+    background: #121829;
+    border: 1px solid var(--accent-border);
     box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     color: #fef3c7;
     padding: 8px 16px;
@@ -1906,7 +1903,7 @@ button, input, select, textarea, optgroup {
 .speed-btn.active {
     background: var(--primary);
     border-color: var(--secondary-brand);
-    color: #FFD5AE;
+    color: var(--accent);
     font-weight: 800;
 }
 
@@ -1925,13 +1922,13 @@ button, input, select, textarea, optgroup {
     opacity: 0.75;
 }
 .btn-complete.ready {
-    background: #059669;
+    background: var(--secondary-brand);
     color: #ffffff;
     cursor: pointer;
     font-weight: 800;
 }
 .btn-complete.finished {
-    background: #0c5a3e;
+    background: var(--secondary-brand);
     color: #ffffff;
     cursor: default;
     font-weight: 800;
@@ -2000,7 +1997,7 @@ button, input, select, textarea, optgroup {
     position: absolute;
     bottom: 20px;
     right: 20px;
-    background: #1e1b4b;
+    background: #121829;
     color: #ffffff;
     border: 1px solid var(--accent-border);
     border-radius: var(--radius-md);
@@ -2031,7 +2028,7 @@ button, input, select, textarea, optgroup {
 
 /* RESUME LEARNING BAR */
 .resume-learning-card {
-    background: linear-gradient(135deg, #2F2D74 0%, #1E1B4B 100%);
+    background: linear-gradient(135deg, #1A2238 0%, #121829 100%);
     color: #ffffff;
     border-radius: var(--radius-md);
     padding: 14px 20px;
@@ -2041,7 +2038,7 @@ button, input, select, textarea, optgroup {
     gap: 16px;
     margin-bottom: 20px;
     box-shadow: var(--shadow-md);
-    border: 1px solid rgba(255, 213, 174, 0.3);
+    border: 1px solid rgba(197, 168, 128, 0.35);
 }
 .resume-title {
     font-size: 0.88rem;
@@ -2498,11 +2495,11 @@ button, input, select, textarea, optgroup {
     background: var(--primary);
     color: #ffffff !important;
     font-weight: 800;
-    box-shadow: 0 4px 14px rgba(47, 45, 116, 0.25);
+    box-shadow: 0 4px 14px rgba(26, 34, 56, 0.25);
 }
 
 .sidebar-item.active i {
-    color: #FFD5AE;
+    color: var(--accent);
 }
 
 .sidebar-footer {

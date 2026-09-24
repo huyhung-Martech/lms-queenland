@@ -65,7 +65,7 @@
             <div class="hero">
                 <div class="hero-content">
                     <span class="badge-pill">
-                        <i class="bi bi-patch-check-fill text-[#FFD5AE]"></i> Đào Tạo Doanh Nghiệp Queen Land
+                        <i class="bi bi-patch-check-fill" style="color:var(--accent);"></i> Đào Tạo Doanh Nghiệp Queen Land
                     </span>
                     <h1 class="hero-title">Hệ Thống Đào Tạo Nội Bộ Bất Động Sản Chuyên Nghiệp</h1>
                     <p class="hero-desc">Tự học linh hoạt theo lộ trình các Module chuyên sâu. Tích hợp video HD, tóm tắt quy trình dự án, kiểm tra đánh giá tự động và cấp chứng nhận nội bộ Queen Land.</p>
@@ -93,7 +93,7 @@
                         <button class="btn btn-primary animated-shine-btn" onclick="switchView('portal')">
                             <i class="bi bi-play-circle-fill"></i> Trải Nghiệm Lớp Học Ngay
                         </button>
-                        <a href="#curriculum" class="btn btn-secondary" style="background:#ffffff; color:#2F2D74; border:1px solid #cbd5e1; font-weight:800; border-radius:0.75rem; padding:0.625rem 1.25rem;">
+                        <a href="#curriculum" class="btn btn-secondary" style="background:#ffffff; color:var(--primary); border:1px solid #cbd5e1; font-weight:800; border-radius:0.75rem; padding:0.625rem 1.25rem;">
                             <i class="bi bi-journal-text"></i> Xem Chương Trình Học
                         </a>
                     </div>
@@ -404,7 +404,7 @@
 
                                     <div class="ctrl-right-group">
                                         <div class="speed-controls">
-                                            <span class="speed-label"><i class="bi bi-lightning-charge-fill" style="color:#FFD5AE;"></i> Tốc độ:</span>
+                                            <span class="speed-label"><i class="bi bi-lightning-charge-fill" style="color:var(--accent);"></i> Tốc độ:</span>
                                             <button class="speed-btn" data-speed="1.0" onclick="setSpeed(1.0)">1.0x</button>
                                             <button class="speed-btn active" data-speed="1.25" onclick="setSpeed(1.25)">1.25x</button>
                                             <button class="speed-btn" data-speed="1.5" onclick="setSpeed(1.5)">1.5x</button>
@@ -511,12 +511,12 @@
 
                                 <!-- TAB 4: DISCUSSION & INSTRUCTOR Q&A -->
                                 <div id="tab-discussion" class="tab-pane">
-                                    <div style="background:#f5f3ff; padding:12px 16px; border-radius:10px; margin-bottom:14px; border:1px solid #ddd6fe; display:flex; align-items:center; gap:12px;">
-                                        <div style="width:40px; height:40px; border-radius:50%; background:#2F2D74; color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
+                                    <div style="background:#F8F9FB; padding:12px 16px; border-radius:10px; margin-bottom:14px; border:1px solid #e2e8f0; display:flex; align-items:center; gap:12px;">
+                                        <div style="width:40px; height:40px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
                                             <i class="bi bi-person-video3"></i>
                                         </div>
                                         <div>
-                                            <strong style="color:#2F2D74; font-size:0.85rem; font-family:var(--font-label);">HỎI ĐÁP & TRAO ĐỔI CÙNG GIẢNG VIÊN ĐÀO TẠO</strong>
+                                            <strong style="color:var(--primary); font-size:0.85rem; font-family:var(--font-label);">HỎI ĐÁP & TRAO ĐỔI CÙNG GIẢNG VIÊN ĐÀO TẠO</strong>
                                             <p style="font-size:0.78rem; color:#475569; margin:2px 0 0;">Gửi thắc mắc về bài học 2.2, ban huấn luyện & giảng viên sẽ phản hồi trực tiếp!</p>
                                         </div>
                                     </div>
@@ -524,8 +524,8 @@
                                     <!-- FORM ĐẶT CÂU HỎI MỚI CHO HỌC VIÊN -->
                                     <div class="discussion-ask-box">
                                         <form id="discussion-form" onsubmit="handleSendDiscussion(event)">
-                                            <label style="font-size:0.78rem; font-weight:800; color:#1e1b4b; display:block; margin-bottom:6px;">
-                                                <i class="bi bi-chat-left-dots-fill text-primary"></i> Đặt câu hỏi thắc mắc cho Ban Giảng Viên:
+                                            <label style="font-size:0.78rem; font-weight:800; color:var(--primary); display:block; margin-bottom:6px;">
+                                                <i class="bi bi-chat-left-dots-fill" style="color:var(--primary);"></i> Đặt câu hỏi thắc mắc cho Ban Giảng Viên:
                                             </label>
                                             <textarea id="discussion-input" class="discussion-textarea" placeholder="Nhập câu hỏi hoặc băn khoăn của bạn về bài giảng này..." required></textarea>
                                             <div class="discussion-actions">
@@ -623,7 +623,7 @@
     <div id="changePasswordModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:2000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
         <div style="background:#ffffff; width:92%; max-width:440px; border-radius:14px; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.3); border:1px solid #e2e8f0;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #e2e8f0; padding-bottom:10px;">
-                <h3 style="font-size:1rem; font-weight:800; color:#2F2D74; margin:0; display:flex; align-items:center; gap:8px;">
+                <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin:0; display:flex; align-items:center; gap:8px;">
                     <i class="bi bi-key-fill text-primary"></i> Đổi Mật Khẩu Tài Khoản
                 </h3>
                 <button onclick="closeChangePasswordModal()" style="border:none; background:transparent; font-size:1.3rem; cursor:pointer; color:#64748b;">✕</button>
