@@ -73,6 +73,39 @@ window.alert = function(msg) {
     showCustomAlert(title, content, type);
 };
 
+// Go back to the very first Landing/Home screen cleanly (Reset hash, modules drill-down, and scroll to top)
+function goToHome() {
+    stopQuizTimer();
+
+    const landingView = document.getElementById('view-landing');
+    const portalView = document.getElementById('view-portal');
+    const btnLanding = document.getElementById('btn-landing-view');
+    const btnPortal = document.getElementById('btn-portal-view');
+
+    if (landingView) landingView.classList.add('active');
+    if (portalView) portalView.classList.remove('active');
+    if (btnLanding) btnLanding.classList.add('active');
+    if (btnPortal) btnPortal.classList.remove('active');
+
+    // Reset drill-down if user was inside course modules view
+    const coursesView = document.getElementById('curriculum-courses-view');
+    const modulesView = document.getElementById('curriculum-modules-view');
+    if (modulesView) modulesView.style.display = 'none';
+    if (coursesView) coursesView.style.display = 'block';
+
+    // Clear URL hash to return cleanly to index.html (NOT stuck on #catalog or #classroom)
+    try {
+        history.pushState({ view: 'home' }, '', window.location.pathname);
+    } catch (e) {}
+
+    // Synchronize catalog & personalized ongoing lesson card
+    reloadCoursesCatalog();
+    renderResumeLearningBanner();
+
+    // Scroll to the very top (Hero Welcome screen)
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 // Switch view between Landing Page and LMS Portal
 function switchView(viewName, push = true) {
     if (viewName === 'portal' && !currentUser) {
@@ -91,11 +124,18 @@ function switchView(viewName, push = true) {
         portalView.classList.remove('active');
         btnLanding.classList.add('active');
         btnPortal.classList.remove('active');
+
+        // Reset drill-down if user was inside course modules view
+        const coursesView = document.getElementById('curriculum-courses-view');
+        const modulesView = document.getElementById('curriculum-modules-view');
+        if (modulesView) modulesView.style.display = 'none';
+        if (coursesView) coursesView.style.display = 'block';
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         if (push) {
             try {
-                history.pushState({ view: 'catalog' }, '', '#catalog');
+                history.pushState({ view: 'home' }, '', window.location.pathname);
             } catch (e) {}
         }
     } else if (viewName === 'portal') {
@@ -324,55 +364,128 @@ function setSpeed(rate) {
     });
 }
 
-// Fullscreen Toggle (Balanced & Centered Full Viewport)
-function togglePlayerFullscreen() {
+// Fullscreen Toggle & Exit (Balanced & Centered Full Viewport)
+function isPlayerFullscreenActive() {
     const container = document.getElementById('lms-video-container');
+    const isNative = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+    const isClass = container ? container.classList.contains('is-fullscreen') : false;
+    return isNative || isClass;
+}
+
+function enterPlayerFullscreen() {
+    const container = document.getElementById('lms-video-container');
+    const fsBtn = document.getElementById('btn-player-fullscreen');
+    const topExitBtn = document.getElementById('btn-floating-exit-fullscreen');
     if (!container) return;
-    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement || container.classList.contains('is-fullscreen'));
-    if (!isFS) {
+
+    // Apply viewport class immediately
+    container.classList.add('is-fullscreen');
+    if (fsBtn) {
+        fsBtn.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
+        fsBtn.title = 'Thu nhỏ màn hình (Esc)';
+    }
+    if (topExitBtn) {
+        topExitBtn.style.display = 'inline-flex';
+    }
+
+    // Try native fullscreen request with safe catch
+    try {
         if (container.requestFullscreen) {
-            container.requestFullscreen();
+            container.requestFullscreen().catch(() => {});
         } else if (container.webkitRequestFullscreen) {
             container.webkitRequestFullscreen();
-        } else {
-            container.classList.add('is-fullscreen');
-            handleFullscreenUIChange();
+        } else if (container.mozRequestFullScreen) {
+            container.mozRequestFullScreen();
+        } else if (container.msRequestFullscreen) {
+            container.msRequestFullscreen();
         }
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else {
-            container.classList.remove('is-fullscreen');
-            handleFullscreenUIChange();
-        }
+    } catch (e) {
+        // Fallback class already handles viewport fullscreen
     }
 }
 
-// Fullscreen State Listener for UI syncing
+function exitPlayerFullscreen() {
+    const container = document.getElementById('lms-video-container');
+    const fsBtn = document.getElementById('btn-player-fullscreen');
+    const topExitBtn = document.getElementById('btn-floating-exit-fullscreen');
+
+    // Remove viewport fullscreen class unconditionally
+    if (container) {
+        container.classList.remove('is-fullscreen');
+    }
+
+    // Reset button states unconditionally
+    if (fsBtn) {
+        fsBtn.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
+        fsBtn.title = 'Toàn màn hình';
+    }
+    if (topExitBtn) {
+        topExitBtn.style.display = 'none';
+    }
+
+    // If browser is in native fullscreen, exit it safely
+    try {
+        const hasNativeFS = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+        if (hasNativeFS) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+    } catch (e) {}
+}
+
+function togglePlayerFullscreen() {
+    if (isPlayerFullscreenActive()) {
+        exitPlayerFullscreen();
+    } else {
+        enterPlayerFullscreen();
+    }
+}
+
+// Fullscreen State Listener for native browser events (e.g. user pressed Esc)
 function handleFullscreenUIChange() {
     const container = document.getElementById('lms-video-container');
     const fsBtn = document.getElementById('btn-player-fullscreen');
+    const topExitBtn = document.getElementById('btn-floating-exit-fullscreen');
     if (!container) return;
-    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement || container.classList.contains('is-fullscreen'));
-    if (isFS) {
+
+    const isNative = !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+    if (isNative) {
         container.classList.add('is-fullscreen');
         if (fsBtn) {
             fsBtn.innerHTML = '<i class="bi bi-fullscreen-exit"></i>';
             fsBtn.title = 'Thu nhỏ màn hình (Esc)';
         }
+        if (topExitBtn) topExitBtn.style.display = 'inline-flex';
     } else {
         container.classList.remove('is-fullscreen');
         if (fsBtn) {
             fsBtn.innerHTML = '<i class="bi bi-arrows-fullscreen"></i>';
             fsBtn.title = 'Toàn màn hình';
         }
+        if (topExitBtn) topExitBtn.style.display = 'none';
     }
 }
 
 document.addEventListener('fullscreenchange', handleFullscreenUIChange);
 document.addEventListener('webkitfullscreenchange', handleFullscreenUIChange);
+document.addEventListener('mozfullscreenchange', handleFullscreenUIChange);
+document.addEventListener('MSFullscreenChange', handleFullscreenUIChange);
+
+// Global Escape Key Listener: Always shrink if active
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' || e.key === 'Esc' || e.keyCode === 27) {
+        if (isPlayerFullscreenActive()) {
+            exitPlayerFullscreen();
+        }
+    }
+});
 
 // Seek Player Helper
 function seekPlayerTo(seconds) {
@@ -414,6 +527,146 @@ function handleScrubClick(e) {
 }
 
 /* ==========================================================================
+   SUPABASE CLOUD PERSISTENCE ENGINE (PER-USER CROSS-DEVICE SYNC)
+   ========================================================================== */
+const SUPABASE_URL = 'https://kjufpuzzsnabllffogzc.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqdWZwdXp6c25hYmxsZmZvZ3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMTcyODIsImV4cCI6MjEwNTg5MzI4Mn0.kR-tk-NBRAuZEHrL6IhH-NNsPbNkWGHhsSu7VLg_g_o';
+
+let supabaseClient = null;
+try {
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        console.log('[QueenLand LMS] Supabase Cloud Client Initialized.');
+    }
+} catch (e) {
+    console.warn('[QueenLand LMS] Supabase init warning:', e);
+}
+
+function updateCloudSyncStatusIndicator(status) {
+    const badge = document.getElementById('cloud-sync-badge');
+    if (!badge) return;
+    const icon = badge.querySelector('i');
+    const text = badge.querySelector('.cloud-status-text');
+
+    if (status === 'syncing') {
+        badge.className = 'cloud-sync-badge syncing';
+        if (icon) icon.className = 'bi bi-arrow-repeat';
+        if (text) text.textContent = 'Đang Lưu Cloud...';
+    } else if (status === 'synced') {
+        badge.className = 'cloud-sync-badge';
+        if (icon) icon.className = 'bi bi-cloud-check-fill';
+        if (text) text.textContent = 'Đã Lưu Cloud';
+    } else if (status === 'offline') {
+        badge.className = 'cloud-sync-badge offline';
+        if (icon) icon.className = 'bi bi-cloud-slash-fill';
+        if (text) text.textContent = 'Lưu Cục Bộ';
+    } else {
+        badge.className = 'cloud-sync-badge';
+        if (icon) icon.className = 'bi bi-cloud-check-fill';
+        if (text) text.textContent = 'CVKD Sync';
+    }
+}
+
+let syncDebounceTimers = {};
+
+function syncProgressToSupabase(courseId, data) {
+    if (!supabaseClient || !currentUser || !currentUser.empId) return;
+    const empId = currentUser.empId;
+    const syncKey = `${empId}_${courseId}`;
+
+    updateCloudSyncStatusIndicator('syncing');
+
+    if (syncDebounceTimers[syncKey]) {
+        clearTimeout(syncDebounceTimers[syncKey]);
+    }
+
+    syncDebounceTimers[syncKey] = setTimeout(async () => {
+        try {
+            const { error } = await supabaseClient
+                .from('user_progress')
+                .upsert({
+                    emp_id: empId,
+                    course_id: courseId,
+                    data: data,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'emp_id,course_id' });
+
+            if (error) {
+                console.warn('[QueenLand LMS] Supabase sync error:', error.message);
+                updateCloudSyncStatusIndicator('offline');
+            } else {
+                updateCloudSyncStatusIndicator('synced');
+            }
+        } catch (err) {
+            console.warn('[QueenLand LMS] Cloud sync network notice:', err);
+            updateCloudSyncStatusIndicator('offline');
+        }
+    }, 600);
+}
+
+async function syncAllProgressFromSupabase() {
+    if (!supabaseClient || !currentUser || !currentUser.empId) return;
+    const empId = currentUser.empId;
+    updateCloudSyncStatusIndicator('syncing');
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('user_progress')
+            .select('course_id, data')
+            .eq('emp_id', empId);
+
+        if (!error && Array.isArray(data) && data.length > 0) {
+            data.forEach(item => {
+                if (item.course_id && item.data) {
+                    const localKey = `lms_progress_${empId}_${item.course_id}`;
+                    const localData = JSON.parse(localStorage.getItem(localKey) || 'null');
+                    if (!localData) {
+                        localStorage.setItem(localKey, JSON.stringify(item.data));
+                    } else {
+                        const merged = {
+                            completedLessons: Array.from(new Set([...(localData.completedLessons || []), ...(item.data.completedLessons || [])])),
+                            passedQuizzes: Array.from(new Set([...(localData.passedQuizzes || []), ...(item.data.passedQuizzes || [])])),
+                            lastActive: (item.data.lastActive && item.data.lastActive.time > (localData.lastActive?.time || 0)) 
+                                ? item.data.lastActive 
+                                : (localData.lastActive || item.data.lastActive || { modNum: 1, lessonNum: 1, time: 0 }),
+                            certificateEarned: localData.certificateEarned || item.data.certificateEarned || false,
+                            earnedDate: localData.earnedDate || item.data.earnedDate || null
+                        };
+                        localStorage.setItem(localKey, JSON.stringify(merged));
+                    }
+                }
+            });
+
+            // Re-render components with latest cloud progress
+            renderResumeLearningBanner();
+            renderStudentCoursesCatalog();
+            updateCloudSyncStatusIndicator('synced');
+        } else {
+            // First time connecting to Cloud: backup existing local progress up to Supabase
+            try {
+                const prefix = `lms_progress_${empId}_`;
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.startsWith(prefix)) {
+                        const courseId = k.replace(prefix, '');
+                        const progData = JSON.parse(localStorage.getItem(k) || 'null');
+                        if (progData) {
+                            syncProgressToSupabase(courseId, progData);
+                        }
+                    }
+                }
+            } catch (backupErr) {
+                console.warn('[QueenLand LMS] Initial cloud backup notice:', backupErr);
+            }
+            updateCloudSyncStatusIndicator('synced');
+        }
+    } catch (err) {
+        console.warn('[QueenLand LMS] Cloud fetch notice:', err);
+        updateCloudSyncStatusIndicator('offline');
+    }
+}
+
+/* ==========================================================================
    5-STEP LEARNING WORKFLOW & PROGRESSION STATE ENGINE (COURSERA / UDEMY STANDARD)
    ========================================================================== */
 
@@ -440,6 +693,7 @@ function getStudentProgress(courseId) {
 function saveStudentProgress(courseId, data) {
     const key = `lms_progress_${getUserKey()}_${courseId}`;
     localStorage.setItem(key, JSON.stringify(data));
+    syncProgressToSupabase(courseId, data);
 }
 
 function calculateCourseProgressPercent(courseId) {
@@ -802,15 +1056,23 @@ function seekToTimestamp(seconds) {
     seekPlayerTo(seconds);
 }
 
-// RESUME LEARNING BANNER & HERO SPOTLIGHT SYNC
+// RESUME LEARNING & HERO ONGOING LESSON CARD (PERSONALIZED FOR LOGGED-IN ACCOUNT)
 function renderResumeLearningBanner() {
-    const container = document.getElementById('resume-learning-container');
-
     reloadCoursesCatalog();
-    const activeCourse = currentSelectedCourse || coursesCatalog[0];
+    if (!coursesCatalog || coursesCatalog.length === 0) return;
+
+    // 1. Locate active course for the current logged-in user
+    let activeCourse = currentSelectedCourse;
     if (!activeCourse) {
-        if (container) container.style.display = 'none';
-        return;
+        // Find course that has active progress (> 0% and < 100%) for this user
+        activeCourse = coursesCatalog.find(c => {
+            const pct = calculateCourseProgressPercent(c.id);
+            return pct > 0 && pct < 100;
+        });
+        // If none in progress, pick the first course that is not 100% completed
+        if (!activeCourse) {
+            activeCourse = coursesCatalog.find(c => calculateCourseProgressPercent(c.id) < 100) || coursesCatalog[0];
+        }
     }
 
     const prog = getStudentProgress(activeCourse.id);
@@ -821,43 +1083,38 @@ function renderResumeLearningBanner() {
     const les = (mod && mod.lessons) ? (mod.lessons.find(l => l.id === lastActive.lessonNum) || mod.lessons[0]) : null;
     const lessonTitle = les ? les.title : `Module ${lastActive.modNum}`;
 
-    // Synchronize Bento 2.0 Hero Spotlight Card
+    // 2. Synchronize Bento 2.0 Hero Ongoing Lesson Card (Tile 2)
     const heroSpotlightTitle = document.getElementById('hero-spotlight-title');
     const heroSpotlightLesson = document.getElementById('hero-spotlight-lesson');
     const heroSpotlightBar = document.getElementById('hero-spotlight-bar');
     const heroSpotlightPercent = document.getElementById('hero-spotlight-percent');
     const heroSpotlightTile = document.getElementById('hero-spotlight-tile');
+    const spotlightTagBadge = document.getElementById('spotlight-tag-badge');
+    const spotlightStatusPill = document.getElementById('spotlight-status-pill');
 
     if (heroSpotlightTitle) heroSpotlightTitle.textContent = activeCourse.title;
     if (heroSpotlightLesson) heroSpotlightLesson.innerHTML = `<i class="bi bi-play-btn-fill"></i> <span>${lessonTitle}</span>`;
     if (heroSpotlightBar) heroSpotlightBar.style.width = `${percent}%`;
     if (heroSpotlightPercent) heroSpotlightPercent.textContent = `${percent}%`;
+
+    if (spotlightTagBadge) {
+        spotlightTagBadge.innerHTML = `<i class="bi bi-bookmark-check-fill" style="color:var(--accent);"></i> BÀI HỌC CỦA BẠN`;
+    }
+    if (spotlightStatusPill) {
+        if (currentUser) {
+            spotlightStatusPill.textContent = percent > 0 ? (percent === 100 ? 'Đã Hoàn Thành' : 'Đang Học Dở') : 'Bắt Đầu Học';
+        } else {
+            spotlightStatusPill.textContent = 'Cần Đăng Nhập';
+        }
+    }
+
     if (heroSpotlightTile) {
         heroSpotlightTile.onclick = () => enterCourseLesson(activeCourse.id, lastActive.modNum, lastActive.lessonNum);
     }
 
-    if (!container) return;
-
-    if (percent === 0 && (!prog.completedLessons || prog.completedLessons.length === 0)) {
-        container.style.display = 'none';
-        return;
-    }
-
-    container.style.display = 'block';
-    container.innerHTML = `
-        <div class="resume-learning-card">
-            <div>
-                <span class="badge-gold" style="font-size:0.7rem; padding:2px 8px; border-radius:10px; font-weight:800; display:inline-block; margin-bottom:4px;">
-                    <i class="bi bi-arrow-repeat"></i> HỌC TIẾP ĐIỂM DỪNG
-                </span>
-                <div class="resume-title">${activeCourse.title}</div>
-                <div class="resume-desc">Đang dừng tại: <strong>${lessonTitle}</strong> • Đã hoàn thành <strong>${percent}%</strong></div>
-            </div>
-            <button class="btn animated-shine-btn" style="background:#ffffff; color:var(--primary); font-weight:800; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; flex-shrink:0;" onclick="enterCourseLesson('${activeCourse.id}', ${lastActive.modNum}, ${lastActive.lessonNum})">
-                <span>Tiếp Tục Học Ngay <i class="bi bi-play-circle-fill"></i></span>
-            </button>
-        </div>
-    `;
+    // Hide redundant duplicate banner if it exists in DOM
+    const duplicateBanner = document.getElementById('resume-learning-container');
+    if (duplicateBanner) duplicateBanner.style.display = 'none';
 }
 
 // STRICT COURSE COMPLETION ENGINE (100% OF ALL MODULES & ALL QUIZZES REQUIRED)
@@ -972,7 +1229,7 @@ function closeCertificateModal() {
     if (container) container.style.display = 'none';
 }
 
-// Switch Content Tabs Below Video
+// Switch Content Tabs Below Video with CardNav Pill physics
 function switchTab(tabId) {
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
@@ -980,8 +1237,16 @@ function switchTab(tabId) {
     const activePane = document.getElementById(`tab-${tabId}`);
     if (activePane) activePane.classList.add('active');
 
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
+    let activeBtn = null;
+    if (typeof event !== 'undefined' && event && event.currentTarget && event.currentTarget.classList && event.currentTarget.classList.contains('tab-btn')) {
+        activeBtn = event.currentTarget;
+    } else {
+        activeBtn = document.querySelector(`.tab-btn[onclick*="'${tabId}'"]`);
+    }
+
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        updateCardNavPill(activeBtn);
     }
 }
 
@@ -1032,7 +1297,7 @@ function submitQuiz(event) {
 }
 
 /* ==========================================================================
-   2-TIER CURRICULUM ARCHITECTURE: CHƯƠNG TRÌNH HỌC ➔ MODULE BÀI HỌC
+   2-TIER CURRICULUM ARCHITECTURE: CHƯƠNG TRÌNH HỌC -> MODULE BÀI HỌC
    ========================================================================== */
 
 const defaultCoursesCatalog = [
@@ -1224,7 +1489,19 @@ let currentSelectedCourse = null;
 // RELOAD COURSES CATALOG FROM LOCALSTORAGE SAFELY
 function reloadCoursesCatalog() {
     try {
+        const isInit = localStorage.getItem('lms_courses_initialized');
         const stored = localStorage.getItem('lms_courses_catalog') || localStorage.getItem('lms_courses_list');
+        if (isInit) {
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) {
+                    coursesCatalog = parsed;
+                    return;
+                }
+            }
+            coursesCatalog = [];
+            return;
+        }
         if (stored) {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed) && parsed.length > 0) {
@@ -1240,6 +1517,7 @@ function reloadCoursesCatalog() {
                     });
                 });
                 coursesCatalog = parsed;
+                localStorage.setItem('lms_courses_initialized', 'true');
                 return;
             }
         }
@@ -1248,6 +1526,7 @@ function reloadCoursesCatalog() {
     }
     coursesCatalog = defaultCoursesCatalog;
     try {
+        localStorage.setItem('lms_courses_initialized', 'true');
         localStorage.setItem('lms_courses_catalog', JSON.stringify(defaultCoursesCatalog));
         localStorage.setItem('lms_courses_list', JSON.stringify(defaultCoursesCatalog));
     } catch (e) {}
@@ -2146,8 +2425,8 @@ function submitDynamicQuiz(event, courseId) {
     resultBox.style.padding = '14px 18px';
     resultBox.style.borderRadius = '10px';
     resultBox.innerHTML = `
-        <div style="font-size:0.95rem; font-weight:800; margin-bottom:4px;">
-            ${isPass ? '✓ CHÚC MỪNG: BẠN ĐÃ ĐẠT ĐIỂM CHUẨN!' : `⚠ CHƯA ĐẠT ĐIỂM CHUẨN (TỐI THIỂU ${minScoreRequired}đ)`}
+        <div style="font-size:0.95rem; font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+            ${isPass ? '<i class="bi bi-patch-check-fill" style="color:#059669; font-size:1.15rem;"></i> CHÚC MỪNG: BẠN ĐÃ ĐẠT ĐIỂM CHUẨN!' : `<i class="bi bi-exclamation-triangle-fill" style="color:#d97706; font-size:1.15rem;"></i> CHƯA ĐẠT ĐIỂM CHUẨN (TỐI THIỂU ${minScoreRequired}đ)`}
         </div>
         <div style="font-size:0.85rem;">
             Kết quả: <strong>${score}/100 Điểm</strong> (${correctCount}/${questions.length} câu đúng).<br>
@@ -2405,6 +2684,9 @@ let currentUser = JSON.parse(localStorage.getItem('lms_current_user') || 'null')
 window.addEventListener('DOMContentLoaded', () => {
     populateRegisterDivisions();
     checkAuthGuard();
+    if (currentUser) {
+        syncAllProgressFromSupabase();
+    }
 });
 
 function checkAuthGuard() {
@@ -2509,25 +2791,57 @@ function switchAuthTab(tabName) {
     }
 }
 
-function handleLogin(event) {
+async function handleLogin(event) {
     event.preventDefault();
     const empId = document.getElementById('login-empid').value.trim();
     const pass = document.getElementById('login-password').value;
 
-    const matched = usersDatabase.find(u => u.empId.toLowerCase() === empId.toLowerCase() && u.pass === pass);
+    let matched = usersDatabase.find(u => u.empId.toLowerCase() === empId.toLowerCase() && u.pass === pass);
+
+    // If not found in local cache, query Supabase Cloud users table
+    if (!matched && supabaseClient) {
+        try {
+            const { data, error } = await supabaseClient
+                .from('users')
+                .select('*')
+                .ilike('emp_id', empId)
+                .eq('password', pass)
+                .maybeSingle();
+
+            if (data) {
+                matched = {
+                    empId: data.emp_id,
+                    name: data.name,
+                    div: data.division,
+                    team: data.team,
+                    pass: data.password
+                };
+                const existingIdx = usersDatabase.findIndex(u => u.empId.toLowerCase() === matched.empId.toLowerCase());
+                if (existingIdx !== -1) {
+                    usersDatabase[existingIdx] = matched;
+                } else {
+                    usersDatabase.push(matched);
+                }
+                localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
+            }
+        } catch (cloudErr) {
+            console.warn('[QueenLand LMS] Supabase user query notice:', cloudErr);
+        }
+    }
 
     if (matched) {
         currentUser = matched;
         localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
         checkAuthGuard();
         closeAuthModal();
+        syncAllProgressFromSupabase();
         alert(`ĐĂNG NHẬP THÀNH CÔNG!\n\nXin chào Sales ${matched.name} (${matched.empId})\n• Đơn vị: ${matched.team} - Thuộc ${matched.div}\n\nHệ thống đã mở khóa lộ trình đào tạo của bạn!`);
     } else {
         alert(`Đăng nhập thất bại: Sai Mã Nhân Viên hoặc Mật Khẩu!`);
     }
 }
 
-function handleRegister(event) {
+async function handleRegister(event) {
     event.preventDefault();
     const fullname = document.getElementById('reg-fullname').value.trim();
     const empId = document.getElementById('reg-empid').value.trim().toUpperCase();
@@ -2535,9 +2849,29 @@ function handleRegister(event) {
     const team = document.getElementById('reg-team').value.trim();
     const pass = document.getElementById('reg-password').value;
 
+    // Check local
     if (usersDatabase.some(u => u.empId === empId)) {
         alert(`Mã nhân viên "${empId}" đã tồn tại trên hệ thống!`);
         return;
+    }
+
+    // Check Supabase Cloud
+    if (supabaseClient) {
+        try {
+            const { data } = await supabaseClient
+                .from('users')
+                .select('emp_id')
+                .ilike('emp_id', empId)
+                .maybeSingle();
+
+            if (data) {
+                alert(`Mã nhân viên "${empId}" đã tồn tại trên cơ sở dữ liệu Cloud! Vui lòng chuyển sang tab Đăng Nhập.`);
+                switchAuthTab('login');
+                const loginInput = document.getElementById('login-empid');
+                if (loginInput) loginInput.value = empId;
+                return;
+            }
+        } catch (e) {}
     }
 
     const newUser = { empId, name: fullname, div, team, pass };
@@ -2547,8 +2881,25 @@ function handleRegister(event) {
     currentUser = newUser;
     localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
 
+    // Save to Supabase Cloud
+    if (supabaseClient) {
+        try {
+            await supabaseClient.from('users').insert({
+                emp_id: empId,
+                name: fullname,
+                division: div,
+                team: team,
+                password: pass,
+                role: 'student'
+            });
+        } catch (cloudRegErr) {
+            console.warn('[QueenLand LMS] Cloud user registration notice:', cloudRegErr);
+        }
+    }
+
     checkAuthGuard();
     closeAuthModal();
+    syncAllProgressFromSupabase();
     alert(`ĐĂNG KÝ TÀI KHOẢN THÀNH CÔNG!\n\nChào mừng học viên mới ${fullname} (${empId})!\n• Thuộc đơn vị: ${team} (${div})\n\nTài khoản của bạn đã được kích hoạt trên hệ thống LMS!`);
 }
 
@@ -2559,6 +2910,7 @@ function handleLogout() {
         localStorage.removeItem('lms_current_user');
         switchView('landing');
         checkAuthGuard();
+        updateCloudSyncStatusIndicator('connected');
         alert('Đã đăng xuất! Toàn bộ nội dung bài học đã được khóa.');
     }
 }
@@ -2623,6 +2975,17 @@ function handleChangePassword(event) {
     }
     localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
 
+    // Sync password change to Supabase Cloud
+    if (supabaseClient) {
+        supabaseClient
+            .from('users')
+            .update({ password: newPass })
+            .ilike('emp_id', currentUser.empId)
+            .then(({ error }) => {
+                if (error) console.warn('[QueenLand LMS] Supabase password sync notice:', error.message);
+            });
+    }
+
     closeChangePasswordModal();
     alert('ĐỔI MẬT KHẨU THÀNH CÔNG!\n\nMật khẩu mới của bạn đã được cập nhật an toàn vào hệ thống.');
 }
@@ -2647,6 +3010,8 @@ window.addEventListener('popstate', function(event) {
             }
         } else if (state.view === 'catalog') {
             backToCoursesList(false);
+        } else if (state.view === 'home') {
+            goToHome();
         }
     } else {
         const hash = window.location.hash || '';
@@ -2659,24 +3024,39 @@ window.addEventListener('popstate', function(event) {
             } else {
                 backToCoursesList(false);
             }
+        } else if (hash === '#catalog') {
+            const curEl = document.getElementById('curriculum');
+            if (curEl) curEl.scrollIntoView({ behavior: 'smooth' });
         } else {
-            backToCoursesList(false);
+            // Natural home landing view
         }
     }
 });
 
-// Set initial catalog state on first load so Back button stays inside student portal
+// Set initial state on first load
 window.addEventListener('DOMContentLoaded', function() {
-    if (!window.location.hash || window.location.hash === '#catalog') {
-        try {
-            history.replaceState({ view: 'catalog' }, '', '#catalog');
-        } catch (e) {}
+    if (!window.location.hash) {
+        // Clean home view on index.html
+    } else if (window.location.hash === '#catalog') {
+        setTimeout(() => {
+            const curEl = document.getElementById('curriculum');
+            if (curEl) curEl.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
     } else if (window.location.hash.startsWith('#course-')) {
         const cId = window.location.hash.replace('#course-', '');
         openCourseModules(cId, false);
+    } else if (window.location.hash === '#classroom') {
+        switchView('portal', false);
     }
     initSessionStudyTimer();
     applySystemConfig();
+    applyStudioLayout();
+    initSpotlightCards();
+    initSpecularButtons();
+    setTimeout(updateCardNavPill, 150);
+    window.addEventListener('resize', () => {
+        updateCardNavPill();
+    });
 });
 
 // GLOBAL SESSION STUDY TIMER (COUNTS UP SECONDS OF ACTIVE LEARNING IN CLASSROOM)
@@ -2707,4 +3087,61 @@ window.addEventListener('storage', function(e) {
         renderCourseCards();
     }
 });
+
+// ==========================================================================
+// DUAL-PANE STUDIO WORKSPACE & REACT BITS INTERACTION ENGINE
+// ==========================================================================
+
+function updateCardNavPill(targetBtn) {
+    const pill = document.getElementById('card-nav-pill');
+    if (!pill) return;
+    const btn = targetBtn || document.querySelector('.tabs-header .tab-btn.active');
+    if (btn && btn.offsetParent !== null) {
+        pill.style.left = `${btn.offsetLeft}px`;
+        pill.style.width = `${btn.offsetWidth}px`;
+        pill.style.height = `${btn.offsetHeight}px`;
+        pill.style.display = 'block';
+    } else {
+        pill.style.display = 'none';
+    }
+}
+
+function applyStudioLayout() {
+    const contentArea = document.querySelector('.lms-content-area');
+    if (contentArea) {
+        contentArea.classList.add('studio-layout');
+    }
+    requestAnimationFrame(() => updateCardNavPill());
+}
+
+function initSpotlightCards() {
+    document.addEventListener('mousemove', (e) => {
+        const cards = document.querySelectorAll('.spotlight-card');
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            if (x >= -40 && x <= rect.width + 40 && y >= -40 && y <= rect.height + 40) {
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            }
+        });
+    });
+}
+
+function initSpecularButtons() {
+    document.addEventListener('mousemove', (e) => {
+        const btns = document.querySelectorAll('.specular-btn');
+        btns.forEach(btn => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
+                btn.style.setProperty('--specular-x', `${x}px`);
+                btn.style.setProperty('--specular-y', `${y}px`);
+            }
+        });
+    });
+}
+
 

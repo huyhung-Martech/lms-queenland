@@ -16,7 +16,7 @@
     <!-- Header Navigation (Parkland Style) -->
     <header class="navbar">
         <div class="nav-container">
-            <div class="brand">
+            <div class="brand" onclick="goToHome()" style="cursor: pointer;" title="Về Trang Chủ Queen Land Academy">
                 <img src="images/logo-queen-land.png" alt="Queen Land Logo" class="brand-logo-img">
                 <div class="brand-text">
                     <span class="brand-title">Queen Land Academy</span>
@@ -25,7 +25,7 @@
             </div>
             
             <nav class="nav-links">
-                <button class="nav-btn active" id="btn-landing-view" onclick="switchView('landing')">
+                <button class="nav-btn active" id="btn-landing-view" onclick="goToHome()">
                     <i class="bi bi-house-door"></i> Trang Chủ
                 </button>
                 <button class="nav-btn highlight-btn animated-shine-btn" id="btn-portal-view" onclick="switchView('portal')">
@@ -45,6 +45,9 @@
                         <span class="user-name" id="student-user-name">Nguyễn Văn An <span class="emp-code">(NV-10892)</span></span>
                         <span class="user-dept-label"><i class="bi bi-mortarboard-fill"></i> Học Viên Queen Land</span>
                     </div>
+                <div id="cloud-sync-badge" class="cloud-sync-badge" title="Hệ thống đồng bộ dữ liệu Chuyên Viên Kinh Doanh">
+                    <i class="bi bi-cloud-check-fill"></i>
+                    <span class="cloud-status-text">CVKD Sync</span>
                 </div>
                 <button id="btn-change-password" class="btn btn-secondary" onclick="openChangePasswordModal()" style="display:none; padding:7px 12px; font-size:0.75rem; border-color:#cbd5e1; background:#ffffff;">
                     <i class="bi bi-key-fill text-primary"></i> Đổi Mật Khẩu
@@ -120,13 +123,13 @@
 
                 <!-- RIGHT BENTO SUBGRID: Spotlight Card + Enterprise Features -->
                 <div class="bento-subgrid-right">
-                    <!-- TILE 2: Live Study Spotlight Card -->
-                    <div class="bento-tile bento-tile-spotlight" id="hero-spotlight-tile" onclick="switchView('portal')">
+                    <!-- TILE 2: Ongoing Lesson Card (Personalized per Account) -->
+                    <div class="bento-tile bento-tile-spotlight border-glow spotlight-card" id="hero-spotlight-tile" onclick="switchView('portal')">
                         <div class="spotlight-header">
-                            <span class="spotlight-tag">
-                                <i class="bi bi-compass-fill"></i> TIÊU ĐIỂM HỌC TẬP
+                            <span class="spotlight-tag" id="spotlight-tag-badge">
+                                <i class="bi bi-bookmark-check-fill" style="color:var(--accent);"></i> BÀI HỌC CỦA BẠN
                             </span>
-                            <span class="spotlight-status-badge">Đang Mở Lớp</span>
+                            <span class="spotlight-status-badge" id="spotlight-status-pill">Đang Học Dở</span>
                         </div>
                         <div class="spotlight-body">
                             <div class="spotlight-course-title" id="hero-spotlight-title">Quy Trình Bán Hàng & Pháp Lý Dự Án Cao Cấp</div>
@@ -135,15 +138,15 @@
                             </div>
                             <div class="spotlight-progress-wrap">
                                 <div class="spotlight-progress-info">
-                                    <span>Tiến độ cá nhân:</span>
+                                    <span>Tiến độ học tập:</span>
                                     <strong id="hero-spotlight-percent">0%</strong>
                                 </div>
                                 <div class="spotlight-progress-track">
                                     <div class="spotlight-progress-bar" id="hero-spotlight-bar" style="width: 0%;"></div>
                                 </div>
                             </div>
-                            <button class="spotlight-action-btn">
-                                <span>Vào Phòng Học Bài Này Ngay</span>
+                            <button class="spotlight-action-btn specular-btn">
+                                <span>Tiếp Tục Bài Học Này Ngay</span>
                                 <i class="bi bi-arrow-right"></i>
                             </button>
                         </div>
@@ -151,14 +154,14 @@
 
                     <!-- TILES 3 & 4: Dual Accreditation & Security Bento Feature Row -->
                     <div class="bento-features-row">
-                        <div class="bento-tile bento-tile-feature">
+                        <div class="bento-tile bento-tile-feature magic-bento-tile spotlight-card">
                             <div class="feature-icon-box">
                                 <i class="bi bi-shield-lock-fill"></i>
                             </div>
                             <h4>Bảo Mật Tiến Độ</h4>
                             <p>Khóa tua nhanh, ghi nhận chính xác 80% thời lượng bài học.</p>
                         </div>
-                        <div class="bento-tile bento-tile-feature">
+                        <div class="bento-tile bento-tile-feature magic-bento-tile spotlight-card">
                             <div class="feature-icon-box gold">
                                 <i class="bi bi-award-fill"></i>
                             </div>
@@ -191,17 +194,8 @@
                 
                 <!-- CẤP ĐỘ 1: DANH SÁCH CHƯƠNG TRÌNH HỌC (COURSES CATALOG) -->
                 <div id="curriculum-courses-view">
-                    <!-- RESUME LEARNING BANNER (POPULATED BY app.js) -->
-                    <div id="resume-learning-container" style="display:none;"></div>
-
-                    <div class="section-header">
-                        <span class="section-tag">CHƯƠNG TRÌNH HỌC</span>
-                        <h2>Lộ Trình Đào Tạo Bất Động Sản Chuyên Sâu</h2>
-                        <p>Hệ thống giáo trình đào tạo chuẩn hóa kiến thức dự án & kỹ năng tư vấn chuyên sâu dành cho toàn bộ nhân sự Queen Land.</p>
-                    </div>
-
                     <!-- THANH TÌM KIẾM KHÓA HỌC TINH GỌN (BỎ LỌC KHỐI RƯỜM RÀ) -->
-                    <div class="course-filter-bar clean-search-bar">
+                    <div class="course-filter-bar clean-search-bar" style="margin-top: 6px;">
                         <div class="catalog-summary-info">
                             <span class="catalog-count-badge" id="catalog-count-badge"><i class="bi bi-collection-play-fill"></i> Toàn Bộ Khóa Học Đào Tạo</span>
                         </div>
@@ -371,7 +365,7 @@
                     </aside>
 
                     <!-- RIGHT AREA: Video Player & Tabs -->
-                    <div class="lms-content-area">
+                    <div class="lms-content-area studio-layout">
                         
                         <!-- VIDEO PLAYER BOX -->
                         <div class="video-container" id="lms-video-container">
@@ -385,6 +379,9 @@
                                 </div>
                                 <div class="top-brand-right">
                                     <span class="badge-gold"><i class="bi bi-shield-lock-fill"></i> Video Bảo Mật Nội Bộ</span>
+                                    <button class="btn-floating-exit-fullscreen" id="btn-floating-exit-fullscreen" onclick="exitPlayerFullscreen()" title="Thu nhỏ màn hình (Esc)">
+                                        <i class="bi bi-fullscreen-exit"></i> <span>Thu nhỏ (Esc)</span>
+                                    </button>
                                 </div>
                             </div>
 
@@ -489,10 +486,11 @@
                         <!-- TABBED CONTENT AREA BELOW VIDEO -->
                         <div class="tabs-container">
                             <div class="tabs-header">
-                                <button class="tab-btn active" onclick="switchTab('notes')"><i class="bi bi-card-text"></i> Tóm Tắt Bài Học</button>
-                                <button class="tab-btn" onclick="switchTab('quiz')"><i class="bi bi-patch-question"></i> Bài Kiểm Tra Module</button>
-                                <button class="tab-btn" onclick="switchTab('resources')"><i class="bi bi-folder2-open"></i> Tài Liệu Tải Về</button>
-                                <button class="tab-btn" onclick="switchTab('discussion')"><i class="bi bi-chat-dots"></i> Thảo Luận (3)</button>
+                                <div class="card-nav-pill" id="card-nav-pill"></div>
+                                <button class="tab-btn active" onclick="switchTab('notes')"><i class="bi bi-file-earmark-text"></i> <span>Tóm Tắt</span></button>
+                                <button class="tab-btn" onclick="switchTab('quiz')"><i class="bi bi-patch-question"></i> <span>Đề Thi Quiz</span></button>
+                                <button class="tab-btn" onclick="switchTab('resources')"><i class="bi bi-folder2-open"></i> <span>Tài Liệu</span></button>
+                                <button class="tab-btn" onclick="switchTab('discussion')"><i class="bi bi-chat-dots"></i> <span>Thảo Luận (3)</span></button>
                             </div>
 
                             <div class="tab-content-box">
@@ -605,7 +603,7 @@
                     <button id="auth-tab-login-btn" class="btn btn-primary" style="padding:6px 14px; font-size:0.8rem;" onclick="switchAuthTab('login')">Đăng Nhập</button>
                     <button id="auth-tab-reg-btn" class="btn btn-secondary" style="padding:6px 14px; font-size:0.8rem;" onclick="switchAuthTab('register')">Đăng Ký Mới</button>
                 </div>
-                <button onclick="closeAuthModal()" style="border:none; background:transparent; font-size:1.3rem; cursor:pointer; color:#64748b;">✕</button>
+                <button onclick="closeAuthModal()" style="border:none; background:transparent; font-size:1rem; cursor:pointer; color:#64748b;" title="Đóng"><i class="bi bi-x-lg"></i></button>
             </div>
 
             <!-- FORM LOGIN -->
@@ -669,7 +667,7 @@
                 <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin:0; display:flex; align-items:center; gap:8px;">
                     <i class="bi bi-key-fill text-primary"></i> Đổi Mật Khẩu Tài Khoản
                 </h3>
-                <button onclick="closeChangePasswordModal()" style="border:none; background:transparent; font-size:1.3rem; cursor:pointer; color:#64748b;">✕</button>
+                <button onclick="closeChangePasswordModal()" style="border:none; background:transparent; font-size:1rem; cursor:pointer; color:#64748b;" title="Đóng"><i class="bi bi-x-lg"></i></button>
             </div>
             <form id="change-pass-form" onsubmit="handleChangePassword(event)">
                 <div style="margin-bottom:12px;">
@@ -711,6 +709,8 @@
         </div>
     </div>
 
+    <!-- SUPABASE CLIENT JS SDK V2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
 </body>
 </html>
