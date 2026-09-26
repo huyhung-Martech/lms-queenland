@@ -3703,3 +3703,47 @@ button, input, select, textarea, optgroup {
 .specular-btn:hover::after {
     opacity: 1;
 }
+
+/* ==========================================================================
+   CONTENT PROTECTION & ANTI-COPY SYSTEM
+   ========================================================================== */
+body, 
+.course-detail-view, 
+.lesson-content, 
+.quiz-container, 
+.leaderboard-card, 
+.cert-preview-card,
+.lesson-item,
+.course-card,
+.stat-card,
+.exam-paper,
+.video-learning-section {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* Allow text selection inside input fields, textareas and tables */
+input, 
+textarea, 
+select,
+[contenteditable="true"],
+.allow-select,
+.table-responsive {
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+}
+
+/* Prevent image and video dragging */
+img, video, iframe {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+}
+

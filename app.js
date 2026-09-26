@@ -529,17 +529,20 @@ function handleScrubClick(e) {
 /* ==========================================================================
    SUPABASE CLOUD PERSISTENCE ENGINE (PER-USER CROSS-DEVICE SYNC)
    ========================================================================== */
-const SUPABASE_URL = 'https://kjufpuzzsnabllffogzc.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqdWZwdXp6c25hYmxsZmZvZ3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMTcyODIsImV4cCI6MjEwNTg5MzI4Mn0.kR-tk-NBRAuZEHrL6IhH-NNsPbNkWGHhsSu7VLg_g_o';
+var SUPABASE_URL = window.SUPABASE_URL || 'https://kjufpuzzsnabllffogzc.supabase.co';
+var SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqdWZwdXp6c25hYmxsZmZvZ3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMTcyODIsImV4cCI6MjEwNTg5MzI4Mn0.kR-tk-NBRAuZEHrL6IhH-NNsPbNkWGHhsSu7VLg_g_o';
 
-let supabaseClient = null;
-try {
-    if (window.supabase && typeof window.supabase.createClient === 'function') {
-        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        console.log('[QueenLand LMS] Supabase Cloud Client Initialized.');
+var supabaseClient = window.supabaseClient || null;
+if (!supabaseClient) {
+    try {
+        if (window.supabase && typeof window.supabase.createClient === 'function') {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            window.supabaseClient = supabaseClient;
+            console.log('[QueenLand LMS] Supabase Cloud Client Initialized.');
+        }
+    } catch (e) {
+        console.warn('[QueenLand LMS] Supabase init warning:', e);
     }
-} catch (e) {
-    console.warn('[QueenLand LMS] Supabase init warning:', e);
 }
 
 function updateCloudSyncStatusIndicator(status) {
@@ -1483,7 +1486,7 @@ const defaultCoursesCatalog = [
     }
 ];
 
-let coursesCatalog = defaultCoursesCatalog;
+var coursesCatalog = window.coursesCatalog || defaultCoursesCatalog;
 let currentSelectedCourse = null;
 
 // RELOAD COURSES CATALOG FROM LOCALSTORAGE SAFELY
@@ -1496,10 +1499,12 @@ function reloadCoursesCatalog() {
                 const parsed = JSON.parse(stored);
                 if (Array.isArray(parsed)) {
                     coursesCatalog = parsed;
+                    window.coursesCatalog = coursesCatalog;
                     return;
                 }
             }
             coursesCatalog = [];
+            window.coursesCatalog = coursesCatalog;
             return;
         }
         if (stored) {
@@ -1517,6 +1522,7 @@ function reloadCoursesCatalog() {
                     });
                 });
                 coursesCatalog = parsed;
+                window.coursesCatalog = coursesCatalog;
                 localStorage.setItem('lms_courses_initialized', 'true');
                 return;
             }
@@ -1525,6 +1531,7 @@ function reloadCoursesCatalog() {
         console.error("Lỗi đọc lms_courses_catalog:", e);
     }
     coursesCatalog = defaultCoursesCatalog;
+    window.coursesCatalog = coursesCatalog;
     try {
         localStorage.setItem('lms_courses_initialized', 'true');
         localStorage.setItem('lms_courses_catalog', JSON.stringify(defaultCoursesCatalog));
@@ -2673,11 +2680,12 @@ function filterStudentCoursesByDiv(divId) {
 /* ==========================================================================
    AUTHENTICATION LOGIC & PER-USER PROGRESS ISOLATION
    ========================================================================== */
-let usersDatabase = JSON.parse(localStorage.getItem('lms_users_db') || 'null') || [
+var usersDatabase = window.usersDatabase || JSON.parse(localStorage.getItem('lms_users_db') || 'null') || [
     { empId: 'NV-10892', name: 'Nguyễn Văn An', div: 'DIV1', team: 'Phòng KD 101', pass: '123456' },
     { empId: 'NV-10893', name: 'Trần Thị Bình', div: 'DIV1', team: 'Phòng KD 102', pass: '123456' },
     { empId: 'NV-20411', name: 'Lê Hoàng Cường', div: 'DIV2', team: 'Phòng KD 201', pass: '123456' }
 ];
+window.usersDatabase = usersDatabase;
 
 let currentUser = JSON.parse(localStorage.getItem('lms_current_user') || 'null');
 
