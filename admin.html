@@ -7,7 +7,7 @@
     <!-- GOOGLE FONTS: MANROPE & HANKEN GROTESK (THE PARKLAND STYLE) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap">
     <!-- BOOTSTRAP ICONS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -70,13 +70,16 @@
             </div>
         </aside>
 
+        <!-- BACKDROP CHO MOBILE DRAWER -->
+        <div id="sidebar-backdrop" class="admin-sidebar-backdrop" onclick="toggleMobileSidebar()"></div>
+
         <!-- KHU VỰC NỘI DUNG CHÍNH (MAIN CONTENT) -->
         <main class="admin-main">
             
             <!-- TOPBAR HEADER -->
             <header class="admin-topbar">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <button class="btn mobile-menu-toggle" style="display:none; padding:6px 10px;" onclick="toggleMobileSidebar()"><i class="bi bi-list"></i></button>
+                    <button class="mobile-menu-toggle" onclick="toggleMobileSidebar()" aria-label="Mở Menu Điều Hướng"><i class="bi bi-list"></i></button>
                     <div class="page-title">
                         <h2 id="current-page-title">Bảng Quản Trị Khóa Học & Đào Tạo Sales</h2>
                         <p id="current-page-desc">Tạo khóa học, gán lộ trình đào tạo và theo dõi tiến độ từng Module</p>
@@ -84,8 +87,8 @@
                 </div>
 
                 <div class="topbar-actions">
-                    <button class="btn btn-secondary" style="background:#10b981; color:#fff; border:none; display:inline-flex; align-items:center; gap:6px;" onclick="exportExcelReport()">
-                        <i class="bi bi-file-earmark-excel"></i> <span>Xuất File Báo Cáo Excel</span>
+                    <button class="btn btn-secondary" style="border-color:#cbd5e1; display:inline-flex; align-items:center; gap:6px;" onclick="exportExcelReport()">
+                        <i class="bi bi-file-earmark-excel" style="color:#0F766E;"></i> <span>Xuất File Báo Cáo Excel</span>
                     </button>
                     <a href="index.html" class="btn btn-primary animated-shine-btn" style="display:inline-flex; align-items:center; gap:6px;">
                         <i class="bi bi-mortarboard-fill"></i> <span>Sang Trang Học Viên</span>
@@ -184,7 +187,7 @@
                 
                 <!-- PANE 1: COURSES MANAGEMENT -->
                 <div id="pane-courses" class="pane active">
-                    <div style="display: grid; grid-template-columns: 360px 1fr; gap: 20px;">
+                    <div class="admin-grid-2col">
                         
                         <!-- CREATE COURSE FORM -->
                         <div class="table-card" style="padding:20px;">
@@ -296,7 +299,7 @@
 
                     <!-- SUB-PANE 2: FORM THÊM MODULE / BÀI GIẢNG MỚI -->
                     <div id="subpane-modules-add" class="lessons-subpane" style="display:none;">
-                        <div style="display:grid; grid-template-columns: 460px 1fr; gap: 20px;">
+                        <div class="admin-grid-2col">
                             <!-- FORM CARD -->
                             <div class="table-card" style="padding:22px;">
                                 <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">Thêm Bài Giảng Vào Khóa Học</h3>
@@ -405,7 +408,7 @@
 
                 <!-- PANE 3: QUIZ BUILDER INDEPENDENT (WITH EDIT & DELETE) -->
                 <div id="pane-quiz" class="pane">
-                    <div style="display: grid; grid-template-columns: 400px 1fr; gap: 20px;">
+                    <div class="admin-grid-2col">
                         <!-- CREATE QUIZ QUESTION FORM -->
                         <div class="table-card" style="padding:20px;">
                             <h3 style="font-size:1rem; font-weight:800; color:var(--primary); margin-bottom:4px;">Thêm Câu Hỏi Trắc Nghiệm Mới</h3>
@@ -543,7 +546,7 @@
                         </div>
 
                         <!-- DYNAMIC PODIUM TOP 3 -->
-                        <div id="leaderboard-podium" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; margin-bottom:24px;">
+                        <div id="leaderboard-podium" class="podium-grid">
                             <!-- DYNAMIC TOP 1, 2, 3 -->
                         </div>
 
@@ -585,7 +588,7 @@
 
                 <!-- PANE 6: DIVISIONS & DEPARTMENTS MANAGEMENT -->
                 <div id="pane-divisions" class="pane">
-                    <div style="display: grid; grid-template-columns: 380px 1fr; gap: 20px;">
+                    <div class="admin-grid-2col">
                         
                         <!-- FORM CREATE DIVISION / ADD TEAM -->
                         <div class="table-card" style="padding:20px;">
@@ -647,7 +650,7 @@
 
                 <!-- PANE 7: SALES STUDENTS ACCOUNT MANAGEMENT -->
                 <div id="pane-students" class="pane">
-                    <div style="display: grid; grid-template-columns: 380px 1fr; gap: 20px;">
+                    <div class="admin-grid-2col">
                         
                         <!-- FORM CREATE STUDENT ACCOUNT -->
                         <div class="table-card" style="padding:20px;">

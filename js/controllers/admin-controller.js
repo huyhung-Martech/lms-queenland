@@ -32,7 +32,17 @@
     // Mobile Sidebar
     function toggleMobileSidebar() {
         const sidebar = document.getElementById('adminSidebar');
-        if (sidebar) sidebar.classList.toggle('open');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        if (sidebar) {
+            sidebar.classList.toggle('open');
+            if (backdrop) {
+                if (sidebar.classList.contains('open')) {
+                    backdrop.classList.add('open');
+                } else {
+                    backdrop.classList.remove('open');
+                }
+            }
+        }
     }
 
     // Navigation Switcher
@@ -45,6 +55,13 @@
 
         const targetPane = document.getElementById(`pane-${navId}`);
         if (targetPane) targetPane.classList.add('active');
+
+        // Auto-close mobile drawer if open
+        const sidebar = document.getElementById('adminSidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        if (sidebar) sidebar.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('open');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         const titles = {
             courses: 'Quản Lý Khóa Học & Đào Tạo',
