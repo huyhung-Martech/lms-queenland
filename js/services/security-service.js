@@ -185,13 +185,16 @@
 
     /**
      * Public Security API
+     * Note: F12 and inspection blocks are disabled during active UI/UX development.
+     * Re-enable only when client explicitly confirms locking down production.
      */
     var SecurityService = {
         init: function () {
-            initContextMenuBlock();
-            initKeyboardGuard();
-            initDragDropGuard();
-            initAntiDebugTimingCheck();
+            // Disabled blocking during UI development mode per user request
+            // initContextMenuBlock();
+            // initKeyboardGuard();
+            // initDragDropGuard();
+            // initAntiDebugTimingCheck();
             initConsoleGuard();
         },
 
