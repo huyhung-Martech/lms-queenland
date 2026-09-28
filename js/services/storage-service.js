@@ -108,38 +108,44 @@
     const StorageService = {
         // COURSES
         getCourses: function() {
-            const isInit = localStorage.getItem('lms_courses_initialized');
             const stored = localStorage.getItem('lms_courses_catalog') || localStorage.getItem('lms_courses_list');
-            if (isInit) {
-                if (stored) {
-                    try {
-                        const parsed = JSON.parse(stored);
-                        if (Array.isArray(parsed)) return parsed;
-                    } catch(e) {}
-                }
-                return [];
-            }
             if (stored) {
                 try {
                     const parsed = JSON.parse(stored);
                     if (Array.isArray(parsed) && parsed.length > 0) {
-                        localStorage.setItem('lms_courses_initialized', 'true');
+                        // Ensure all 4 core flagship courses are available
+                        let hasAdded = false;
+                        defaultCoursesSeed.forEach(seed => {
+                            if (!parsed.some(c => c.id === seed.id)) {
+                                parsed.push(JSON.parse(JSON.stringify(seed)));
+                                hasAdded = true;
+                            }
+                        });
+                        if (hasAdded) {
+                            this.saveCourses(parsed);
+                        } else {
+                            window.coursesState = parsed;
+                            window.coursesCatalog = parsed;
+                        }
                         return parsed;
                     }
                 } catch(e) {}
             }
-            // Seed defaults first time
-            localStorage.setItem('lms_courses_initialized', 'true');
-            this.saveCourses(defaultCoursesSeed);
-            return JSON.parse(JSON.stringify(defaultCoursesSeed));
+            // Auto-heal: if empty, missing, or corrupted, seed and return full defaults
+            const defaults = JSON.parse(JSON.stringify(defaultCoursesSeed));
+            this.saveCourses(defaults);
+            return defaults;
         },
 
         saveCourses: function(coursesList) {
+            const listToSave = (Array.isArray(coursesList) && coursesList.length > 0)
+                ? coursesList
+                : JSON.parse(JSON.stringify(defaultCoursesSeed));
             localStorage.setItem('lms_courses_initialized', 'true');
-            localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesList));
-            localStorage.setItem('lms_courses_list', JSON.stringify(coursesList));
-            window.coursesState = coursesList;
-            window.coursesCatalog = coursesList;
+            localStorage.setItem('lms_courses_catalog', JSON.stringify(listToSave));
+            localStorage.setItem('lms_courses_list', JSON.stringify(listToSave));
+            window.coursesState = listToSave;
+            window.coursesCatalog = listToSave;
         },
 
         resetCoursesToDefault: function() {

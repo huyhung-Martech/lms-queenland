@@ -146,7 +146,7 @@ function switchView(viewName, push = true) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
         reloadCoursesCatalog();
-        const course = currentSelectedCourse || coursesCatalog[0];
+        const course = currentSelectedCourse || (coursesCatalog && coursesCatalog.length > 0 ? coursesCatalog[0] : null);
         if (course) {
             playCourseLesson(course.id, 1, 1);
             if (push) {
@@ -529,14 +529,14 @@ function handleScrubClick(e) {
 /* ==========================================================================
    SUPABASE CLOUD PERSISTENCE ENGINE (PER-USER CROSS-DEVICE SYNC)
    ========================================================================== */
-var SUPABASE_URL = window.SUPABASE_URL || 'https://kjufpuzzsnabllffogzc.supabase.co';
-var SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqdWZwdXp6c25hYmxsZmZvZ3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMTcyODIsImV4cCI6MjEwNTg5MzI4Mn0.kR-tk-NBRAuZEHrL6IhH-NNsPbNkWGHhsSu7VLg_g_o';
+window.SUPABASE_URL = window.SUPABASE_URL || 'https://kjufpuzzsnabllffogzc.supabase.co';
+window.SUPABASE_ANON_KEY = window.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqdWZwdXp6c25hYmxsZmZvZ3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzMTcyODIsImV4cCI6MjEwNTg5MzI4Mn0.kR-tk-NBRAuZEHrL6IhH-NNsPbNkWGHhsSu7VLg_g_o';
 
 var supabaseClient = window.supabaseClient || null;
 if (!supabaseClient) {
     try {
         if (window.supabase && typeof window.supabase.createClient === 'function') {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
             window.supabaseClient = supabaseClient;
             console.log('[QueenLand LMS] Supabase Cloud Client Initialized.');
         }
@@ -1078,13 +1078,15 @@ function renderResumeLearningBanner() {
         }
     }
 
+    if (!activeCourse) return;
+
     const prog = getStudentProgress(activeCourse.id);
     const lastActive = prog.lastActive || { modNum: 1, lessonNum: 1 };
     const percent = calculateCourseProgressPercent(activeCourse.id);
 
     const mod = (activeCourse.modules || []).find(m => m.id === lastActive.modNum) || (activeCourse.modules || [])[0];
     const les = (mod && mod.lessons) ? (mod.lessons.find(l => l.id === lastActive.lessonNum) || mod.lessons[0]) : null;
-    const lessonTitle = les ? les.title : `Module ${lastActive.modNum}`;
+    const lessonTitle = les ? les.title : (mod ? (mod.title || `Module ${lastActive.modNum}`) : `Module ${lastActive.modNum}`);
 
     // 2. Synchronize Bento 2.0 Hero Ongoing Lesson Card (Tile 2)
     const heroSpotlightTitle = document.getElementById('hero-spotlight-title');
@@ -1486,27 +1488,25 @@ const defaultCoursesCatalog = [
     }
 ];
 
-var coursesCatalog = window.coursesCatalog || defaultCoursesCatalog;
+var coursesCatalog = (window.coursesCatalog && window.coursesCatalog.length > 0)
+    ? window.coursesCatalog
+    : ((window.defaultCoursesSeed && window.defaultCoursesSeed.length > 0)
+        ? JSON.parse(JSON.stringify(window.defaultCoursesSeed))
+        : defaultCoursesCatalog);
 let currentSelectedCourse = null;
 
-// RELOAD COURSES CATALOG FROM LOCALSTORAGE SAFELY
+// RELOAD COURSES CATALOG FROM LOCALSTORAGE SAFELY WITH PERMANENT AUTO-HEALING
 function reloadCoursesCatalog() {
     try {
-        const isInit = localStorage.getItem('lms_courses_initialized');
-        const stored = localStorage.getItem('lms_courses_catalog') || localStorage.getItem('lms_courses_list');
-        if (isInit) {
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed)) {
-                    coursesCatalog = parsed;
-                    window.coursesCatalog = coursesCatalog;
-                    return;
-                }
+        if (window.StorageService && typeof window.StorageService.getCourses === 'function') {
+            const list = window.StorageService.getCourses();
+            if (Array.isArray(list) && list.length > 0) {
+                coursesCatalog = list;
+                window.coursesCatalog = coursesCatalog;
+                return;
             }
-            coursesCatalog = [];
-            window.coursesCatalog = coursesCatalog;
-            return;
         }
+        const stored = localStorage.getItem('lms_courses_catalog') || localStorage.getItem('lms_courses_list');
         if (stored) {
             const parsed = JSON.parse(stored);
             if (Array.isArray(parsed) && parsed.length > 0) {
@@ -1523,19 +1523,21 @@ function reloadCoursesCatalog() {
                 });
                 coursesCatalog = parsed;
                 window.coursesCatalog = coursesCatalog;
-                localStorage.setItem('lms_courses_initialized', 'true');
                 return;
             }
         }
     } catch (e) {
         console.error("Lỗi đọc lms_courses_catalog:", e);
     }
-    coursesCatalog = defaultCoursesCatalog;
+    const seed = (window.defaultCoursesSeed && window.defaultCoursesSeed.length > 0)
+        ? JSON.parse(JSON.stringify(window.defaultCoursesSeed))
+        : defaultCoursesCatalog;
+    coursesCatalog = seed;
     window.coursesCatalog = coursesCatalog;
     try {
         localStorage.setItem('lms_courses_initialized', 'true');
-        localStorage.setItem('lms_courses_catalog', JSON.stringify(defaultCoursesCatalog));
-        localStorage.setItem('lms_courses_list', JSON.stringify(defaultCoursesCatalog));
+        localStorage.setItem('lms_courses_catalog', JSON.stringify(coursesCatalog));
+        localStorage.setItem('lms_courses_list', JSON.stringify(coursesCatalog));
     } catch (e) {}
 }
 
@@ -3090,9 +3092,10 @@ function initSessionStudyTimer() {
 // REAL-TIME BI-DIRECTIONAL STORAGE SYNC: LIVE UPDATES WHEN ADMIN CHANGES SETTINGS
 window.addEventListener('storage', function(e) {
     applySystemConfig();
-    if (!e || e.key === 'lms_courses_catalog' || e.key === 'lms_custom_courses') {
+    if (!e || e.key === 'lms_courses_catalog' || e.key === 'lms_custom_courses' || e.key === 'lms_courses_list') {
         reloadCoursesCatalog();
-        renderCourseCards();
+        const currentDiv = document.getElementById('student-div-select')?.value || 'ALL';
+        renderStudentCoursesCatalog(currentDiv);
     }
 });
 
