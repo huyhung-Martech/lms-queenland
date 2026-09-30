@@ -8,9 +8,121 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260930_1520">
     <!-- YouTube IFrame Player API for Custom LMS Player Controls & Anti-Cheat -->
     <script src="https://www.youtube.com/iframe_api"></script>
+
+    <!-- CRITICAL NAVBAR CSS (ĐẢM BẢO GIAO DIỆN NÚT ĐIỀU HƯỚNG SANG TRỌNG TUYỆT ĐỐI, KHÔNG DÍNH CACHE) -->
+    <style id="critical-navbar-css">
+        .nav-links {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            flex-wrap: nowrap !important;
+        }
+        .nav-btn {
+            height: 38px !important;
+            padding: 0 18px !important;
+            border-radius: 9999px !important;
+            font-size: 0.78rem !important;
+            font-weight: 800 !important;
+            font-family: 'Hanken Grotesk', 'Manrope', system-ui, -apple-system, sans-serif !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.03em !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 7px !important;
+            cursor: pointer !important;
+            white-space: nowrap !important;
+            text-decoration: none !important;
+            user-select: none !important;
+            transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-sizing: border-box !important;
+        }
+        .nav-btn i {
+            font-size: 0.95rem !important;
+            transition: transform 0.2s ease !important;
+        }
+        /* Nút Trang Chủ: Nền trắng sứ sang trọng, viền vàng gold tinh tế, hết chìm */
+        .nav-btn-home {
+            background: #ffffff !important;
+            color: #475569 !important;
+            border: 1.5px solid #cbd5e1 !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        }
+        .nav-btn-home:hover {
+            color: #1A2238 !important;
+            border-color: #C5A880 !important;
+            background: #f8fafc !important;
+            transform: translateY(-1px) !important;
+        }
+        .nav-btn-home.active {
+            background: #ffffff !important;
+            color: #1A2238 !important;
+            border: 1.5px solid #C5A880 !important;
+            box-shadow: 0 2px 10px rgba(197, 168, 128, 0.35) !important;
+        }
+        .nav-btn-home.active i {
+            color: #C5A880 !important;
+            transform: scale(1.1) !important;
+        }
+        /* Nút Vào Phòng Học: Xanh đen Oxford Navy đẳng cấp */
+        .nav-btn-portal {
+            background: linear-gradient(135deg, #1A2238 0%, #121829 100%) !important;
+            color: #ffffff !important;
+            border: 1.5px solid rgba(197, 168, 128, 0.55) !important;
+            box-shadow: 0 4px 14px rgba(26, 34, 56, 0.35) !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+        .nav-btn-portal i {
+            color: #C5A880 !important;
+        }
+        .nav-btn-portal:hover {
+            filter: brightness(1.1) !important;
+            transform: translateY(-1px) !important;
+            box-shadow: 0 6px 18px rgba(26, 34, 56, 0.45) !important;
+        }
+        .nav-btn-portal.active {
+            background: linear-gradient(135deg, #0F766E 0%, #115E59 100%) !important;
+            border-color: #2dd4bf !important;
+            box-shadow: 0 4px 16px rgba(15, 118, 110, 0.4) !important;
+        }
+        .nav-btn-portal.active i {
+            color: #ffffff !important;
+        }
+        /* Nút Quản Trị Hệ Thống (Ẩn mặc định, chỉ hiện khi Admin đăng nhập) */
+        .nav-admin-badge-btn {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+            color: #b45309 !important;
+            border: 1.5px solid #fde68a !important;
+            box-shadow: 0 2px 6px rgba(217, 119, 6, 0.15) !important;
+        }
+        .nav-admin-badge-btn:hover {
+            background: #fef08a !important;
+            color: #78350f !important;
+            border-color: #f59e0b !important;
+            transform: translateY(-1px) !important;
+        }
+        @media (max-width: 600px) {
+            .nav-links {
+                width: 100% !important;
+                gap: 6px !important;
+            }
+            .nav-btn {
+                flex: 1 !important;
+                height: 35px !important;
+                padding: 0 8px !important;
+                font-size: 0.72rem !important;
+                gap: 4px !important;
+            }
+            .nav-admin-badge-btn {
+                flex: none !important;
+                padding: 0 10px !important;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header Navigation (Parkland Style) -->
@@ -25,16 +137,14 @@
             </div>
             
             <nav class="nav-links">
-                <div class="segmented-nav-group">
-                    <button class="segmented-nav-btn active" id="btn-landing-view" onclick="goToHome()" title="Về Trang Chủ">
-                        <i class="bi bi-house-door-fill"></i> <span>Trang Chủ</span>
-                    </button>
-                    <button class="segmented-nav-btn" id="btn-portal-view" onclick="switchView('portal')" title="Vào phòng học bài giảng video">
-                        <i class="bi bi-play-circle-fill"></i> <span>Vào Phòng Học</span>
-                    </button>
-                </div>
+                <button class="nav-btn nav-btn-home active" id="btn-landing-view" onclick="goToHome()" title="Về Trang Chủ">
+                    <i class="bi bi-house-door-fill"></i> <span>Trang Chủ</span>
+                </button>
+                <button class="nav-btn nav-btn-portal" id="btn-portal-view" onclick="switchView('portal')" title="Vào phòng học bài giảng video">
+                    <i class="bi bi-play-circle-fill"></i> <span>Vào Phòng Học</span>
+                </button>
                 <!-- NÚT QUẢN TRỊ ADMIN (CHỈ HIỂN THỊ KHI TÀI KHOẢN ADMIN ĐĂNG NHẬP, ẨN HOÀN TOÀN VỚI HỌC VIÊN) -->
-                <a href="admin.html" class="nav-admin-badge-btn" id="btn-admin-portal" style="display:none;" title="Truy cập Bảng Quản Trị Hệ Thống">
+                <a href="admin.html" class="nav-btn nav-admin-badge-btn" id="btn-admin-portal" style="display:none;" title="Truy cập Bảng Quản Trị Hệ Thống">
                     <i class="bi bi-shield-lock-fill"></i> <span>Quản Trị</span>
                 </a>
             </nav>
