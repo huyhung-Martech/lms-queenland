@@ -190,6 +190,30 @@
             window.usersDatabase = usersList;
         },
 
+        // ADMIN ACCOUNT CREDENTIALS (CUSTOMIZABLE)
+        getAdminAccount: function() {
+            try {
+                const stored = localStorage.getItem('lms_admin_account');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (parsed && parsed.username && parsed.pass) return parsed;
+                }
+            } catch(e) {}
+            const defaultAdmin = {
+                username: 'admin',
+                pass: 'admin123',
+                name: 'Ban Đào Tạo Queen Land (Admin)',
+                role: 'admin',
+                empId: 'ADMIN'
+            };
+            localStorage.setItem('lms_admin_account', JSON.stringify(defaultAdmin));
+            return defaultAdmin;
+        },
+
+        saveAdminAccount: function(adminData) {
+            localStorage.setItem('lms_admin_account', JSON.stringify(adminData));
+        },
+
         // QUIZZES
         getQuizzes: function() {
             try {

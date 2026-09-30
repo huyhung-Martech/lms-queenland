@@ -2736,11 +2736,18 @@ function checkAuthGuard() {
     const btnGuardReg = document.getElementById('btn-guard-reg');
     const regTabBtn = document.getElementById('auth-tab-reg-btn');
     const btnChangePass = document.getElementById('btn-change-password');
+    const btnAdminPortal = document.getElementById('btn-admin-portal');
+    const deptLabelEl = document.querySelector('.user-dept-label');
     const allowSelfReg = localStorage.getItem('lms_allow_self_reg') !== 'false';
 
     // Toggle self-registration buttons
     if (btnGuardReg) btnGuardReg.style.display = allowSelfReg ? 'inline-flex' : 'none';
     if (regTabBtn) regTabBtn.style.display = allowSelfReg ? 'inline-block' : 'none';
+
+    // Role-based Admin Portal Button display (ẨN HOÀN TOÀN VỚI HỌC VIÊN HOẶC CHƯA ĐĂNG NHẬP)
+    if (btnAdminPortal) {
+        btnAdminPortal.style.display = (currentUser && currentUser.role === 'admin') ? 'inline-flex' : 'none';
+    }
 
     if (!currentUser) {
         // GUEST MODE: HIDE 100% OF LESSONS & SHOW LOCK SCREEN
@@ -2749,6 +2756,7 @@ function checkAuthGuard() {
         if (btnChangePass) btnChangePass.style.display = 'none';
 
         if (userNameEl) userNameEl.innerHTML = `<span style="color:#ef4444; font-weight:700;">Chưa Đăng Nhập</span>`;
+        if (deptLabelEl) deptLabelEl.innerHTML = `<i class="bi bi-shield-slash"></i> Khách Vãng Lai`;
         if (userDivSelect) userDivSelect.disabled = true;
         if (authBtn) {
             authBtn.textContent = 'Đăng Nhập';
@@ -2763,11 +2771,18 @@ function checkAuthGuard() {
         if (curriculumSec) curriculumSec.style.display = 'block';
         if (btnChangePass) btnChangePass.style.display = 'inline-flex';
 
-        if (userNameEl) userNameEl.innerHTML = `${currentUser.name} <span class="emp-code">(${currentUser.empId})</span>`;
+        if (currentUser.role === 'admin') {
+            if (userNameEl) userNameEl.innerHTML = `${currentUser.name} <span class="emp-code" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a;">(QUẢN TRỊ VIÊN)</span>`;
+            if (deptLabelEl) deptLabelEl.innerHTML = `<i class="bi bi-shield-lock-fill" style="color:#d97706;"></i> Ban Quản Trị Đào Tạo`;
+        } else {
+            if (userNameEl) userNameEl.innerHTML = `${currentUser.name} <span class="emp-code">(${currentUser.empId})</span>`;
+            if (deptLabelEl) deptLabelEl.innerHTML = `<i class="bi bi-mortarboard-fill"></i> Học Viên Queen Land`;
+        }
+
         if (userDivSelect) {
             userDivSelect.disabled = false;
             // Ensure select has 'ALL' or user's div
-            if (!userDivSelect.value) userDivSelect.value = 'ALL';
+            if (!userDivSelect.value) userDivSelect.value = currentUser.div || 'ALL';
         }
         renderStudentCoursesCatalog(userDivSelect ? userDivSelect.value : 'ALL');
         if (authBtn) {
@@ -2834,6 +2849,29 @@ async function handleLogin(event) {
     const empId = document.getElementById('login-empid').value.trim();
     const pass = document.getElementById('login-password').value;
 
+    // 1. Kiểm tra đăng nhập với tư cách Quản Trị Viên (Admin)
+    const adminAcc = (window.StorageService && window.StorageService.getAdminAccount)
+        ? window.StorageService.getAdminAccount()
+        : { username: 'admin', pass: 'admin123', name: 'Ban Đào Tạo Queen Land (Admin)', role: 'admin', empId: 'ADMIN' };
+
+    if ((empId.toLowerCase() === adminAcc.username.toLowerCase() || empId.toLowerCase() === 'admin') && pass === adminAcc.pass) {
+        currentUser = {
+            empId: adminAcc.empId || 'ADMIN',
+            username: adminAcc.username,
+            name: adminAcc.name || 'Ban Quản Trị Đào Tạo',
+            role: 'admin',
+            div: 'ALL',
+            team: 'Ban Quản Trị Hệ Thống',
+            pass: adminAcc.pass
+        };
+        localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
+        checkAuthGuard();
+        closeAuthModal();
+        alert(`ĐĂNG NHẬP QUẢN TRỊ VIÊN THÀNH CÔNG!\n\nXin chào: ${currentUser.name}!\n• Quyền hạn: Quản Trị Hệ Thống Toàn Quyền\n• Nút [Quản Trị] đã được kích hoạt trên thanh menu!`);
+        return;
+    }
+
+    // 2. Kiểm tra đăng nhập với tư cách Học Viên (Sales)
     let matched = usersDatabase.find(u => u.empId.toLowerCase() === empId.toLowerCase() && u.pass === pass);
 
     // If not found in local cache, query Supabase Cloud users table
@@ -2852,7 +2890,8 @@ async function handleLogin(event) {
                     name: data.name,
                     div: data.division,
                     team: data.team,
-                    pass: data.password
+                    pass: data.password,
+                    role: data.role || 'student'
                 };
                 const existingIdx = usersDatabase.findIndex(u => u.empId.toLowerCase() === matched.empId.toLowerCase());
                 if (existingIdx !== -1) {
@@ -2868,6 +2907,7 @@ async function handleLogin(event) {
     }
 
     if (matched) {
+        if (!matched.role) matched.role = 'student';
         currentUser = matched;
         localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
         checkAuthGuard();
@@ -2912,7 +2952,7 @@ async function handleRegister(event) {
         } catch (e) {}
     }
 
-    const newUser = { empId, name: fullname, div, team, pass };
+    const newUser = { empId, name: fullname, div, team, pass, role: 'student' };
     usersDatabase.push(newUser);
     localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
 
@@ -2958,7 +2998,7 @@ function handleLogout() {
    ========================================================================== */
 function openChangePasswordModal() {
     if (!currentUser) {
-        alert('Vui lòng đăng nhập tài khoản học viên trước khi đổi mật khẩu!');
+        alert('Vui lòng đăng nhập tài khoản trước khi đổi mật khẩu!');
         openAuthModal('login');
         return;
     }
@@ -3004,24 +3044,31 @@ function handleChangePassword(event) {
     currentUser.pass = newPass;
     localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
 
-    // Update usersDatabase list & localStorage
-    const idx = usersDatabase.findIndex(u => u.empId.toLowerCase() === currentUser.empId.toLowerCase());
-    if (idx !== -1) {
-        usersDatabase[idx].pass = newPass;
+    // If Admin, also update Admin Account config
+    if (currentUser.role === 'admin' && window.StorageService && window.StorageService.getAdminAccount) {
+        const adminAcc = window.StorageService.getAdminAccount();
+        adminAcc.pass = newPass;
+        window.StorageService.saveAdminAccount(adminAcc);
     } else {
-        usersDatabase.push(currentUser);
-    }
-    localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
+        // Update usersDatabase list & localStorage
+        const idx = usersDatabase.findIndex(u => u.empId.toLowerCase() === currentUser.empId.toLowerCase());
+        if (idx !== -1) {
+            usersDatabase[idx].pass = newPass;
+        } else {
+            usersDatabase.push(currentUser);
+        }
+        localStorage.setItem('lms_users_db', JSON.stringify(usersDatabase));
 
-    // Sync password change to Supabase Cloud
-    if (supabaseClient) {
-        supabaseClient
-            .from('users')
-            .update({ password: newPass })
-            .ilike('emp_id', currentUser.empId)
-            .then(({ error }) => {
-                if (error) console.warn('[QueenLand LMS] Supabase password sync notice:', error.message);
-            });
+        // Sync password change to Supabase Cloud
+        if (supabaseClient) {
+            supabaseClient
+                .from('users')
+                .update({ password: newPass })
+                .ilike('emp_id', currentUser.empId)
+                .then(({ error }) => {
+                    if (error) console.warn('[QueenLand LMS] Supabase password sync notice:', error.message);
+                });
+        }
     }
 
     closeChangePasswordModal();

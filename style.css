@@ -435,87 +435,99 @@ button, input, select, textarea, optgroup {
     letter-spacing: 0.01em;
 }
 
+/* ==========================================================================
+   SEGMENTED GLASSMORPHIC NAVIGATION BAR (APPLE / PARKLAND THEME)
+   ========================================================================== */
 .nav-links {
     display: flex;
-    gap: 4px;
     align-items: center;
+    gap: 8px;
     flex-wrap: nowrap;
-    height: 100%;
 }
 
-.nav-btn {
-    background: transparent;
+.segmented-nav-group {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 9999px;
+    padding: 3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.segmented-nav-btn {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 9999px;
     border: none;
-    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: #475569;
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    text-decoration: none;
+}
+
+.segmented-nav-btn i {
+    font-size: 0.95rem;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.segmented-nav-btn:hover {
+    color: var(--primary);
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.segmented-nav-btn.active {
+    background: #ffffff;
+    color: var(--primary);
+    font-weight: 800;
+    box-shadow: 0 2px 8px rgba(26, 34, 56, 0.09), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.segmented-nav-btn.active i {
+    color: var(--accent);
+    transform: scale(1.08);
+}
+
+/* Nút Quản Trị Hệ Thống (Chỉ hiển thị khi Admin đăng nhập, ẩn với học viên) */
+.nav-admin-badge-btn {
+    height: 36px;
     padding: 0 14px;
-    height: 100%;
-    font-size: 0.76rem;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    color: #b45309;
+    border: 1px solid #fde68a;
+    font-size: 0.78rem;
     font-weight: 800;
     font-family: var(--font-sans);
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: #64748b;
-    cursor: pointer;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: all 0.2s ease;
+    letter-spacing: 0.02em;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    border-radius: 0;
+    text-decoration: none;
+    box-shadow: 0 1px 4px rgba(217, 119, 6, 0.1);
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
-.nav-btn:hover {
-    color: var(--primary);
-    border-bottom-color: #cbd5e1;
-}
-
-.nav-btn.active {
-    color: var(--primary);
-    border-bottom-color: #f59e0b;
-    font-weight: 900;
-}
-
-.nav-btn.highlight-btn {
-    background: linear-gradient(135deg, #1A2238 0%, #121829 100%);
-    color: #ffffff !important;
-    border: 1px solid rgba(197, 168, 128, 0.4);
-    box-shadow: 0px 4px 14px -4px rgba(26, 34, 56, 0.4), inset 0px 1px 1px 0px rgba(255, 255, 255, 0.15);
-    border-radius: 0.65rem;
-    height: 38px;
-    padding: 0 16px;
-    position: relative;
-    overflow: hidden;
-}
-
-.nav-btn.highlight-btn::after {
-    content: '';
-    position: absolute;
-    top: 1px;
-    right: 10%;
-    width: 60%;
-    height: 1px;
-    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
-}
-
-.nav-btn.highlight-btn:hover {
-    transform: scale(1.02);
-    filter: brightness(1.1);
-}
-
-.nav-btn.admin-link-btn {
-    background: #fffbeb;
-    color: #b45309;
-    border: 1px solid #fde68a;
-    border-radius: 0.65rem;
-    height: 38px;
-    padding: 0 14px;
-}
-
-.nav-btn.admin-link-btn:hover {
-    background: #fef3c7;
-    border-color: #fcd34d;
-    color: #92400e;
+.nav-admin-badge-btn:hover {
+    background: #fef08a;
+    border-color: #f59e0b;
+    color: #78350f;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(217, 119, 6, 0.18);
 }
 
 .user-header-area {
@@ -3703,42 +3715,41 @@ html, body {
         height: auto;
         padding-top: 6px;
         border-top: 1px solid #f1f5f9;
+        align-items: center;
     }
-    .nav-btn {
+    .segmented-nav-group {
         flex: 1;
-        height: 38px;
-        min-height: 38px;
-        padding: 0 4px;
-        font-size: 0.69rem;
-        letter-spacing: -0.2px;
+        width: 100%;
+        display: flex;
+        padding: 3px;
+        background: #f1f5f9;
+        border-radius: 9999px;
+    }
+    .segmented-nav-btn {
+        flex: 1;
+        height: 36px;
+        padding: 0 8px;
+        font-size: 0.72rem;
+        letter-spacing: -0.1px;
         gap: 4px;
         justify-content: center;
-        border-radius: 8px;
-        border: 1px solid #e2e8f0;
-        background: #f8fafc;
-        text-align: center;
-        white-space: nowrap;
-        border-bottom: 1px solid #e2e8f0;
+        border-radius: 9999px;
     }
-    .nav-btn i {
-        font-size: 0.72rem;
+    .segmented-nav-btn i {
+        font-size: 0.78rem;
     }
-    .nav-btn.active {
+    .segmented-nav-btn.active {
         background: #ffffff;
-        border-color: #f59e0b;
-        color: #b45309;
-        box-shadow: 0 1px 3px rgba(245, 158, 11, 0.15);
+        color: var(--primary);
         font-weight: 800;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
     }
-    .nav-btn.highlight-btn {
-        background: linear-gradient(135deg, #1A2238 0%, #121829 100%);
-        color: #ffffff !important;
-        border-color: rgba(197, 168, 128, 0.5);
-    }
-    .nav-btn.admin-link-btn {
-        background: #fffbeb;
-        color: #b45309;
-        border-color: #fde68a;
+    .nav-admin-badge-btn {
+        height: 36px;
+        padding: 0 10px;
+        font-size: 0.72rem;
+        flex-shrink: 0;
+        border-radius: 9999px;
     }
 }
 
@@ -4721,4 +4732,192 @@ img, video, iframe {
     -o-user-drag: none;
     user-drag: none;
 }
+
+/* ==========================================================================
+   ADMIN AUTH GUARD LOCK SCREEN & ADMIN SETTINGS MODAL (LUXURY / ENTERPRISE)
+   ========================================================================== */
+.admin-guard-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+.admin-guard-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 460px;
+    border-radius: 18px;
+    box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(197, 168, 128, 0.3);
+    overflow: hidden;
+    animation: modalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.admin-guard-header {
+    background: linear-gradient(135deg, #1A2238 0%, #111827 100%);
+    color: #ffffff;
+    padding: 28px 24px 22px;
+    text-align: center;
+    position: relative;
+    border-bottom: 2px solid #C5A880;
+}
+
+.admin-guard-icon-box {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 12px;
+    background: linear-gradient(135deg, rgba(197, 168, 128, 0.2) 0%, rgba(197, 168, 128, 0.05) 100%);
+    border: 1px solid rgba(197, 168, 128, 0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #C5A880;
+    font-size: 1.75rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.admin-guard-header h2 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+    color: #ffffff;
+}
+
+.admin-guard-header p {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.admin-guard-notice {
+    margin-top: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    text-align: left;
+}
+
+.admin-guard-form {
+    padding: 24px 26px 20px;
+}
+
+.admin-guard-form .form-group {
+    margin-bottom: 16px;
+}
+
+.admin-guard-form label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+
+.admin-guard-form label i {
+    color: var(--accent);
+}
+
+.admin-guard-form .form-control {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 9px;
+    border: 1.5px solid #cbd5e1;
+    font-size: 0.9rem;
+    font-family: var(--font-sans);
+    transition: all 0.2s ease;
+    background: #f8fafc;
+}
+
+.admin-guard-form .form-control:focus {
+    border-color: var(--accent);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(197, 168, 128, 0.2);
+    outline: none;
+}
+
+.admin-guard-submit-btn {
+    width: 100%;
+    height: 46px;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #1A2238 0%, #111827 100%);
+    color: #ffffff;
+    border: 1px solid rgba(197, 168, 128, 0.5);
+    box-shadow: 0 4px 15px rgba(26, 34, 56, 0.35);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.admin-guard-submit-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26, 34, 56, 0.45);
+}
+
+.admin-guard-footer {
+    padding: 14px 24px 20px;
+    text-align: center;
+    border-top: 1px solid #f1f5f9;
+    background: #fafafa;
+}
+
+.admin-guard-back-link {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #64748b;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s ease;
+}
+
+.admin-guard-back-link:hover {
+    color: var(--primary);
+}
+
+@media (max-width: 600px) {
+    .admin-guard-card {
+        border-radius: 14px;
+    }
+    .admin-guard-header {
+        padding: 20px 16px 16px;
+    }
+    .admin-guard-header h2 {
+        font-size: 1.15rem;
+    }
+    .admin-guard-icon-box {
+        width: 50px;
+        height: 50px;
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+    }
+    .admin-guard-form {
+        padding: 18px 16px 16px;
+    }
+}
+
 

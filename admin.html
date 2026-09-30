@@ -17,7 +17,43 @@
 </head>
 <body>
 
-    <div class="admin-wrapper">
+    <!-- MÀN HÌNH BẢO MẬT XÁC THỰC QUẢN TRỊ VIÊN (ADMIN AUTH GUARD LOCK SCREEN) -->
+    <div id="admin-auth-guard-screen" class="admin-guard-overlay" style="display:none;">
+        <div class="admin-guard-card">
+            <div class="admin-guard-header">
+                <div class="admin-guard-icon-box">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <h2>XÁC THỰC QUẢN TRỊ VIÊN</h2>
+                <p>Khu vực bảo mật nội bộ dành riêng cho Ban Đào Tạo & Quản Trị Viên Hệ Thống</p>
+                <div id="admin-guard-student-notice" class="admin-guard-notice" style="display:none;"></div>
+            </div>
+
+            <form id="admin-guard-form" onsubmit="handleDirectAdminLogin(event)" class="admin-guard-form">
+                <div class="form-group">
+                    <label for="admin-guard-user"><i class="bi bi-person-fill"></i> Tên Đăng Nhập Quản Trị:</label>
+                    <input type="text" id="admin-guard-user" class="form-control" placeholder="Nhập tài khoản quản trị (VD: admin)" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="admin-guard-pass"><i class="bi bi-key-fill"></i> Mật Khẩu Quản Trị:</label>
+                    <input type="password" id="admin-guard-pass" class="form-control" placeholder="Nhập mật khẩu quản trị" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block admin-guard-submit-btn">
+                    <i class="bi bi-box-arrow-in-right"></i> <span>Xác Thực & Mở Khóa Bảng Quản Trị</span>
+                </button>
+            </form>
+
+            <div class="admin-guard-footer">
+                <a href="index.html" class="admin-guard-back-link">
+                    <i class="bi bi-arrow-left"></i> Quay lại Giao Diện Học Viên
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="admin-wrapper" id="admin-app-wrapper" style="display:none;">
         
         <!-- SIDEBAR TRÁI CỐ ĐỊNH CHUẨN SAAS ENTERPRISE -->
         <aside class="admin-sidebar" id="adminSidebar">
@@ -89,6 +125,12 @@
                 <div class="topbar-actions">
                     <button class="btn btn-secondary" style="border-color:#cbd5e1; display:inline-flex; align-items:center; gap:6px;" onclick="exportExcelReport()">
                         <i class="bi bi-file-earmark-excel" style="color:#0F766E;"></i> <span>Xuất File Báo Cáo Excel</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" style="border-color:#fde68a; background:#fffbeb; color:#b45309; display:inline-flex; align-items:center; gap:6px; font-weight:700;" onclick="openChangeAdminModal()" title="Thay đổi tài khoản & mật khẩu đăng nhập Admin">
+                        <i class="bi bi-person-gear"></i> <span>Tài Khoản Admin</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" style="border-color:#fecaca; background:#fef2f2; color:#dc2626; display:inline-flex; align-items:center; gap:6px; font-weight:700;" onclick="handleAdminLogout()" title="Đăng xuất khỏi Bảng Quản Trị">
+                        <i class="bi bi-box-arrow-right"></i> <span>Đăng Xuất</span>
                     </button>
                     <a href="index.html" class="btn btn-primary animated-shine-btn" style="display:inline-flex; align-items:center; gap:6px;">
                         <i class="bi bi-mortarboard-fill"></i> <span>Sang Trang Học Viên</span>
@@ -1187,6 +1229,55 @@
             </div>
         </div>
     </div>
+    <!-- MODAL THAY ĐỔI TÀI KHOẢN VÀ MẬT KHẨU ADMIN -->
+    <div id="changeAdminModal" style="display:none; position:fixed; inset:0; background:rgba(15, 23, 42, 0.7); backdrop-filter:blur(4px); z-index:500; align-items:center; justify-content:center; padding:16px;">
+        <div style="background:#ffffff; width:100%; max-width:480px; border-radius:14px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.3); overflow:hidden; border:1px solid #e2e8f0; animation:modalPop 0.22s ease;">
+            <div style="background:linear-gradient(135deg, #1A2238 0%, #111827 100%); padding:18px 24px; display:flex; justify-content:space-between; align-items:center; color:#ffffff;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <i class="bi bi-shield-lock-fill" style="color:var(--accent); font-size:1.25rem;"></i>
+                    <div>
+                        <h3 style="margin:0; font-size:1rem; font-weight:800; color:#ffffff;">Cấu Hình Tài Khoản Quản Trị</h3>
+                        <span style="font-size:0.75rem; color:#94a3b8;">Thay đổi thông tin đăng nhập quản trị viên</span>
+                    </div>
+                </div>
+                <button type="button" onclick="closeChangeAdminModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;" aria-label="Đóng"><i class="bi bi-x-lg"></i></button>
+            </div>
+
+            <form onsubmit="saveAdminCredentials(event)" style="padding:22px 24px;">
+                <div style="margin-bottom:14px;">
+                    <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Mật Khẩu Admin Hiện Tại <span style="color:#ef4444;">*</span>:</label>
+                    <input type="password" id="cur-admin-pass" class="form-control" placeholder="Nhập mật khẩu admin hiện tại" required style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.88rem;">
+                </div>
+
+                <div style="margin-bottom:14px;">
+                    <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Tên Đăng Nhập Quản Trị Mới <span style="color:#ef4444;">*</span>:</label>
+                    <input type="text" id="new-admin-user" class="form-control" placeholder="VD: admin, bandoatao, ..." required style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.88rem;">
+                </div>
+
+                <div style="margin-bottom:14px;">
+                    <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Tên Hiển Thị Quản Trị:</label>
+                    <input type="text" id="new-admin-name" class="form-control" placeholder="VD: Ban Đào Tạo Queen Land" style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.88rem;">
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px;">
+                    <div>
+                        <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Mật Khẩu Mới <span style="color:#ef4444;">*</span>:</label>
+                        <input type="password" id="new-admin-pass" class="form-control" placeholder="Tối thiểu 6 ký tự" required style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.88rem;">
+                    </div>
+                    <div>
+                        <label style="font-size:0.8rem; font-weight:700; color:#1e293b; display:block; margin-bottom:5px;">Xác Nhận Mật Khẩu <span style="color:#ef4444;">*</span>:</label>
+                        <input type="password" id="confirm-admin-pass" class="form-control" placeholder="Nhập lại mật khẩu mới" required style="width:100%; padding:10px 14px; border-radius:8px; border:1px solid #cbd5e1; font-size:0.88rem;">
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid #f1f5f9; padding-top:16px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeChangeAdminModal()" style="padding:9px 18px; font-size:0.85rem;">Hủy Bỏ</button>
+                    <button type="submit" class="btn btn-primary" style="padding:9px 20px; font-size:0.85rem;">Lưu Cập Nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <div id="adminToast" style="display:none; position:fixed; bottom:24px; right:24px; background:#0f172a; color:#ffffff; padding:14px 20px; border-radius:10px; box-shadow:0 10px 25px rgba(0,0,0,0.2); z-index:999; font-size:0.85rem; font-weight:700; align-items:center; gap:10px; border-left:4px solid #10b981; animation:modalPop 0.25s ease;">
         <span id="adminToastMsg">Đã lưu thay đổi thành công!</span>
     </div>

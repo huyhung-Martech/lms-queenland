@@ -2275,9 +2275,174 @@
     }
 
     // ==========================================
-    // 10. INITIALIZATION LIFECYCLE
+    // 9.5 ADMIN AUTHENTICATION & SECURITY GUARD
     // ==========================================
-    window.addEventListener('DOMContentLoaded', () => {
+    function checkAdminAuth() {
+        const guardScreen = document.getElementById('admin-auth-guard-screen');
+        const appWrapper = document.getElementById('admin-app-wrapper');
+        const noticeEl = document.getElementById('admin-guard-student-notice');
+
+        let currentUser = null;
+        try {
+            currentUser = JSON.parse(localStorage.getItem('lms_current_user') || 'null');
+        } catch(e) {}
+
+        if (!currentUser || currentUser.role !== 'admin') {
+            if (guardScreen) guardScreen.style.display = 'flex';
+            if (appWrapper) appWrapper.style.display = 'none';
+
+            if (noticeEl) {
+                if (currentUser && currentUser.name) {
+                    noticeEl.innerHTML = `<i class="bi bi-exclamation-triangle-fill" style="margin-right:4px;"></i> Bạn đang đăng nhập bằng tài khoản học viên <strong>${escapeHtml(currentUser.name)} (${escapeHtml(currentUser.empId || '')})</strong>.<br>Vui lòng đăng nhập tài khoản Quản Trị Viên để mở khóa Bảng Quản Trị.`;
+                    noticeEl.style.display = 'block';
+                } else {
+                    noticeEl.style.display = 'none';
+                }
+            }
+            return false;
+        }
+
+        // Authenticated as Admin
+        if (guardScreen) guardScreen.style.display = 'none';
+        if (appWrapper) appWrapper.style.display = 'flex';
+        return true;
+    }
+
+    function handleDirectAdminLogin(event) {
+        event.preventDefault();
+        const userInput = (document.getElementById('admin-guard-user')?.value || '').trim();
+        const passInput = (document.getElementById('admin-guard-pass')?.value || '');
+
+        const adminAcc = (window.StorageService && window.StorageService.getAdminAccount)
+            ? window.StorageService.getAdminAccount()
+            : { username: 'admin', pass: 'admin123', name: 'Ban Đào Tạo Queen Land (Admin)', role: 'admin', empId: 'ADMIN' };
+
+        if ((userInput.toLowerCase() === adminAcc.username.toLowerCase() || userInput.toLowerCase() === 'admin') && passInput === adminAcc.pass) {
+            const currentUser = {
+                empId: adminAcc.empId || 'ADMIN',
+                username: adminAcc.username,
+                name: adminAcc.name || 'Ban Quản Trị Đào Tạo',
+                role: 'admin',
+                div: 'ALL',
+                team: 'Ban Quản Trị Hệ Thống',
+                pass: adminAcc.pass
+            };
+            localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
+            
+            // Switch UI
+            const guardScreen = document.getElementById('admin-auth-guard-screen');
+            const appWrapper = document.getElementById('admin-app-wrapper');
+            if (guardScreen) guardScreen.style.display = 'none';
+            if (appWrapper) appWrapper.style.display = 'flex';
+
+            // Initialize admin dashboard
+            initAdminDashboard();
+            showAdminToast(`Chào mừng ${currentUser.name}! Xác thực Quản Trị Viên thành công.`);
+        } else {
+            alert('Đăng nhập thất bại: Tên đăng nhập hoặc mật khẩu Quản Trị Viên không đúng!');
+        }
+    }
+
+    function openChangeAdminModal() {
+        const modal = document.getElementById('changeAdminModal');
+        if (!modal) return;
+
+        const adminAcc = (window.StorageService && window.StorageService.getAdminAccount)
+            ? window.StorageService.getAdminAccount()
+            : { username: 'admin', pass: 'admin123', name: 'Ban Đào Tạo Queen Land (Admin)' };
+
+        const curPassInput = document.getElementById('cur-admin-pass');
+        const userField = document.getElementById('new-admin-user');
+        const nameField = document.getElementById('new-admin-name');
+        const passField = document.getElementById('new-admin-pass');
+        const confirmField = document.getElementById('confirm-admin-pass');
+
+        if (curPassInput) curPassInput.value = '';
+        if (userField) userField.value = adminAcc.username || 'admin';
+        if (nameField) nameField.value = adminAcc.name || 'Ban Đào Tạo Queen Land (Admin)';
+        if (passField) passField.value = '';
+        if (confirmField) confirmField.value = '';
+
+        modal.style.display = 'flex';
+    }
+
+    function closeChangeAdminModal() {
+        const modal = document.getElementById('changeAdminModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    function saveAdminCredentials(event) {
+        event.preventDefault();
+        const curPass = document.getElementById('cur-admin-pass')?.value || '';
+        const newUser = (document.getElementById('new-admin-user')?.value || '').trim();
+        const newName = (document.getElementById('new-admin-name')?.value || '').trim() || 'Ban Đào Tạo Queen Land (Admin)';
+        const newPass = document.getElementById('new-admin-pass')?.value || '';
+        const confirmPass = document.getElementById('confirm-admin-pass')?.value || '';
+
+        const adminAcc = (window.StorageService && window.StorageService.getAdminAccount)
+            ? window.StorageService.getAdminAccount()
+            : { username: 'admin', pass: 'admin123', name: 'Ban Đào Tạo Queen Land (Admin)', role: 'admin', empId: 'ADMIN' };
+
+        if (curPass !== adminAcc.pass) {
+            alert('Mật khẩu Admin hiện tại không chính xác! Vui lòng kiểm tra lại.');
+            return;
+        }
+
+        if (!newUser) {
+            alert('Tên đăng nhập quản trị không được để trống!');
+            return;
+        }
+
+        if (!newPass || newPass.length < 6) {
+            alert('Mật khẩu quản trị mới phải có tối thiểu 6 ký tự!');
+            return;
+        }
+
+        if (newPass !== confirmPass) {
+            alert('Mật khẩu mới và xác nhận mật khẩu không trùng khớp!');
+            return;
+        }
+
+        // Save new admin credentials
+        const updatedAdmin = {
+            username: newUser,
+            pass: newPass,
+            name: newName,
+            role: 'admin',
+            empId: 'ADMIN'
+        };
+
+        if (window.StorageService && window.StorageService.saveAdminAccount) {
+            window.StorageService.saveAdminAccount(updatedAdmin);
+        } else {
+            localStorage.setItem('lms_admin_account', JSON.stringify(updatedAdmin));
+        }
+
+        // Update current session
+        let currentUser = null;
+        try {
+            currentUser = JSON.parse(localStorage.getItem('lms_current_user') || 'null');
+        } catch(e) {}
+        if (currentUser && currentUser.role === 'admin') {
+            currentUser.username = newUser;
+            currentUser.name = newName;
+            currentUser.pass = newPass;
+            localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
+        }
+
+        closeChangeAdminModal();
+        showAdminToast('Đã cập nhật thông tin tài khoản Quản Trị Viên thành công!');
+        alert(`CẬP NHẬT TÀI KHOẢN ADMIN THÀNH CÔNG!\n\n• Tên đăng nhập mới: ${newUser}\n• Tên hiển thị: ${newName}\n• Mật khẩu: [Đã cập nhật an toàn]\n\nTừ bây giờ, vui lòng dùng thông tin này để đăng nhập vào Bảng Quản Trị!`);
+    }
+
+    function handleAdminLogout() {
+        if (confirm('Bạn có chắc chắn muốn đăng xuất khỏi Bảng Quản Trị Hệ Thống?')) {
+            localStorage.removeItem('lms_current_user');
+            window.location.href = 'index.html';
+        }
+    }
+
+    function initAdminDashboard() {
         loadSystemSettings();
         renderCoursesUI();
         renderCourseDropdowns();
@@ -2293,6 +2458,16 @@
             window.checkSupabaseConnection();
         }
         syncAdminFromSupabase();
+    }
+
+    // ==========================================
+    // 10. INITIALIZATION LIFECYCLE
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+        const isAuth = checkAdminAuth();
+        if (isAuth) {
+            initAdminDashboard();
+        }
     });
 
     // Expose all functions to window for 100% backward-compatible inline HTML binding
@@ -2359,5 +2534,11 @@
     window.openSalesModal = openSalesModal;
     window.closeSalesModal = closeSalesModal;
     window.syncAdminFromSupabase = syncAdminFromSupabase;
+    window.checkAdminAuth = checkAdminAuth;
+    window.handleDirectAdminLogin = handleDirectAdminLogin;
+    window.openChangeAdminModal = openChangeAdminModal;
+    window.closeChangeAdminModal = closeChangeAdminModal;
+    window.saveAdminCredentials = saveAdminCredentials;
+    window.handleAdminLogout = handleAdminLogout;
 
 })(window);

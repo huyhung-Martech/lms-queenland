@@ -25,14 +25,17 @@
             </div>
             
             <nav class="nav-links">
-                <button class="nav-btn active" id="btn-landing-view" onclick="goToHome()">
-                    <i class="bi bi-house-door"></i> Trang Chủ
-                </button>
-                <button class="nav-btn highlight-btn animated-shine-btn" id="btn-portal-view" onclick="switchView('portal')">
-                    <i class="bi bi-play-circle-fill"></i> Vào Phòng Học
-                </button>
-                <a href="admin.html" class="nav-btn admin-link-btn">
-                    <i class="bi bi-speedometer2"></i> Bảng Quản Trị Admin
+                <div class="segmented-nav-group">
+                    <button class="segmented-nav-btn active" id="btn-landing-view" onclick="goToHome()" title="Về Trang Chủ">
+                        <i class="bi bi-house-door-fill"></i> <span>Trang Chủ</span>
+                    </button>
+                    <button class="segmented-nav-btn" id="btn-portal-view" onclick="switchView('portal')" title="Vào phòng học bài giảng video">
+                        <i class="bi bi-play-circle-fill"></i> <span>Vào Phòng Học</span>
+                    </button>
+                </div>
+                <!-- NÚT QUẢN TRỊ ADMIN (CHỈ HIỂN THỊ KHI TÀI KHOẢN ADMIN ĐĂNG NHẬP, ẨN HOÀN TOÀN VỚI HỌC VIÊN) -->
+                <a href="admin.html" class="nav-admin-badge-btn" id="btn-admin-portal" style="display:none;" title="Truy cập Bảng Quản Trị Hệ Thống">
+                    <i class="bi bi-shield-lock-fill"></i> <span>Quản Trị</span>
                 </a>
             </nav>
 
@@ -42,7 +45,7 @@
                         <i class="bi bi-person-fill"></i>
                     </div>
                     <div class="user-details">
-                        <span class="user-name" id="student-user-name">Nguyễn Văn An <span class="emp-code">(NV-10892)</span></span>
+                        <span class="user-name" id="student-user-name">Đang tải...</span>
                         <span class="user-dept-label"><i class="bi bi-mortarboard-fill"></i> Học Viên Queen Land</span>
                     </div>
                 <div id="cloud-sync-badge" class="cloud-sync-badge" title="Hệ thống đồng bộ dữ liệu Chuyên Viên Kinh Doanh">
