@@ -362,6 +362,34 @@ function setSpeed(rate) {
         const bSpeed = parseFloat(btn.dataset.speed || btn.textContent);
         btn.classList.toggle('active', bSpeed === rate);
     });
+
+    const mobileSpeedLabel = document.getElementById('mobile-speed-label');
+    if (mobileSpeedLabel) {
+        mobileSpeedLabel.textContent = `${rate}x`;
+    }
+}
+
+// Quick YouTube-Style Speed Cycle for Mobile
+function cyclePlaybackSpeed() {
+    const speeds = [1.0, 1.25, 1.5, 2.0];
+    const currentIndex = speeds.indexOf(currentPlaybackRate);
+    const nextSpeed = speeds[(currentIndex + 1) % speeds.length];
+    setSpeed(nextSpeed);
+    const toast = document.getElementById('lms-player-toast');
+    if (toast) {
+        toast.innerHTML = `<i class="bi bi-lightning-charge-fill" style="color:var(--accent);"></i> Tốc độ phát: <strong>${nextSpeed}x</strong>`;
+        toast.style.display = 'flex';
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, 1500);
+    }
+}
+
+// Quick Smooth Scroll to Curriculum on Mobile
+function scrollToClassroomSidebar() {
+    const sidebar = document.querySelector('.lms-sidebar') || document.querySelector('.tabs-container');
+    if (sidebar) {
+        sidebar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 // Fullscreen Toggle & Exit (Balanced & Centered Full Viewport)

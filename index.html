@@ -432,14 +432,6 @@
                                             <span class="time-sep">/</span>
                                             <span id="lms-duration-time">--:--</span>
                                         </div>
-
-                                        <!-- Bộ Đếm Tiến Độ Học Tập & Mục Tiêu Bắt Buộc 80% -->
-                                        <div class="video-watch-progress-badge" id="video-watch-progress-badge" title="Học viên cần xem thực tế tối thiểu 80% thời lượng video để được tính hoàn thành bài học">
-                                            <i class="bi bi-clock-history"></i>
-                                            <span>Đã học:</span>
-                                            <strong id="lms-watched-pct-display">0%</strong>
-                                            <span class="req-target">/ 80%</span>
-                                        </div>
                                     </div>
 
                                     <div class="ctrl-right-group">
@@ -458,25 +450,51 @@
                                 </div>
                             </div>
 
-                            <!-- Bottom Lesson Information & Navigation Bar -->
-                            <div class="video-controls-bar">
+                            <!-- Bottom Lesson Information & Navigation Bar (YouTube Mobile Inspired Layout) -->
+                            <div class="video-controls-bar" id="lms-video-controls-bar">
                                 <div class="video-title-info">
-                                    <span class="playing-tag" id="current-playing-mod-lesson-tag">ĐANG PHÁT BÀI 1.1</span>
                                     <h3 id="video-lesson-title">Bài 1.1: Tổng Quan & Định Hướng Kiến Thức Nền Tảng</h3>
+                                    <div class="video-meta-subrow">
+                                        <div class="channel-pill">
+                                            <i class="bi bi-mortarboard-fill"></i>
+                                            <span>Queen Land Academy</span>
+                                        </div>
+                                        <span class="playing-tag" id="current-playing-mod-lesson-tag">ĐANG PHÁT BÀI 1.1</span>
+
+                                        <!-- Bộ Đếm Tiến Độ Học Tập & Mục Tiêu Bắt Buộc 80% -->
+                                        <div class="video-watch-progress-badge" id="video-watch-progress-badge" title="Học viên cần xem thực tế tối thiểu 80% thời lượng video để được tính hoàn thành bài học">
+                                            <i class="bi bi-clock-history"></i>
+                                            <span>Đã học:</span>
+                                            <strong id="lms-watched-pct-display">0%</strong>
+                                            <span class="req-target">/ 80%</span>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="video-nav-group">
-                                    <button class="video-nav-btn" id="btn-prev-lesson" onclick="goToPrevLesson()" title="Bài học trước đó">
-                                        <i class="bi bi-chevron-left"></i> <span>Bài Trước</span>
+                                <div class="video-action-pills-bar">
+                                    <button class="btn btn-complete locked animated-shine-btn yt-pill-btn" id="btn-mark-complete" onclick="markLessonComplete()" disabled title="Cần xem tối thiểu 80% thời lượng bài giảng để mở khóa hoàn thành">
+                                        <span><i class="bi bi-lock-fill"></i> Đang học (<span id="btn-watch-progress">0%</span>/80%)</span>
                                     </button>
-                                    <button class="video-nav-btn" id="btn-next-lesson" onclick="goToNextLesson()" title="Bài học tiếp theo">
-                                        <span>Bài Sau</span> <i class="bi bi-chevron-right"></i>
+
+                                    <div class="video-nav-group">
+                                        <button class="video-nav-btn yt-pill-btn" id="btn-prev-lesson" onclick="goToPrevLesson()" title="Bài học trước đó">
+                                            <i class="bi bi-chevron-left"></i> <span>Bài Trước</span>
+                                        </button>
+                                        <button class="video-nav-btn yt-pill-btn" id="btn-next-lesson" onclick="goToNextLesson()" title="Bài học tiếp theo">
+                                            <span>Bài Sau</span> <i class="bi bi-chevron-right"></i>
+                                        </button>
+                                    </div>
+
+                                    <button class="video-nav-btn yt-pill-btn yt-speed-pill-mobile" id="btn-speed-cycle" onclick="cyclePlaybackSpeed()" title="Đổi tốc độ phát">
+                                        <i class="bi bi-lightning-charge-fill" style="color:var(--accent);"></i>
+                                        <span id="mobile-speed-label">1.25x</span>
+                                    </button>
+
+                                    <button class="video-nav-btn yt-pill-btn yt-curriculum-pill-mobile" onclick="scrollToClassroomSidebar()" title="Xem lộ trình bài học">
+                                        <i class="bi bi-collection-play-fill"></i>
+                                        <span>Lộ Trình</span>
                                     </button>
                                 </div>
-
-                                <button class="btn btn-complete locked animated-shine-btn" id="btn-mark-complete" onclick="markLessonComplete()" disabled title="Cần xem tối thiểu 80% thời lượng bài giảng để mở khóa hoàn thành">
-                                    <span><i class="bi bi-lock-fill"></i> Đang học (<span id="btn-watch-progress">0%</span>/80%)</span>
-                                </button>
                             </div>
 
                             <!-- Floating Anti-Scrub Toast Notification -->
