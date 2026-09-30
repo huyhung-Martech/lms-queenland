@@ -30,14 +30,19 @@
             </div>
 
             <form id="admin-guard-form" onsubmit="handleDirectAdminLogin(event)" class="admin-guard-form">
+                <div style="background:#fef3c7; border:1px solid #fde68a; border-radius:8px; padding:10px 12px; margin-bottom:14px; font-size:0.78rem; color:#92400e; display:flex; align-items:center; gap:8px;">
+                    <i class="bi bi-info-circle-fill" style="color:#d97706; font-size:1.1rem; flex-shrink:0;"></i>
+                    <div>Tài khoản mặc định: <b>admin</b> | Mật khẩu: <b>admin123</b></div>
+                </div>
+
                 <div class="form-group">
                     <label for="admin-guard-user"><i class="bi bi-person-fill"></i> Tên Đăng Nhập Quản Trị:</label>
-                    <input type="text" id="admin-guard-user" class="form-control" placeholder="Nhập tài khoản quản trị (VD: admin)" required autocomplete="username">
+                    <input type="text" id="admin-guard-user" class="form-control" value="admin" placeholder="Nhập tài khoản quản trị (mặc định: admin)" required autocomplete="username">
                 </div>
 
                 <div class="form-group">
                     <label for="admin-guard-pass"><i class="bi bi-key-fill"></i> Mật Khẩu Quản Trị:</label>
-                    <input type="password" id="admin-guard-pass" class="form-control" placeholder="Nhập mật khẩu quản trị" required autocomplete="current-password">
+                    <input type="password" id="admin-guard-pass" class="form-control" placeholder="Nhập mật khẩu quản trị (mặc định: admin123)" required autocomplete="current-password" autofocus>
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block admin-guard-submit-btn">

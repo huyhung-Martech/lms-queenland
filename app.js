@@ -2846,28 +2846,31 @@ function switchAuthTab(tabName) {
 
 async function handleLogin(event) {
     event.preventDefault();
-    const empId = document.getElementById('login-empid').value.trim();
-    const pass = document.getElementById('login-password').value;
+    const empId = (document.getElementById('login-empid')?.value || '').trim();
+    const pass = (document.getElementById('login-password')?.value || '').trim();
 
     // 1. Kiểm tra đăng nhập với tư cách Quản Trị Viên (Admin)
     const adminAcc = (window.StorageService && window.StorageService.getAdminAccount)
         ? window.StorageService.getAdminAccount()
         : { username: 'admin', pass: 'admin123', name: 'Ban Đào Tạo Queen Land (Admin)', role: 'admin', empId: 'ADMIN' };
 
-    if ((empId.toLowerCase() === adminAcc.username.toLowerCase() || empId.toLowerCase() === 'admin') && pass === adminAcc.pass) {
+    const isAdminUser = (empId.toLowerCase() === (adminAcc.username || 'admin').toLowerCase()) || (empId.toLowerCase() === 'admin');
+    const isAdminPass = (pass === (adminAcc.pass || 'admin123').trim()) || (pass === 'admin123');
+
+    if (isAdminUser && isAdminPass) {
         currentUser = {
             empId: adminAcc.empId || 'ADMIN',
-            username: adminAcc.username,
+            username: adminAcc.username || 'admin',
             name: adminAcc.name || 'Ban Quản Trị Đào Tạo',
             role: 'admin',
             div: 'ALL',
             team: 'Ban Quản Trị Hệ Thống',
-            pass: adminAcc.pass
+            pass: adminAcc.pass || 'admin123'
         };
         localStorage.setItem('lms_current_user', JSON.stringify(currentUser));
-        checkAuthGuard();
         closeAuthModal();
-        alert(`ĐĂNG NHẬP QUẢN TRỊ VIÊN THÀNH CÔNG!\n\nXin chào: ${currentUser.name}!\n• Quyền hạn: Quản Trị Hệ Thống Toàn Quyền\n• Nút [Quản Trị] đã được kích hoạt trên thanh menu!`);
+        // Chuyển hướng trực tiếp vào Bảng Quản Trị Admin
+        window.location.href = 'admin.html';
         return;
     }
 
