@@ -1,23 +1,23 @@
 /* ==========================================================================
-   SALEHUB / THE PARKLAND DESIGN SYSTEM FOR LMS QUEEN LAND
+   QUEEN LAND DESIGN SYSTEM (MAPPED FROM QUEENLAND.COM.VN)
    ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800;900&family=Manrope:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Montserrat:ital,wght@0,500;0,600;0,700;0,800;0,900;1,500;1,700&display=swap');
 
 :root {
-    /* Brand Primary: Oxford Navy & Deep Blue */
-    --primary: #1A2238;
-    --primary-dark: #121829;
-    --primary-hover: #121829;
-    --primary-light: rgba(26, 34, 56, 0.07);
-    --secondary: #121829;
+    /* Brand Primary: Queen Land Corporate Royal Navy (#2D2E74) */
+    --primary: #2D2E74;
+    --primary-dark: #111855;
+    --primary-hover: #1e2055;
+    --primary-light: rgba(45, 46, 116, 0.08);
+    --secondary: #111855;
 
-    /* Brand Accent: Warm Sand / Fine Champagne Gold */
-    --accent: #C5A880;
-    --accent-light: rgba(197, 168, 128, 0.2);
-    --accent-border: rgba(197, 168, 128, 0.45);
-    --accent-hover: #B89366;
+    /* Brand Accent: Queen Land Crown Champagne Gold (#C5A059) */
+    --accent: #C5A059;
+    --accent-light: rgba(197, 160, 89, 0.16);
+    --accent-border: rgba(197, 160, 89, 0.45);
+    --accent-hover: #b08c45;
 
-    /* Brand Secondary / Quality Assurance: Deep Teal */
+    /* Brand Secondary / Vinhomes Partner Teal */
     --secondary-brand: #0F766E;
     --secondary-brand-light: #f0fdfa;
     --success: #0F766E;
@@ -30,27 +30,28 @@
     --danger-light: #fee2e2;
 
     /* Surface & Borders */
-    --bg-light: #F8F9FB;
+    --bg-light: #F8FAFC;
     --bg-card: #ffffff;
     --border-light: #e2e8f0;
     --border-subtle: #f1f5f9;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --text-muted: #94a3b8;
+    --text-primary: #09081B;
+    --text-secondary: #464757;
+    --text-muted: #767884;
 
     /* Radius Scale */
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 16px -2px rgba(26, 34, 56, 0.07);
-    --shadow-lg: 0 12px 28px -4px rgba(26, 34, 56, 0.12);
+    /* Shadows with Queen Land Navy Tint */
+    --shadow-sm: 0 1px 3px 0 rgba(45, 46, 116, 0.04);
+    --shadow-md: 0 4px 16px -2px rgba(45, 46, 116, 0.08);
+    --shadow-lg: 0 12px 28px -4px rgba(45, 46, 116, 0.14);
 
-    /* Parkland Typography Fonts */
-    --font-sans: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-label: 'Hanken Grotesk', 'Manrope', sans-serif;
+    /* Typography Fonts Mapped from Queen Land */
+    --font-heading: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-sans: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-label: 'Montserrat', system-ui, sans-serif;
     --font-family: var(--font-sans);
 }
 
@@ -77,32 +78,39 @@ button, input, select, textarea, optgroup {
     line-height: inherit;
 }
 
-/* ==================== PARKLAND COMPONENT TOKENS ==================== */
+/* ==================== QUEEN LAND TYPOGRAPHY & COMPONENT TOKENS ==================== */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading) !important;
+    color: var(--primary);
+    letter-spacing: -0.015em;
+}
+
 .font-label { font-family: var(--font-label) !important; }
 .font-sans { font-family: var(--font-sans) !important; }
+.font-heading { font-family: var(--font-heading) !important; }
 
 .text-display {
-    font-family: var(--font-sans);
-    font-weight: 900;
+    font-family: var(--font-heading);
+    font-weight: 800;
     font-size: 2rem;
     line-height: 1.25;
-    color: var(--text-primary);
+    color: var(--primary);
 }
 
 .text-h1 {
-    font-family: var(--font-sans);
+    font-family: var(--font-heading);
     font-weight: 800;
     font-size: 1.5rem;
     line-height: 1.35;
-    color: var(--text-primary);
+    color: var(--primary);
 }
 
 .text-h2 {
-    font-family: var(--font-sans);
+    font-family: var(--font-heading);
     font-weight: 700;
     font-size: 1.125rem;
     line-height: 1.4;
-    color: var(--text-primary);
+    color: var(--primary);
 }
 
 .text-caption {
@@ -150,20 +158,21 @@ button, input, select, textarea, optgroup {
     transform: scale(1.02);
 }
 
-/* Parkland Animated Shine Button */
+/* Queen Land Animated Shine Button */
 .animated-shine-btn {
     position: relative;
     cursor: pointer;
-    border: 1px solid rgba(197, 168, 128, 0.45) !important;
-    background: linear-gradient(135deg, #1A2238 0%, #121829 100%) !important;
+    border: 1px solid rgba(197, 160, 89, 0.5) !important;
+    background: linear-gradient(135deg, #2D2E74 0%, #111855 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0px 4px 18px -4px rgba(26, 34, 56, 0.4), inset 0px 1px 1px 0px rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0px 4px 18px -4px rgba(45, 46, 116, 0.4), inset 0px 1px 1px 0px rgba(255, 255, 255, 0.15) !important;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
     overflow: hidden;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
+    font-family: var(--font-heading) !important;
 }
 .animated-shine-btn::after {
     content: '';
@@ -182,7 +191,7 @@ button, input, select, textarea, optgroup {
     transform: scale(0.96) !important;
 }
 
-/* Parkland Glow Border Card */
+/* Queen Land Glow Border Card */
 @property --glow-angle {
     syntax: '<angle>';
     initial-value: 0deg;
@@ -205,11 +214,11 @@ button, input, select, textarea, optgroup {
     padding: 2px;
     background: conic-gradient(
         from var(--glow-angle),
-        #C5A880,
-        #1A2238,
+        #C5A059,
+        #2D2E74,
         #0F766E,
-        #1A2238,
-        #C5A880
+        #2D2E74,
+        #C5A059
     );
     animation: glow-spin 4s linear infinite;
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -225,11 +234,11 @@ button, input, select, textarea, optgroup {
     border-radius: inherit;
     background: conic-gradient(
         from var(--glow-angle),
-        #C5A880,
-        #1A2238,
+        #C5A059,
+        #2D2E74,
         #0F766E,
-        #1A2238,
-        #C5A880
+        #2D2E74,
+        #C5A059
     );
     animation: glow-spin 4s linear infinite;
     filter: blur(12px);
@@ -731,11 +740,11 @@ button, input, select, textarea, optgroup {
 
 /* TILE 1: MASTER EDITORIAL HERO */
 .bento-tile-main {
-    background: linear-gradient(145deg, #111625 0%, #1A2238 60%, #1E293B 100%);
+    background: linear-gradient(145deg, #111855 0%, #2D2E74 55%, #181a4d 100%);
     color: #ffffff;
     padding: 38px 36px;
-    border: 1px solid rgba(197, 168, 128, 0.3);
-    box-shadow: 0 16px 40px -10px rgba(18, 24, 41, 0.45);
+    border: 1.5px solid rgba(197, 160, 89, 0.4);
+    box-shadow: 0 16px 40px -10px rgba(45, 46, 116, 0.45);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -748,7 +757,7 @@ button, input, select, textarea, optgroup {
     right: -10%;
     width: 480px;
     height: 480px;
-    background: radial-gradient(circle, rgba(197, 168, 128, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(197, 160, 89, 0.16) 0%, transparent 70%);
     pointer-events: none;
 }
 
@@ -764,9 +773,9 @@ button, input, select, textarea, optgroup {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(197, 168, 128, 0.15);
+    background: rgba(197, 160, 89, 0.18);
     color: var(--accent);
-    border: 1px solid rgba(197, 168, 128, 0.35);
+    border: 1px solid rgba(197, 160, 89, 0.45);
     padding: 4px 14px;
     border-radius: 9999px;
     font-size: 0.68rem;
@@ -806,9 +815,9 @@ button, input, select, textarea, optgroup {
 }
 
 .hero-bento-title {
-    font-family: var(--font-sans);
+    font-family: var(--font-heading);
     font-size: 2.15rem;
-    font-weight: 900;
+    font-weight: 800;
     line-height: 1.22;
     letter-spacing: -0.025em;
     color: #ffffff;
@@ -817,7 +826,7 @@ button, input, select, textarea, optgroup {
 
 .text-accent-gradient {
     color: var(--accent);
-    background: linear-gradient(90deg, #E2CEB5 0%, #C5A880 100%);
+    background: linear-gradient(90deg, #F5E8D2 0%, #C5A059 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -913,7 +922,7 @@ button, input, select, textarea, optgroup {
     background: #ffffff;
     border: 1px solid var(--border-light);
     border-radius: 1.25rem;
-    box-shadow: 0 16px 36px -10px rgba(26, 34, 56, 0.06);
+    box-shadow: 0 16px 36px -10px rgba(45, 46, 116, 0.08);
     padding: 24px;
     cursor: pointer;
     display: flex;
@@ -927,8 +936,8 @@ button, input, select, textarea, optgroup {
 
 .bento-tile-spotlight:hover {
     transform: translateY(-3px);
-    box-shadow: 0 20px 40px -10px rgba(26, 34, 56, 0.12);
-    border-color: rgba(197, 168, 128, 0.6);
+    box-shadow: 0 20px 40px -10px rgba(45, 46, 116, 0.16);
+    border-color: rgba(197, 160, 89, 0.7);
 }
 
 .spotlight-header {
@@ -1231,9 +1240,9 @@ button, input, select, textarea, optgroup {
 .course-program-card.featured-lead-card {
     grid-column: span 2;
     background: #ffffff;
-    border: 1px solid rgba(197, 168, 128, 0.45);
+    border: 1.5px solid rgba(197, 160, 89, 0.45);
     border-radius: 1.25rem;
-    box-shadow: 0 16px 36px -8px rgba(26, 34, 56, 0.07);
+    box-shadow: 0 16px 36px -8px rgba(45, 46, 116, 0.08);
     padding: 28px;
     display: grid;
     grid-template-columns: 1.25fr 0.75fr;
@@ -1256,7 +1265,7 @@ button, input, select, textarea, optgroup {
 
 .course-program-card.featured-lead-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 24px 48px -10px rgba(26, 34, 56, 0.12);
+    box-shadow: 0 24px 48px -10px rgba(45, 46, 116, 0.16);
     border-color: var(--accent);
 }
 
@@ -1368,14 +1377,14 @@ button, input, select, textarea, optgroup {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 4px 16px -2px rgba(26, 34, 56, 0.05);
+    box-shadow: 0 4px 16px -2px rgba(45, 46, 116, 0.05);
     transition: all 0.25s ease;
 }
 
 .course-program-card.secondary-bento-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 16px 32px -8px rgba(26, 34, 56, 0.1);
-    border-color: #cbd5e1;
+    box-shadow: 0 16px 32px -8px rgba(45, 46, 116, 0.12);
+    border-color: rgba(197, 160, 89, 0.6);
 }
 
 .course-program-card {
@@ -1388,6 +1397,12 @@ button, input, select, textarea, optgroup {
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+}
+
+.course-program-card:hover {
+    border-color: rgba(197, 160, 89, 0.5);
+    box-shadow: 0 12px 28px -4px rgba(45, 46, 116, 0.12);
+    transform: translateY(-3px);
 }
 
 .course-card-top {
@@ -1403,8 +1418,8 @@ button, input, select, textarea, optgroup {
     font-size: 0.68rem;
     font-weight: 800;
     color: var(--primary);
-    background: rgba(197, 168, 128, 0.18);
-    border: 1px solid rgba(197, 168, 128, 0.5);
+    background: rgba(197, 160, 89, 0.16);
+    border: 1px solid rgba(197, 160, 89, 0.45);
     padding: 3px 10px;
     border-radius: 6px;
     display: inline-flex;
@@ -4932,6 +4947,306 @@ img, video, iframe {
     }
     .admin-guard-form {
         padding: 18px 16px 16px;
+    }
+}
+
+/* ==========================================================================
+   QUEEN LAND ENTERPRISE FOOTER (GÓI 5 - BRAND MAPPING FROM QUEENLAND.COM.VN)
+   ========================================================================== */
+.queenland-enterprise-footer {
+    background: linear-gradient(180deg, #111855 0%, #09081B 100%);
+    color: #ffffff;
+    border-top: 2px solid rgba(197, 160, 89, 0.45);
+    margin-top: 36px;
+    padding: 48px 24px 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+.queenland-enterprise-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #C5A059, transparent);
+}
+
+.footer-container {
+    max-width: min(1840px, 96vw);
+    margin: 0 auto;
+}
+
+/* Footer Brand Header */
+.footer-brand-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 36px;
+}
+
+.footer-brand-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.footer-logo-img {
+    height: 48px;
+    max-width: 220px;
+    object-fit: contain;
+    background: #ffffff;
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(197, 160, 89, 0.4);
+}
+
+.footer-brand-titles h3 {
+    font-family: var(--font-heading) !important;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #ffffff !important;
+    letter-spacing: 0.02em;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+}
+
+.footer-brand-titles p {
+    font-size: 0.82rem;
+    color: var(--accent);
+    font-style: italic;
+    margin: 0;
+}
+
+.footer-badges-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.footer-trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(197, 160, 89, 0.15);
+    color: #F5E8D2;
+    border: 1px solid rgba(197, 160, 89, 0.4);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: var(--font-heading);
+}
+
+.footer-trust-badge i {
+    color: var(--accent);
+}
+
+/* Footer Main Grid (3 Columns) */
+.footer-main-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1.2fr 1fr;
+    gap: 36px;
+    margin-bottom: 36px;
+}
+
+.footer-col h4 {
+    font-family: var(--font-heading) !important;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #ffffff !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.footer-col h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 32px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+}
+
+.footer-col p {
+    font-size: 0.84rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.footer-col-desc {
+    color: #94a3b8 !important;
+    font-size: 0.82rem !important;
+}
+
+.footer-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.footer-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.82rem;
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+.footer-info-item i {
+    color: var(--accent);
+    font-size: 1rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.footer-info-item strong {
+    color: #ffffff;
+}
+
+.footer-info-item a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-info-item a:hover {
+    color: var(--accent);
+}
+
+.footer-contact-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 14px;
+}
+
+.footer-contact-hotline {
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Footer Bottom Bar */
+.footer-bottom-bar {
+    padding-top: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 0.78rem;
+    color: #94a3b8;
+}
+
+.footer-bottom-copy {
+    margin: 0;
+}
+
+.footer-bottom-features {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer-feature-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #cbd5e1;
+    font-size: 0.74rem;
+}
+
+.footer-feature-tag i {
+    color: #10b981;
+}
+
+/* MOBILE RESPONSIVE AUDIT (< 600px) - STRICT COMPLIANCE WITH AGENTS.md */
+@media (max-width: 600px) {
+    .queenland-enterprise-footer {
+        padding: 28px 16px 20px;
+        margin-top: 24px;
+    }
+    .footer-brand-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding-bottom: 20px;
+        margin-bottom: 24px;
+    }
+    .footer-logo-img {
+        height: 38px;
+    }
+    .footer-brand-titles h3 {
+        font-size: 1rem;
+    }
+    .footer-brand-titles p {
+        font-size: 0.76rem;
+    }
+    .footer-trust-badge {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+    }
+    .footer-main-grid {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        margin-bottom: 22px;
+    }
+    .footer-col h4 {
+        font-size: 0.88rem;
+        margin-bottom: 10px;
+    }
+    .footer-col p {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+    .footer-info-list {
+        gap: 8px;
+    }
+    .footer-info-item {
+        font-size: 0.78rem;
+        line-height: 1.38;
+    }
+    .footer-contact-card {
+        padding: 10px 12px;
+        margin-top: 10px;
+    }
+    .footer-contact-hotline {
+        font-size: 1rem;
+    }
+    .footer-bottom-bar {
+        padding-top: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        font-size: 0.72rem;
     }
 }
 
