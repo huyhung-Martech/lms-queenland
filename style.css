@@ -82,7 +82,8 @@ button, input, select, textarea, optgroup {
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading) !important;
     color: var(--primary);
-    letter-spacing: -0.015em;
+    letter-spacing: -0.005em;
+    font-weight: 600;
 }
 
 .font-label { font-family: var(--font-label) !important; }
@@ -91,7 +92,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-display {
     font-family: var(--font-heading);
-    font-weight: 800;
+    font-weight: 700;
     font-size: 2rem;
     line-height: 1.25;
     color: var(--primary);
@@ -99,7 +100,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .text-h1 {
     font-family: var(--font-heading);
-    font-weight: 800;
+    font-weight: 700;
     font-size: 1.5rem;
     line-height: 1.35;
     color: var(--primary);
@@ -142,7 +143,7 @@ h1, h2, h3, h4, h5, h6 {
     background-color: var(--primary);
     color: #ffffff;
     padding: 0.625rem 1.25rem;
-    font-weight: 800;
+    font-weight: 600;
     border-radius: 0.75rem;
     transition: all 0.2s ease;
     display: inline-flex;
@@ -269,7 +270,7 @@ h1, h2, h3, h4, h5, h6 {
     white-space: nowrap;
     gap: 2.5rem;
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 700;
     color: #ffffff;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -294,7 +295,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 9999px;
     font-family: var(--font-sans);
     font-size: 0.72rem;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     white-space: nowrap;
@@ -324,7 +325,7 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--primary);
     border: 1px solid rgba(255, 213, 174, 0.8);
     font-family: var(--font-label);
-    font-weight: 800;
+    font-weight: 600;
     font-size: 0.65rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -336,7 +337,7 @@ h1, h2, h3, h4, h5, h6 {
     color: #0C5A3E;
     border: 1px solid #a7f3d0;
     font-family: var(--font-label);
-    font-weight: 800;
+    font-weight: 600;
     font-size: 0.65rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
@@ -424,15 +425,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .brand-title {
-    font-family: var(--font-label);
-    font-weight: 900;
-    font-size: 1.15rem;
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
     color: var(--primary);
-    display: block;
-    line-height: 1.15;
-    white-space: nowrap;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
+    letter-spacing: -0.005em;
+    line-height: 1.2;
 }
 
 .brand-subtitle {
@@ -461,7 +459,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 18px;
     border-radius: 9999px;
     font-size: 0.78rem;
-    font-weight: 800;
+    font-weight: 700;
     font-family: var(--font-sans);
     text-transform: uppercase;
     letter-spacing: 0.03em;
@@ -548,7 +546,7 @@ h1, h2, h3, h4, h5, h6 {
     color: #b45309;
     border: 1.5px solid #fde68a;
     font-size: 0.78rem;
-    font-weight: 800;
+    font-weight: 600;
     font-family: var(--font-sans);
     text-transform: uppercase;
     letter-spacing: 0.02em;
@@ -611,7 +609,7 @@ h1, h2, h3, h4, h5, h6 {
 .user-name {
     font-family: var(--font-sans);
     font-size: 0.8rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #0f172a;
     white-space: nowrap;
     line-height: 1.2;
@@ -693,7 +691,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 7px 14px;
     border-radius: 0.65rem;
     font-size: 0.75rem;
-    font-weight: 800;
+    font-weight: 600;
     font-family: var(--font-sans);
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -779,7 +777,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 4px 14px;
     border-radius: 9999px;
     font-size: 0.68rem;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-family: var(--font-label);
@@ -817,9 +815,9 @@ h1, h2, h3, h4, h5, h6 {
 .hero-bento-title {
     font-family: var(--font-heading);
     font-size: 2.15rem;
-    font-weight: 800;
-    line-height: 1.22;
-    letter-spacing: -0.025em;
+    font-weight: 700;
+    line-height: 1.28;
+    letter-spacing: -0.01em;
     color: #ffffff;
     margin-bottom: 14px;
 }
@@ -866,12 +864,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .metric-ribbon-item .metric-num {
-    display: block;
-    font-family: var(--font-label);
-    font-size: 1.25rem;
-    font-weight: 900;
-    color: var(--accent);
+    font-family: var(--font-heading);
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #ffffff;
     line-height: 1.1;
+    display: block;
+    margin-bottom: 2px;
 }
 
 .metric-ribbon-item .metric-lbl {
@@ -894,7 +893,7 @@ h1, h2, h3, h4, h5, h6 {
     background: rgba(255, 255, 255, 0.06) !important;
     color: #ffffff !important;
     border: 1px solid rgba(255, 255, 255, 0.25) !important;
-    font-weight: 800;
+    font-weight: 700;
     border-radius: 0.75rem;
     padding: 0.625rem 1.25rem;
     transition: all 0.2s ease;
@@ -950,7 +949,7 @@ h1, h2, h3, h4, h5, h6 {
 .spotlight-tag {
     font-family: var(--font-label);
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -962,7 +961,7 @@ h1, h2, h3, h4, h5, h6 {
 .spotlight-status-badge {
     font-family: var(--font-label);
     font-size: 0.65rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #0F766E;
     background: #f0fdfa;
     border: 1px solid #99f6e4;
@@ -972,11 +971,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .spotlight-course-title {
-    font-family: var(--font-sans);
-    font-size: 1.05rem;
-    font-weight: 800;
+    font-family: var(--font-heading);
+    font-size: 1.12rem;
+    font-weight: 600;
     color: #0f172a;
-    line-height: 1.35;
+    line-height: 1.38;
+    letter-spacing: -0.005em;
     margin-bottom: 8px;
 }
 
@@ -1015,7 +1015,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .spotlight-progress-info strong {
     color: var(--primary);
-    font-weight: 800;
+    font-weight: 700;
 }
 
 .spotlight-progress-track {
@@ -1035,19 +1035,29 @@ h1, h2, h3, h4, h5, h6 {
 
 .spotlight-action-btn {
     width: 100%;
-    padding: 10px 14px;
-    background: #F8F9FB;
-    border: 1px solid #cbd5e1;
-    color: var(--primary);
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: flex;
+    height: 42px;
+    background: linear-gradient(135deg, #2D2E74 0%, #111855 100%);
+    color: #ffffff !important;
+    border: 1.5px solid rgba(197, 160, 89, 0.5);
+    border-radius: 9999px;
+    font-family: var(--font-heading);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    transition: all 0.2s ease;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(45, 46, 116, 0.2);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.spotlight-action-btn:hover {
+    background: linear-gradient(135deg, #1e2055 0%, #09081B 100%);
+    border-color: var(--accent);
+    box-shadow: 0 6px 16px rgba(45, 46, 116, 0.35);
+    transform: translateY(-1px);
 }
 
 .bento-tile-spotlight:hover .spotlight-action-btn {
@@ -1092,11 +1102,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .bento-tile-feature h4 {
-    font-size: 0.82rem;
-    font-weight: 800;
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 600;
     color: #0f172a;
-    line-height: 1.3;
-    margin: 0;
+    letter-spacing: -0.005em;
+    margin-bottom: 4px;
 }
 
 .bento-tile-feature p {
@@ -1122,26 +1133,24 @@ h1, h2, h3, h4, h5, h6 {
 .section-tag {
     font-family: var(--font-label);
     font-size: 0.72rem;
-    font-weight: 900;
-    color: var(--primary);
-    background: rgba(255, 213, 174, 0.3);
-    border: 1px solid rgba(255, 213, 174, 0.7);
-    padding: 4px 12px;
-    border-radius: 6px;
-    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    display: inline-block;
-    margin-bottom: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
 }
 
 .section-header h2 {
-    font-family: var(--font-sans);
-    font-size: 1.75rem;
-    font-weight: 900;
+    font-family: var(--font-heading);
+    font-size: 1.45rem;
+    font-weight: 700;
     color: var(--primary);
-    letter-spacing: -0.02em;
-    text-transform: uppercase;
-    margin: 6px 0;
+    letter-spacing: -0.005em;
+    line-height: 1.3;
+    margin-bottom: 8px;
 }
 
 .section-header p {
@@ -1158,7 +1167,7 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: space-between;
     align-items: center;
     gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     background: #ffffff;
     padding: 12px 20px;
     border-radius: 1rem;
@@ -1166,9 +1175,67 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
+.course-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    max-width: 460px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 9999px;
+    padding: 0 16px;
+    height: 42px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.course-search-box:focus-within {
+    background: #ffffff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(45, 46, 116, 0.1);
+}
+
+.course-search-box .search-icon {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    margin-right: 8px;
+    flex-shrink: 0;
+}
+
+.course-search-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    outline: none;
+}
+
+.course-search-input::placeholder {
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+.clear-search-btn {
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s ease;
+}
+
+.clear-search-btn:hover {
+    color: #475569;
+}
+
 .catalog-summary-info .catalog-count-badge {
     font-size: 0.82rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
     display: inline-flex;
     align-items: center;
@@ -1182,7 +1249,7 @@ h1, h2, h3, h4, h5, h6 {
 .filter-bar-title {
     font-family: var(--font-label);
     font-size: 0.75rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1204,7 +1271,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 9999px;
     font-family: var(--font-sans);
     font-size: 0.74rem;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     cursor: pointer;
@@ -1285,7 +1352,7 @@ h1, h2, h3, h4, h5, h6 {
 .featured-pill {
     font-family: var(--font-label);
     font-size: 0.68rem;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     background: rgba(197, 168, 128, 0.2);
@@ -1312,11 +1379,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .featured-lead-left h3 {
-    font-size: 1.35rem;
-    font-weight: 900;
+    font-family: var(--font-heading) !important;
+    font-size: 1.28rem;
+    font-weight: 700;
     color: var(--primary);
-    line-height: 1.3;
-    letter-spacing: -0.02em;
+    line-height: 1.35;
+    letter-spacing: -0.005em;
     margin: 2px 0 4px;
 }
 
@@ -1416,7 +1484,7 @@ h1, h2, h3, h4, h5, h6 {
 .course-category-badge {
     font-family: var(--font-label);
     font-size: 0.68rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
     background: rgba(197, 160, 89, 0.16);
     border: 1px solid rgba(197, 160, 89, 0.45);
@@ -1430,11 +1498,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .course-program-card h3 {
-    font-family: var(--font-sans);
-    font-size: 1.1rem;
-    font-weight: 900;
+    font-family: var(--font-heading) !important;
+    font-size: 1.08rem;
+    font-weight: 600;
     color: #0f172a;
-    line-height: 1.35;
+    line-height: 1.4;
+    letter-spacing: -0.005em;
     margin-bottom: 8px;
 }
 
@@ -1477,7 +1546,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-label);
     font-size: 0.72rem;
     color: #64748b;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.03em;
 }
@@ -1503,7 +1572,7 @@ h1, h2, h3, h4, h5, h6 {
     background: linear-gradient(135deg, #1A2238 0%, #121829 100%);
     color: #ffffff;
     font-size: 0.8rem;
-    font-weight: 800;
+    font-weight: 600;
     font-family: var(--font-sans);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -1547,7 +1616,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 8px 16px;
     border-radius: 0.75rem;
     font-size: 0.8rem;
-    font-weight: 800;
+    font-weight: 600;
     font-family: var(--font-sans);
     cursor: pointer;
     display: inline-flex;
@@ -1579,7 +1648,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .selected-course-banner h2 {
     font-size: 1.3rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #ffffff;
     margin-bottom: 6px;
 }
@@ -1632,7 +1701,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .module-number {
     font-size: 0.72rem;
-    font-weight: 800;
+    font-weight: 600;
     color: var(--primary);
     display: block;
 }
@@ -1699,7 +1768,7 @@ h1, h2, h3, h4, h5, h6 {
     background: #f1f5f9;
     border-bottom: 1px solid var(--border-light);
     font-size: 0.72rem;
-    font-weight: 800;
+    font-weight: 600;
     color: var(--text-primary);
     display: flex;
     align-items: center;
@@ -1806,7 +1875,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .lms-title-group h2 {
     font-size: 1.15rem;
-    font-weight: 800;
+    font-weight: 700;
 }
 
 .lms-progress-wrapper {
@@ -1854,12 +1923,12 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.62rem;
     color: #92400e;
     text-transform: uppercase;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.3px;
 }
 .session-timer-val {
     font-size: 0.95rem;
-    font-weight: 900;
+    font-weight: 700;
     color: #78350f;
     font-variant-numeric: tabular-nums;
 }
@@ -1889,7 +1958,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .sidebar-header h3 {
     font-size: 0.95rem;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 .sidebar-sub {
@@ -2285,7 +2354,7 @@ h1, h2, h3, h4, h5, h6 {
     top: -18px;
     left: -16px;
     font-size: 0.62rem;
-    font-weight: 800;
+    font-weight: 600;
     color: #10b981;
     background: rgba(6, 78, 59, 0.85);
     padding: 1px 4px;
@@ -2336,7 +2405,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .video-timer-counter strong {
     color: #ffffff;
-    font-weight: 800;
+    font-weight: 700;
 }
 .video-timer-counter .time-sep {
     color: #64748b;
@@ -2401,7 +2470,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .playing-tag {
     font-size: 0.65rem;
-    font-weight: 800;
+    font-weight: 700;
     background: var(--primary);
     padding: 2px 7px;
     border-radius: 4px;
@@ -2420,7 +2489,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .video-title-info h3 {
     font-size: 0.98rem;
-    font-weight: 800;
+    font-weight: 700;
     line-height: 1.35;
     margin: 0;
     color: #ffffff;
@@ -2480,7 +2549,7 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--primary);
     border-color: var(--secondary-brand);
     color: var(--accent);
-    font-weight: 800;
+    font-weight: 600;
 }
 
 .btn-complete {
@@ -2501,13 +2570,13 @@ h1, h2, h3, h4, h5, h6 {
     background: var(--secondary-brand);
     color: #ffffff;
     cursor: pointer;
-    font-weight: 800;
+    font-weight: 600;
 }
 .btn-complete.finished {
     background: var(--secondary-brand);
     color: #ffffff;
     cursor: default;
-    font-weight: 800;
+    font-weight: 600;
 }
 
 .video-nav-group {
@@ -2552,7 +2621,7 @@ h1, h2, h3, h4, h5, h6 {
 .timestamp-tag {
     background: rgba(47, 45, 116, 0.08);
     color: var(--primary);
-    font-weight: 800;
+    font-weight: 700;
     padding: 2px 6px;
     border-radius: 4px;
     cursor: pointer;
@@ -2592,7 +2661,7 @@ h1, h2, h3, h4, h5, h6 {
 .auto-advance-toast .count-badge {
     background: var(--warning);
     color: #000;
-    font-weight: 800;
+    font-weight: 700;
     width: 24px;
     height: 24px;
     border-radius: 50%;
@@ -2618,7 +2687,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .resume-title {
     font-size: 0.88rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #ffffff;
 }
 .resume-desc {
@@ -2655,14 +2724,14 @@ h1, h2, h3, h4, h5, h6 {
 .certificate-header-logo {
     font-family: var(--font-label);
     font-size: 1rem;
-    font-weight: 900;
+    font-weight: 700;
     color: var(--primary);
     letter-spacing: 0.05em;
 }
 .certificate-title {
     font-family: var(--font-label);
     font-size: 1.35rem;
-    font-weight: 900;
+    font-weight: 700;
     color: #92400e;
     margin: 10px 0 4px;
     text-transform: uppercase;
@@ -2734,7 +2803,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .tab-btn.active {
     color: var(--primary);
-    font-weight: 800;
+    font-weight: 600;
     background: transparent;
     border-bottom: none;
 }
@@ -2939,7 +3008,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .quiz-timer-clock {
     font-size: 1.2rem;
-    font-weight: 900;
+    font-weight: 700;
     color: #b91c1c;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.5px;
@@ -2969,7 +3038,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.78rem;
-    font-weight: 800;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -3021,7 +3090,7 @@ h1, h2, h3, h4, h5, h6 {
     background: #fef3c7;
     color: #92400e;
     font-size: 0.68rem;
-    font-weight: 800;
+    font-weight: 700;
     padding: 2px 8px;
     border-radius: 10px;
     display: inline-flex;
@@ -3085,7 +3154,7 @@ h1, h2, h3, h4, h5, h6 {
 .sidebar-logo-text h1 {
     font-family: var(--font-label) !important;
     font-size: 0.98rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
     line-height: 1.2;
     letter-spacing: -0.01em;
@@ -3121,7 +3190,7 @@ h1, h2, h3, h4, h5, h6 {
 .menu-label {
     font-family: var(--font-label) !important;
     font-size: 0.65rem;
-    font-weight: 900;
+    font-weight: 600;
     color: #94a3b8;
     letter-spacing: 0.08em;
     margin: 14px 8px 6px;
@@ -3153,7 +3222,7 @@ h1, h2, h3, h4, h5, h6 {
 .sidebar-item.active {
     background: var(--primary);
     color: #ffffff !important;
-    font-weight: 800;
+    font-weight: 600;
     box-shadow: 0 4px 14px rgba(26, 34, 56, 0.2);
 }
 
@@ -3244,7 +3313,7 @@ h1, h2, h3, h4, h5, h6 {
 .page-title h2 {
     font-family: var(--font-label) !important;
     font-size: 1.25rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
     letter-spacing: -0.01em;
     line-height: 1.25;
@@ -3287,7 +3356,7 @@ h1, h2, h3, h4, h5, h6 {
 .config-info h3 {
     font-family: var(--font-label) !important;
     font-size: 0.98rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
     margin: 0 0 3px 0;
 }
@@ -3332,7 +3401,7 @@ h1, h2, h3, h4, h5, h6 {
     border: none;
     font-family: var(--font-label);
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: 0.02em;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -3384,7 +3453,7 @@ h1, h2, h3, h4, h5, h6 {
 .kpi-title {
     font-family: var(--font-label) !important;
     font-size: 0.72rem;
-    font-weight: 800;
+    font-weight: 700;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -3407,7 +3476,7 @@ h1, h2, h3, h4, h5, h6 {
 .kpi-value {
     font-family: var(--font-label) !important;
     font-size: 1.75rem;
-    font-weight: 900;
+    font-weight: 700;
     color: var(--primary);
     line-height: 1.1;
     letter-spacing: -0.01em;
@@ -3502,7 +3571,7 @@ h1, h2, h3, h4, h5, h6 {
 .table-title h3 {
     font-family: var(--font-label) !important;
     font-size: 1.02rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--primary);
     margin: 0 0 2px 0;
 }
@@ -3532,7 +3601,7 @@ h1, h2, h3, h4, h5, h6 {
     padding: 12px 18px;
     font-family: var(--font-label) !important;
     font-size: 0.7rem;
-    font-weight: 900;
+    font-weight: 600;
     color: #64748b;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -3560,7 +3629,7 @@ h1, h2, h3, h4, h5, h6 {
     border-radius: 9999px;
     font-family: var(--font-label);
     font-size: 0.7rem;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: 0.02em;
     display: inline-flex;
     align-items: center;
@@ -3799,27 +3868,29 @@ html, body {
         border-radius: 12px;
     }
     .hero-bento-title {
-        font-size: 1.65rem;
-        line-height: 1.25;
-        letter-spacing: -0.01em;
+        font-size: 1.48rem;
+        line-height: 1.32;
+        font-weight: 700;
+        letter-spacing: -0.005em;
+        margin-bottom: 10px;
     }
     .hero-bento-desc {
-        font-size: 0.82rem;
-        line-height: 1.4;
-        margin-bottom: 12px;
-        color: #94a3b8;
+        font-size: 0.84rem;
+        line-height: 1.5;
+        margin-bottom: 14px;
+        color: #cbd5e1;
     }
     .bento-metrics-ribbon {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
-        padding: 8px 10px;
-        margin-bottom: 12px;
-        border-radius: 8px;
+        padding: 10px 12px;
+        margin-bottom: 14px;
+        border-radius: 10px;
     }
     .metric-ribbon-divider { display: none; }
-    .metric-num { font-size: 1.15rem; }
-    .metric-lbl { font-size: 0.65rem; }
+    .metric-num { font-size: 1.25rem; font-weight: 700; }
+    .metric-lbl { font-size: 0.72rem; font-weight: 500; }
     .hero-bento-actions {
         display: flex;
         flex-direction: column;
@@ -3828,43 +3899,51 @@ html, body {
     }
     .hero-bento-actions .btn {
         width: 100%;
-        min-height: 44px;
-        font-size: 0.82rem;
+        min-height: 42px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
         justify-content: center;
     }
     .bento-tile-spotlight {
-        padding: 12px 10px;
-        border-radius: 12px;
+        padding: 16px 14px;
+        border-radius: 14px;
     }
     .spotlight-course-title {
-        font-size: 0.92rem;
-        line-height: 1.3;
+        font-size: 0.98rem;
+        font-weight: 600;
+        line-height: 1.35;
     }
     .spotlight-lesson-target {
-        font-size: 0.78rem;
+        font-size: 0.8rem;
+        line-height: 1.4;
     }
     .spotlight-action-btn {
         width: 100%;
-        min-height: 44px;
-        font-size: 0.82rem;
+        min-height: 42px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
         justify-content: center;
     }
     .bento-features-row {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        gap: 10px;
     }
     .bento-tile-feature {
-        padding: 10px 8px;
-        border-radius: 8px;
+        padding: 12px 10px;
+        border-radius: 10px;
     }
     .bento-tile-feature h4 {
-        font-size: 0.74rem;
-        margin-bottom: 2px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 4px;
     }
     .bento-tile-feature p {
-        font-size: 0.65rem;
-        line-height: 1.35;
+        font-size: 0.74rem;
+        line-height: 1.42;
+        color: #64748b;
     }
 
     /* Bento 2.0 Curriculum Mobile */
@@ -3909,75 +3988,95 @@ html, body {
         grid-column: span 1;
         display: flex;
         flex-direction: column;
-        padding: 14px 12px;
-        gap: 10px;
-        border-radius: 12px;
+        padding: 18px 16px;
+        gap: 12px;
+        border-radius: 14px;
     }
     .featured-lead-left h3 {
-        font-size: 1.05rem;
-        line-height: 1.3;
-        margin: 4px 0;
+        font-family: var(--font-heading) !important;
+        font-size: 1.12rem;
+        font-weight: 700;
+        line-height: 1.35;
+        letter-spacing: -0.005em;
+        margin: 4px 0 6px;
     }
     .featured-lead-left .featured-desc {
-        font-size: 0.78rem;
-        line-height: 1.4;
-        margin-bottom: 6px;
+        font-size: 0.84rem;
+        line-height: 1.5;
+        color: #475569;
+        margin-bottom: 8px;
     }
     .featured-curriculum-tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 4px;
+        gap: 6px;
+        margin-bottom: 4px;
     }
     .curriculum-chip {
-        font-size: 0.65rem;
-        padding: 2px 6px;
+        font-size: 0.72rem;
+        font-weight: 500;
+        padding: 3px 8px;
     }
     .featured-lead-right {
-        padding: 10px;
-        border-radius: 8px;
-        gap: 8px;
+        padding: 12px;
+        border-radius: 10px;
+        gap: 10px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
     }
     .featured-lead-right .course-stats-pills {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 6px;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
     }
     .course-stat-pill {
-        font-size: 0.68rem;
-        padding: 4px 6px;
+        font-size: 0.72rem;
+        font-weight: 500;
+        padding: 5px 8px;
         justify-content: center;
     }
     .featured-lead-right .btn {
         width: 100%;
-        min-height: 44px;
-        font-size: 0.82rem;
+        min-height: 42px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
         justify-content: center;
     }
 
     .course-program-card.secondary-bento-card,
     .course-program-card {
-        padding: 12px;
-        border-radius: 12px;
+        padding: 16px 14px;
+        border-radius: 14px;
     }
     .course-program-card h3 {
-        font-size: 1rem;
-        line-height: 1.3;
+        font-family: var(--font-heading) !important;
+        font-size: 1.05rem;
+        font-weight: 600;
+        line-height: 1.35;
+        letter-spacing: -0.005em;
+        margin: 4px 0 6px;
     }
-    .course-program-card .course-card-desc {
-        font-size: 0.78rem;
-        line-height: 1.4;
+    .course-program-card .course-card-desc,
+    .course-program-card .course-desc {
+        font-size: 0.82rem;
+        line-height: 1.48;
+        color: #475569;
     }
     .course-program-card .course-stats-pills {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 6px;
-        margin: 8px 0;
+        margin: 10px 0;
     }
-    .course-program-card .btn {
+    .course-program-card .btn,
+    .course-program-card .btn-view-course-modules {
         width: 100%;
-        min-height: 44px;
-        font-size: 0.82rem;
+        min-height: 42px;
+        font-size: 0.84rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
         justify-content: center;
     }
 
@@ -4223,7 +4322,7 @@ html, body {
     }
     .video-title-info h3 {
         font-size: 1.02rem !important;
-        font-weight: 800 !important;
+        font-weight: 700 !important;
         line-height: 1.32 !important;
         color: #ffffff !important;
         margin: 0 !important;
@@ -4292,7 +4391,7 @@ html, body {
         font-size: 0.8rem !important;
         height: 38px !important;
         padding: 0 16px !important;
-        font-weight: 800 !important;
+        font-weight: 600 !important;
     }
     .btn-complete.locked {
         background: rgba(255, 255, 255, 0.08) !important;
@@ -4514,7 +4613,7 @@ html, body {
 .alert-modal-title {
     font-family: var(--font-sans);
     font-size: 1.25rem;
-    font-weight: 900;
+    font-weight: 700;
     color: var(--primary);
     line-height: 1.35;
     margin: 0 0 12px;
@@ -4540,7 +4639,7 @@ html, body {
     min-width: 170px;
     padding: 12px 28px;
     font-size: 0.88rem;
-    font-weight: 800;
+    font-weight: 700;
     border-radius: 0.75rem;
 }
 
@@ -4815,7 +4914,7 @@ img, video, iframe {
 .admin-guard-header h2 {
     font-family: var(--font-heading);
     font-size: 1.25rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.03em;
     margin-bottom: 6px;
     color: #ffffff;
@@ -4886,7 +4985,7 @@ img, video, iframe {
     height: 46px;
     margin-top: 8px;
     font-size: 0.9rem;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: 0.02em;
     display: inline-flex;
     align-items: center;
@@ -5009,10 +5108,10 @@ img, video, iframe {
 
 .footer-brand-titles h3 {
     font-family: var(--font-heading) !important;
-    font-size: 1.15rem;
-    font-weight: 800;
+    font-size: 1.1rem;
+    font-weight: 700;
     color: #ffffff !important;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     margin: 0 0 4px;
     text-transform: uppercase;
 }
@@ -5059,11 +5158,11 @@ img, video, iframe {
 
 .footer-col h4 {
     font-family: var(--font-heading) !important;
-    font-size: 0.95rem;
-    font-weight: 800;
+    font-size: 0.92rem;
+    font-weight: 600;
     color: #ffffff !important;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.02em;
     margin-bottom: 16px;
     display: flex;
     align-items: center;
@@ -5145,7 +5244,7 @@ img, video, iframe {
 .footer-contact-hotline {
     font-family: var(--font-heading);
     font-size: 1.15rem;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--accent);
     display: flex;
     align-items: center;
